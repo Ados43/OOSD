@@ -99,15 +99,27 @@
 ---
 ## PM-1.4 Risk Management
 ### PM-1.4.1 Risk Categories and Probability
-|RC-ID | Title | Category | Reasoning | Work Products at Risk | Probability | 
+
+| RC-ID | Risk | Category | Reasoning | Work Products at Risk | Probability | 
+|:------|:-----|:--------:|:---------:|:---------------------:|:-----------:|
+|       |      |          |           |                       |             |
+|       |      |          |           |                       |             |
 
 ---
 ### PM-1.4.2 Risk Assessment Matrix
-|RA-ID| Risk Name | Risk Description | Severity Level | Responsible Party |
+
+| RA-ID | Risk Name | Risk Description | Severity Level | Responsible Party |
+|:------|:----------|:----------------:|:--------------:|:-----------------:|
+|       |           |                  |                |                   |
+|       |           |                  |                |                   |
 
 ---
 ### PM-1.4.3 Risk Register
-|RI-ID| Risk Name | Category | Severity | Detailed Risk Description | Work Products at Risk | Quality Metrics Affected | Response Description | Responsible Description |
+
+| RI-ID | Risk Name | Category | Severity | Detailed Risk Description | Work Products at Risk | Quality Metrics Affected | Response Description | Responsible Description |
+|:------|:----------|:--------:|:--------:|:-------------------------:|:---------------------:|:------------------------:|:--------------------:|:-----------------------:|
+|       |           |          |          |                           |                       |                          |                      |                         |
+|       |           |          |          |                           |                       |                          |                      |                         |
 
 ---
 ### PM-1.4.4 Risk Mitigation Plans
