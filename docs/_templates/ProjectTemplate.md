@@ -9,10 +9,10 @@
 ### PM-1.1.2 Project Deliverables
 &nbsp;&nbsp;&nbsp;&nbsp; The project aims to deliver the following work products:
 
-| WP-ID-00 | Title/Name | Description | Items | Dependencies | Assigned Resources  | Assigned Role | Quality Metric ID | Stakeholder ID |
-|:--------:|:-----------|:-----------:|:------|:-------------|:--------------------|:-------------:|:-----------------:|:--------------:|
-|  WP-01   |            |             |       |              |                     |               |                   |                |
-|  WP-02   |            |             |       |              |                     |               |                   |                |
+| WP-ID | Title/Name | Description | Items | Dependencies | Assigned Resources  | Assigned Role | Quality Metric ID | Stakeholder ID |
+|:-----:|:-----------|:-----------:|:------|:-------------|:--------------------|:-------------:|:-----------------:|:--------------:|
+| WP-01 |            |             |       |              |                     |               |                   |                |
+| WP-02 |            |             |       |              |                     |               |                   |                |
 
 
 
@@ -28,6 +28,8 @@
 #### Assumptions
 &nbsp;&nbsp;&nbsp;&nbsp; How much prerequisite knowledge is required to use the application?
 
+&nbsp;&nbsp;&nbsp;&nbsp; What IEEE and ISO recommendations should be applied in this project?
+
 ---
 ### PM-1.1.4 Change Requests
 | WP-ID | Change | Reason | Assigned Role | Affected Stakeholders | Date |
@@ -38,6 +40,8 @@
 
 ---
 ### PM-1.1.5 Work Breakdown Structure
+
+|WBS-ID|
 
 ---
 ### PM-1.1.6 WBS Dictionary
@@ -95,15 +99,22 @@
 ---
 ## PM-1.4 Risk Management
 ### PM-1.4.1 Risk Categories and Probability
+|RC-ID | Title | Category | Reasoning | Work Products at Risk | Probability | 
 
 ---
 ### PM-1.4.2 Risk Assessment Matrix
+|RA-ID| Risk Name | Risk Description | Severity Level | Responsible Party |
 
 ---
 ### PM-1.4.3 Risk Register
+|RI-ID| Risk Name | Category | Severity | Detailed Risk Description | Work Products at Risk | Quality Metrics Affected | Response Description | Responsible Description |
 
 ---
 ### PM-1.4.4 Risk Mitigation Plans
+#### PM-1.4.4a Overall Exposure
+#### PM-1.4.4b Review Plan
+&nbsp;&nbsp;&nbsp;&nbsp; What steps are appropriate to immediately escelate past for each severity level?
+#### PM-1.4.4c Special Mitigation Factors
 
 ---
 # PM-2 Requirements
@@ -138,24 +149,25 @@
 
 ---
 ### PM-2.1.3 Stakeholder Register
-| ID    | Name/Role       |           Description           |  Category  | Involvement |
-|:------|:----------------|:-------------------------------:|:----------:|:-----------:|
-| ST-01 | Aidan           |      Team Lead & Developer      |  Student   |    Full     | 
-| ST-02 | Bernie          |   Developer & Quality Analyst   |  Student   |    Full     | 
-| ST-03 | Fletcher        | Developer & Requirement Analyst |  Student   |    Full     | 
-| ST-04 | Lakshmi         |                                 |   Tutor    |  Feedback   | 
-| ST-05 | Larry           |                                 |  Convenor  | Final Mark  | 
-| ST-06 | GitHub          |                                 | Repository |  Workflow   |
-| ST-07 | Other Students  |                                 |  Student   |    None     |
-| ST-08 | Hiring Managers |                                 |  Business  | Repository  |
+| ID    | Name/Role       |                        Description                        | Category |   Involvement    |
+|:------|:----------------|:---------------------------------------------------------:|:--------:|:----------------:|
+| ST-01 | Aidan           |                  Team lead & developer.                   | Student  |       Full       | 
+| ST-02 | Bernie          |               Developer & quality analyst.                | Student  |       Full       | 
+| ST-03 | Fletcher        |             Developer & requirement analyst.              | Student  |       Full       | 
+| ST-04 | Lakshmi         |           Weekly progress checks and guidance.            |  Tutor   |     Feedback     | 
+| ST-05 | Larry           |              Final mark and course conveyor.              |  Client  |    Final Mark    | 
+| ST-06 | GitHub          |              Online repository and PR flow.               |  Tools   |     Workflow     |
+| ST-07 | Other Students  |            Future students and other learners.            | Student  |       None       |
+| ST-08 | Hiring Managers |       The final project could be a portfolio item.        | Business |   Future Work    |
+| ST-09 | Online Tools    | Any AI, algorithm, or sufficiently complex online system. |  Tools   | When Appropriate |
 
 ---
 ## PM-2.2 High-Level Requirements
 
-| HLR-ID-00 | Name/Title | Detailed Description | Relevant Stakeholder IDs |
-|:----------|:-----------|:--------------------:|:------------------------:|
-|           |            |                      |                          |
-|           |            |                      |                          |
+| HLR-ID | Name/Title | Detailed Description |     Stakeholder IDs      |
+|:-------|:-----------|:--------------------:|:------------------------:|
+|        |            |                      |                          |
+|        |            |                      |                          |
 
 ### R-1 Application
 &nbsp;&nbsp;&nbsp;&nbsp;
@@ -185,44 +197,32 @@
 ### FR1: Views
 &nbsp;&nbsp;&nbsp;&nbsp;Defines the player interface consisting of multiple views with controls, information, and transition conditions.
 
-| ID-00   |  Name   |                                                      Description                                                       |                    Tasks                    | Dependency |           Pre-condition           |   Trigger    |                               Exit                               |   Post-condition   | TC-ID |
-|:--------|:-------:|:----------------------------------------------------------------------------------------------------------------------:|:-------------------------------------------:|:----------:|:---------------------------------:|:------------:|:----------------------------------------------------------------:|:------------------:|------:|
-| FR1.1   |  Menu   | Display the menu view and handle onClick events for play, change configuration, view high-scores, and the exit button. | FR1.1.1<br> FR1.1.2<br> FR1.1.3<br> FR1.1.4 |            | isNotMenuView<br>viewModuleLoaded | openMenuView | openPlayView<br>openConfigView<br>openScoreView<br>closeMenuView | closedMenuView<br> | TC-01 | 
-| FR1.1.1 | PlayBtn |                                      Pressing the play button starts a new game.                                       |                                             |            |                                   |              |                                                                  |                    |   TC- | 
-| FR      |         |                                                                                                                        |                                             |            |                                   |              |                                                                  |                    |   TC- | 
-| FR      |         |                                                                                                                        |                                             |            |                                   |              |                                                                  |                    |   TC- | 
-| FR      |         |                                                                                                                        |                                             |            |                                   |              |                                                                  |                    |   TC- | 
-| FR      |         |                                                                                                                        |                                             |            |                                   |              |                                                                  |                    |   TC- | 
-| FR      |         |                                                                                                                        |                                             |            |                                   |              |                                                                  |                    |   TC- | 
-| FR      |         |                                                                                                                        |                                             |            |                                   |              |                                                                  |                    |   TC- | 
-| FR      |         |                                                                                                                        |                                             |            |                                   |              |                                                                  |                    |   TC- | 
-| FR      |         |                                                                                                                        |                                             |            |                                   |              |                                                                  |                    |   TC- | 
-| FR      |         |                                                                                                                        |                                             |            |                                   |              |                                                                  |                    |   TC- | 
-| FR      |         |                                                                                                                        |                                             |            |                                   |              |                                                                  |                    |   TC- | 
-| FR      |         |                                                                                                                        |                                             |            |                                   |              |                                                                  |                    |   TC- | 
-| FR      |         |                                                                                                                        |                                             |            |                                   |              |                                                                  |                    |   TC- | 
-| FR      |         |                                                                                                                        |                                             |            |                                   |              |                                                                  |                    |   TC- | 
-| FR      |         |                                                                                                                        |                                             |            |                                   |              |                                                                  |                    |   TC- | 
-| FR      |         |                                                                                                                        |                                             |            |                                   |              |                                                                  |                    |   TC- | 
-| FR      |         |                                                                                                                        |                                             |            |                                   |              |                                                                  |                    |   TC- | 
-| FR      |         |                                                                                                                        |                                             |            |                                   |              |                                                                  |                    |   TC- | 
-| FR      |         |                                                                                                                        |                                             |            |                                   |              |                                                                  |                    |   TC- | 
-| FR      |         |                                                                                                                        |                                             |            |                                   |              |                                                                  |                    |   TC- | 
-| FR      |         |                                                                                                                        |                                             |            |                                   |              |                                                                  |                    |   TC- | 
-| FR      |         |                                                                                                                        |                                             |            |                                   |              |                                                                  |                    |   TC- | 
-| FR      |         |                                                                                                                        |                                             |            |                                   |              |                                                                  |                    |   TC- | 
-| FR      |         |                                                                                                                        |                                             |            |                                   |              |                                                                  |                    |   TC- | 
-| FR      |         |                                                                                                                        |                                             |            |                                   |              |                                                                  |                    |   TC- | 
-| FR      |         |                                                                                                                        |                                             |            |                                   |              |                                                                  |                    |   TC- | 
-| FR      |         |                                                                                                                        |                                             |            |                                   |              |                                                                  |                    |   TC- | 
-| FR      |         |                                                                                                                        |                                             |            |                                   |              |                                                                  |                    |   TC- | 
-| FR      |         |                                                                                                                        |                                             |            |                                   |              |                                                                  |                    |   TC- | 
+| FR-ID   |  Name   |                                                      Description                                                       |                    Tasks                    |                Pre-condition                 |   Trigger    |                               Exit                               | Post-condition | TC-ID |
+|:--------|:-------:|:----------------------------------------------------------------------------------------------------------------------:|:-------------------------------------------:|:--------------------------------------------:|:------------:|:----------------------------------------------------------------:|:--------------:|------:|
+| FR1.1   |  Menu   | Display the menu view and handle onClick events for play, change configuration, view high-scores, and the exit button. | FR1.1.1<br> FR1.1.2<br> FR1.1.3<br> FR1.1.4 |      isNotMenuView<br>viewModuleLoaded       | openMenuView | openPlayView<br>openConfigView<br>openScoreView<br>closeMenuView | closedMenuView |   TC- | 
+| FR1.1.1 | PlayBtn |                                      Pressing the play button starts a new game.                                       |                                             |                                              |              |                                                                  |                |   TC- | 
+| FR1     |         |                                                                                                                        |                                             |                                              |              |                                                                  |                |   TC- | 
+| FR1     |         |                                                                                                                        |                                             |                                              |              |                                                                  |                |   TC- | 
 
 ---
 #### FR2: Input
+&nbsp;&nbsp;&nbsp;&nbsp;Description
+
+| FR-ID | Name | Description | Tasks | Pre-condition | Trigger | Exit | Post-condition | TC-ID |
+|:------|:----:|:-----------:|:-----:|:-------------:|:-------:|:----:|:--------------:|------:|
+| FR2   |      |             |       |               |         |      |                |   TC- | 
+| FR2   |      |             |       |               |         |      |                |   TC- | 
+
 
 ---
 #### FR3: Behaviour
+&nbsp;&nbsp;&nbsp;&nbsp;Description
+
+| FR-ID  | Name | Description | Tasks | Pre-condition | Trigger | Exit | Post-condition | TC-ID |
+|:-------|:----:|:-----------:|:-----:|:-------------:|:-------:|:----:|:--------------:|------:|
+| FR3    |      |             |       |               |         |      |                |   TC- | 
+| FR3    |      |             |       |               |         |      |                |   TC- | 
+
 
 ---
 ## PM-2.7 UML Models
@@ -236,17 +236,62 @@
 ---
 ## PM-2.8 Non-Functional Requirements (quality attribute scenarios)
 ### PM-2.8.1 Usability (NFR-USA-00)
+
+| NFR-USA-ID | Description/Question | Work Package IDs | Stakeholder IDs | Priority Level | Responsible Party |
+|:-----------|:--------------------:|:-----------------|:----------------|:--------------:|:-----------------:|
+|            |                      |                  |                 |                |                   |
+|            |                      |                  |                 |                |                   |
+
+---
 ### PM-2.8.2 Reliability (NFR-REL-00)
+
+| NFR-USA-ID | Description/Question | Work Package IDs | Stakeholder IDs | Priority Level | Responsible Party |
+|:-----------|:--------------------:|:-----------------|:----------------|:--------------:|:-----------------:|
+|            |                      |                  |                 |                |                   |
+|            |                      |                  |                 |                |                   |
+
+---
 ### PM-2.8.3 Performance (NFR-PER-00)
+
+| NFR-USA-ID | Description/Question | Work Package IDs | Stakeholder IDs | Priority Level | Responsible Party |
+|:-----------|:--------------------:|:-----------------|:----------------|:--------------:|:-----------------:|
+|            |                      |                  |                 |                |                   |
+|            |                      |                  |                 |                |                   |
+
+---
 ### PM-2.8.4 Security (NFR-SEC-00)
+
+| NFR-USA-ID | Description/Question | Work Package IDs | Stakeholder IDs | Priority Level | Responsible Party |
+|:-----------|:--------------------:|:-----------------|:----------------|:--------------:|:-----------------:|
+|            |                      |                  |                 |                |                   |
+|            |                      |                  |                 |                |                   |
+
+---
 ### PM-2.8.5 Legal (NFR-LEG-00)
+
+| NFR-USA-ID | Description/Question | Work Package IDs | Stakeholder IDs | Priority Level | Responsible Party |
+|:-----------|:--------------------:|:-----------------|:----------------|:--------------:|:-----------------:|
+|            |                      |                  |                 |                |                   |
+|            |                      |                  |                 |                |                   |
+
+---
 ### PM-2.9 Quality Metrics
-#### PM-2.9.1 Total code churn
-#### PM-2.9.2 Crash rate
-#### PM-2.9.3 Defect density
-#### PM-2.9.4 Mean time-to-detect
-#### PM-2.9.5 Mean time-to-resolve
-#### PM-2.9.6 Code coverage
+#### PM-2.9.1 Total Code Churn
+
+---
+#### PM-2.9.2 Crash Rate
+
+---
+#### PM-2.9.3 Defect Density
+
+---
+#### PM-2.9.4 Mean Time-to-Detect
+
+---
+#### PM-2.9.5 Mean Time-to-Resolve
+
+---
+#### PM-2.9.6 Code Coverage
 
 ---
 # PM-3 Implementation
@@ -264,21 +309,67 @@
 
 ---
 ## PM-3.3 System Structure
-
+```txt
+GitHub/
+    /src
+    /docs
+```
 ---
 ## PM-3.4 File Structure
+```Java
+public class exampleClass { }
+```
 
 ---
 ## PM-3.5 Code Snippets
+&nbsp;&nbsp;&nbsp;&nbsp; What layers of the OSI model are relevant for describing the processing flow of the project?
+
+### PM-3.5.1 View Class
+```Java
+public class View { }
+```
+
+### PM-3.5.2 Input Class
+```Java
+public class Input { }
+```
+
+### PM-3.5.3 Behaviour Class
+```Java
+public class Behaviour { }
+```
 
 ---
 # PM-4 Demo Video
 ### PM-4.1 Link
-### PM-4.2 Splash window
-### PM-4.3 Main screen
-### PM-4.4 Configuration screen
-### PM-4.5 High score screen
-### PM-4.6 Gameplay
-### PM-4.7 Erase full rows
-### PM-4.8 Pause functions
-### PM-4.9 Exit function
+```txt
+```
+
+---
+#### PM-4.2 Splash window
+```txt
+```
+#### PM-4.3 Main screen
+```txt
+```
+#### PM-4.4 Configuration screen
+```txt
+```
+#### PM-4.5 High score screen
+```txt
+```
+#### PM-4.6 Gameplay
+```txt
+```
+#### PM-4.7 Erase full rows
+```txt
+```
+#### PM-4.8 Pause functions
+```txt
+```
+#### PM-4.9 Exit function
+```txt
+```
+
+---
+2006ICT - Object-Oriented Software Development Tetris Assignment - Milestone One Template
