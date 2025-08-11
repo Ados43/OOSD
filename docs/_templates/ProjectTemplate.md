@@ -3,16 +3,16 @@
 ---
 ## PM-1.1 Project Scope
 ### PM-1.1.1 Product Description
-&nbsp;&nbsp;&nbsp;&nbsp; The aim of product is to emulate the final deliverable specified in the Milestone 1 Demo video. This includes planning, designing, developing, documentating, testing, and verifying quality while following object-oriented software engineering principles to deliver a custom Java Tetris Application using IntelliJ and GitHub. The final scope of the project includes project planning, time management, resource management, risk management, requirement analysis, functional requirements analysis, UML documentation, non-functional requirement analysis, quality assurance, unit testing, integration testing, performance testing, security testing, and a milestone final deliverable demo video.     
+&nbsp;&nbsp;&nbsp;&nbsp; The aim of product is to emulate the final deliverable specified in the Milestone 1 Demo video. This includes planning, designing, developing, documentating, testing, and verifying quality while following object-oriented software development principles to deliver a custom Java Tetris Application using IntelliJ and GitHub. The final scope of the project includes project planning, time management, resource management, risk management, requirement analysis, functional requirements analysis, UML documentation, non-functional requirement analysis, quality assurance, unit testing, integration testing, performance testing, security testing, and a milestone final deliverable demo video.     
 
 ---
 ### PM-1.1.2 Project Deliverables
 &nbsp;&nbsp;&nbsp;&nbsp; The project aims to deliver the following work products:
 
-| WP-ID | Title/Name | Description | Items | Dependencies | Assigned Resources  | Assigned Role | Quality Metric ID | Stakeholder ID |
-|:-----:|:-----------|:-----------:|:------|:-------------|:--------------------|:-------------:|:-----------------:|:--------------:|
-| WP-01 |            |             |       |              |                     |               |                   |                |
-| WP-02 |            |             |       |              |                     |               |                   |                |
+| D-ID | Title/Name | Description | Work Products | Resources          | Duration           | Responsible Party | Related Stakeholders | Acceptance Criteria | Status |
+|:----:|:-----------|:-----------:|:--------------|:-------------------|:-------------------|:-----------------:|:--------------------:|:-------------------:|--------|
+| D-01 |            |             |               |                    |                    |                   |                      |                     |        |
+| D-02 |            |             |               |                    |                    |                   |                      |                     |        |
 
 ---
 ### PM-1.1.3 Constraints & Assumptions
@@ -23,15 +23,17 @@
 
 &nbsp;&nbsp;&nbsp;&nbsp; What are the legal obligations of developers using GitHub and other online software?
 
-#### Assumptions
-&nbsp;&nbsp;&nbsp;&nbsp; How much prerequisite knowledge is required to use the application?
+&nbsp;&nbsp;&nbsp;&nbsp; Are there any user privacy concerns or requirements?
 
 &nbsp;&nbsp;&nbsp;&nbsp; What IEEE and ISO recommendations should be applied in this project?
 
+#### Assumptions
+&nbsp;&nbsp;&nbsp;&nbsp; How much prerequisite knowledge is required for the project?
+
 ---
 ### PM-1.1.4 Change Requests
-#### PM-1.1.4a Change Request Requirements
-#### PM-1.1.4b History 
+#### PM-1.1.4a Change Request Requirements & Scope
+#### PM-1.1.4 History 
 
 | CR-ID | Detailed Change Description | Reason | Assigned Party | Task List |   Impact   | Date | Approved By | Status |
 |:------|:----------------------------|:------:|:--------------:|:---------:|:----------:|-----:|:-----------:|:------:|
@@ -39,15 +41,43 @@
 |       |                             |        |                |           |            |      |             |        |
 
 ---
-### PM-1.1.5 Work Breakdown Structure
-
-| WP-ID | Work Product Name | Dependencies | Ticket List | Outcome | Affected Stakeholders  | Responsible Party | 
-|:------|:-----------------:|:------------:|:-----------:|:-------:|:----------------------:|:-----------------:|
-|       |                   |              |             |         |                        |                   |
-|       |                   |              |             |         |                        |                   |
+### PM-1.1.5 Work Breakdown
+#### PM-1.1.5a Work Breakdown Purpose & Scope
+#### PM-1.1.5b Work Breakdown Structure 
 
 ---
 ### PM-1.1.6 WBS Dictionary
+#### PM-1.1.6a WBS Dictionary Purpose & Scope
+#### PM-1.1.6b WBS Glossary & Acronyms
+
+D - Deliverable
+R - Requirement
+T - Task
+FR - Functional Requirement
+PM - Project Management
+CR - Change Request
+WP - Work Product
+TK - Ticket
+TM - Team Member
+RC - Risk Category
+RA - Risk Assessment
+RI - Risk
+ST - Stakeholder
+US - User Story
+NFR - Non-Functional Requirement
+USA - Usability
+REL - Reliability
+PER - Performance
+SEC - Security
+LEG - Legal
+
+
+#### PM-1.1.6c WBS Element Descriptions
+
+| WP-ID | Name/Title | Description | Dependencies | Tasks | Deliverable | Affected Stakeholders | Responsible Party | Duration |
+|:------|:-----------|:------------|-------------:|:-----:|:------------|----------------------:|:-----------------:|:---------|
+|       |            |             |              |       |             |                       |                   |          |  
+|       |            |             |              |       |             |                       |                   |          |  
 
 ---
 ### PM-1.1.7 Activity List
@@ -68,11 +98,19 @@
 
 ---
 ### PM-1.2.4 Project Schedule
+#### PM-1.2.4a Milestone Timeline
+#### PM-1.2.4b Complete Task List
+#### PM-1.2.4c Gantt Chart
 
 ---
 ## PM-1.3 HR Management
 ### PM-1.3.1 Project Organization Chart
+#### PM-1.3.1a Organizational Hierarchy
+#### PM-1.3.1b Role Descriptions and Assignments
 
+| TM-ID | Role | Description | Responsibilities | Assigned Party |
+|:------|------|-------------|------------------|----------------|
+|       |      |             |                  |                | 
 ---
 ### PM-1.3.2 Self Reviews:
 &nbsp;&nbsp;&nbsp;&nbsp; What was your primary role in this milestone?
@@ -165,7 +203,7 @@
 
 ---
 ### PM-2.1.3 Stakeholder Register
-| ST-ID | Role            |                     RResponsibilities                     | Category |   Involvement    |
+| ST-ID | Role            |                     Responsibilities                      | Category |   Involvement    |
 |:------|:----------------|:---------------------------------------------------------:|:--------:|:----------------:|
 | ST-01 | Project Manager |                  Team lead & developer.                   | Student  |       Full       | 
 | ST-02 | Developer/QA    |               Developer & quality analyst.                | Student  |       Full       | 
@@ -194,7 +232,7 @@
 &nbsp;&nbsp;&nbsp;&nbsp;
 
 ---
-## PM-2.3 User Stories (id, UML, relevant NFR)
+## PM-2.3 User Stories
 
 | US-ID | Description | Functional Requirements | Affected Stakeholders | 
 
