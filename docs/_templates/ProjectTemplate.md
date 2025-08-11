@@ -14,8 +14,6 @@
 | WP-01 |            |             |       |              |                     |               |                   |                |
 | WP-02 |            |             |       |              |                     |               |                   |                |
 
-
-
 ---
 ### PM-1.1.3 Constraints & Assumptions
 #### Constraints
@@ -23,7 +21,7 @@
 
 &nbsp;&nbsp;&nbsp;&nbsp; What are the requirements of the University upon students submitting works?
 
-&nbsp;&nbsp;&nbsp;&nbsp; What are the legal obligations of developers using GitHub and related?
+&nbsp;&nbsp;&nbsp;&nbsp; What are the legal obligations of developers using GitHub and other online software?
 
 #### Assumptions
 &nbsp;&nbsp;&nbsp;&nbsp; How much prerequisite knowledge is required to use the application?
@@ -32,16 +30,21 @@
 
 ---
 ### PM-1.1.4 Change Requests
-| WP-ID | Change | Reason | Assigned Role | Affected Stakeholders | Date |
-|:------|:-------|:------:|:-------------:|:---------------------:|-----:|
-|       |        |        |               |                       |      |
-|       |        |        |               |                       |      |
+#### PM-1.1.4a Change Request Requirements
+#### PM-1.1.4b History 
 
+| CR-ID | Detailed Change Description | Reason | Assigned Party | Task List |   Impact   | Date | Approved By | Status |
+|:------|:----------------------------|:------:|:--------------:|:---------:|:----------:|-----:|:-----------:|:------:|
+|       |                             |        |                |           |            |      |             |        |
+|       |                             |        |                |           |            |      |             |        |
 
 ---
 ### PM-1.1.5 Work Breakdown Structure
 
-|WBS-ID|
+| WP-ID | Work Product Name | Dependencies | Ticket List | Outcome | Affected Stakeholders  | Responsible Party | 
+|:------|:-----------------:|:------------:|:-----------:|:-------:|:----------------------:|:-----------------:|
+|       |                   |              |             |         |                        |                   |
+|       |                   |              |             |         |                        |                   |
 
 ---
 ### PM-1.1.6 WBS Dictionary
@@ -49,8 +52,9 @@
 ---
 ### PM-1.1.7 Activity List
 
----
-### PM-1.1.8 Generative AI Project Guidelines
+| TK-ID | Ticket Name | Ticket Description | Task List | Ticket Outcome | Assigned Team Member | Affected Work Products |
+|:------|:-----------:|:------------------:|:---------:|:--------------:|:--------------------:|-----------------------:|
+| TK-ID |             |                    |           |                |                      |                        |
 
 ---
 ## PM-1.2 Time Management
@@ -161,17 +165,18 @@
 
 ---
 ### PM-2.1.3 Stakeholder Register
-| ID    | Name/Role       |                        Description                        | Category |   Involvement    |
+| ST-ID | Role            |                     RResponsibilities                     | Category |   Involvement    |
 |:------|:----------------|:---------------------------------------------------------:|:--------:|:----------------:|
-| ST-01 | Aidan           |                  Team lead & developer.                   | Student  |       Full       | 
-| ST-02 | Bernie          |               Developer & quality analyst.                | Student  |       Full       | 
-| ST-03 | Fletcher        |             Developer & requirement analyst.              | Student  |       Full       | 
-| ST-04 | Lakshmi         |           Weekly progress checks and guidance.            |  Tutor   |     Feedback     | 
-| ST-05 | Larry           |              Final mark and course conveyor.              |  Client  |    Final Mark    | 
-| ST-06 | GitHub          |              Online repository and PR flow.               |  Tools   |     Workflow     |
-| ST-07 | Other Students  |            Future students and other learners.            | Student  |       None       |
+| ST-01 | Project Manager |                  Team lead & developer.                   | Student  |       Full       | 
+| ST-02 | Developer/QA    |               Developer & quality analyst.                | Student  |       Full       | 
+| ST-03 | Developer/RA    |             Developer & requirement analyst.              | Student  |       Full       | 
+| ST-04 | Tutor           |           Weekly progress checks and guidance.            |  Tutor   |     Feedback     | 
+| ST-05 | Conveyor        |              Final mark and course conveyor.              |  Client  |    Final Mark    | 
+| ST-06 | Repository      |              Online repository and PR flow.               |  Tools   |     Workflow     |
+| ST-07 | Students        |            Future students and other learners.            | Student  |       None       |
 | ST-08 | Hiring Managers |       The final project could be a portfolio item.        | Business |   Future Work    |
-| ST-09 | Online Tools    | Any AI, algorithm, or sufficiently complex online system. |  Tools   | When Appropriate |
+| ST-09 | Software Tools  | Any AI, algorithm, or sufficiently complex online system. |  Tools   | When Appropriate |
+| ST-10 | AI Algorithms   | Any AI, algorithm, or sufficiently complex online system. |  Tools   | When Appropriate |
 
 ---
 ## PM-2.2 High-Level Requirements
@@ -191,8 +196,10 @@
 ---
 ## PM-2.3 User Stories (id, UML, relevant NFR)
 
+| US-ID | Description | Functional Requirements | Affected Stakeholders | 
+
 ---
-## PM-2.4 Product Description
+## PM-2.4 Project Description
 
 ---
 ## PM-2.5 Specification & Validation
@@ -246,45 +253,45 @@
 ### PM-2.7.6 Package/Component Diagram (Architecture)
 
 ---
-## PM-2.8 Non-Functional Requirements (quality attribute scenarios)
-### PM-2.8.1 Usability (NFR-USA-00)
+## PM-2.8 Non-Functional Requirements
+### PM-2.8.1 Usability
 
-| NFR-USA-ID | Description/Question | Work Package IDs | Stakeholder IDs | Priority Level | Responsible Party |
-|:-----------|:--------------------:|:-----------------|:----------------|:--------------:|:-----------------:|
-|            |                      |                  |                 |                |                   |
-|            |                      |                  |                 |                |                   |
-
----
-### PM-2.8.2 Reliability (NFR-REL-00)
-
-| NFR-USA-ID | Description/Question | Work Package IDs | Stakeholder IDs | Priority Level | Responsible Party |
-|:-----------|:--------------------:|:-----------------|:----------------|:--------------:|:-----------------:|
-|            |                      |                  |                 |                |                   |
-|            |                      |                  |                 |                |                   |
+| NFR-USA-ID | Description/Question | Related Work Packages | Affected Stakeholder | Priority Level | Risk Severity | Responsible Party |
+|:-----------|:--------------------:|:----------------------|:---------------------|:--------------:|:-------------:|:-----------------:|
+|            |                      |                       |                      |                |               |                   |
+|            |                      |                       |                      |                |               |                   |
 
 ---
-### PM-2.8.3 Performance (NFR-PER-00)
+### PM-2.8.2 Reliability
 
-| NFR-USA-ID | Description/Question | Work Package IDs | Stakeholder IDs | Priority Level | Responsible Party |
-|:-----------|:--------------------:|:-----------------|:----------------|:--------------:|:-----------------:|
-|            |                      |                  |                 |                |                   |
-|            |                      |                  |                 |                |                   |
-
----
-### PM-2.8.4 Security (NFR-SEC-00)
-
-| NFR-USA-ID | Description/Question | Work Package IDs | Stakeholder IDs | Priority Level | Responsible Party |
-|:-----------|:--------------------:|:-----------------|:----------------|:--------------:|:-----------------:|
-|            |                      |                  |                 |                |                   |
-|            |                      |                  |                 |                |                   |
+| NFR-REL-ID | Description/Question | Related Work Packages | Affected Stakeholder | Priority Level | Risk Severity | Responsible Party |
+|:-----------|:--------------------:|:----------------------|:---------------------|:--------------:|:-------------:|:-----------------:|
+|            |                      |                       |                      |                |               |                   |
+|            |                      |                       |                      |                |               |                   |
 
 ---
-### PM-2.8.5 Legal (NFR-LEG-00)
+### PM-2.8.3 Performance
 
-| NFR-USA-ID | Description/Question | Work Package IDs | Stakeholder IDs | Priority Level | Responsible Party |
-|:-----------|:--------------------:|:-----------------|:----------------|:--------------:|:-----------------:|
-|            |                      |                  |                 |                |                   |
-|            |                      |                  |                 |                |                   |
+| NFR-PER-ID | Description/Question | Related Work Packages | Affected Stakeholder | Priority Level | Risk Severity | Responsible Party |
+|:-----------|:--------------------:|:----------------------|:---------------------|:--------------:|:-------------:|:-----------------:|
+|            |                      |                       |                      |                |               |                   |
+|            |                      |                       |                      |                |               |                   |
+
+---
+### PM-2.8.4 Security
+
+| NFR-SEC-ID | Description/Question | Related Work Packages | Affected Stakeholder | Priority Level | Risk Severity | Responsible Party |
+|:-----------|:--------------------:|:----------------------|:---------------------|:--------------:|:-------------:|:-----------------:|
+|            |                      |                       |                      |                |               |                   |
+|            |                      |                       |                      |                |               |                   |
+
+---
+### PM-2.8.5 Legal
+
+| NFR-LEG-ID | Description/Question | Related Work Packages | Affected Stakeholder | Priority Level | Risk Severity | Responsible Party |
+|:-----------|:--------------------:|:----------------------|:---------------------|:--------------:|:-------------:|:-----------------:|
+|            |                      |                       |                      |                |               |                   |
+|            |                      |                       |                      |                |               |                   |
 
 ---
 ### PM-2.9 Quality Metrics
@@ -323,8 +330,11 @@
 ## PM-3.3 System Structure
 ```txt
 GitHub/
-    /src
-    /docs
+    /docs/
+        /_templates
+        /UML
+        /images
+        /work_products
 ```
 ---
 ## PM-3.4 File Structure
