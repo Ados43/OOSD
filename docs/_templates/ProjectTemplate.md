@@ -12,13 +12,13 @@
 | D-ID | Title/Name | Description | Work Products | Resources          | Duration           | Responsible Party | Related Stakeholders | Acceptance Criteria | Status |
 |:----:|:-----------|:-----------:|:--------------|:-------------------|:-------------------|:-----------------:|:--------------------:|:-------------------:|--------|
 | D-01 |            |             |               |                    |                    |                   |                      |                     |        |
-| D-02 |            |             |               |                    |                    |                   |                      |                     |        |
+
 
 ---
 ### PM-1.1.3 Constraints & Assumptions
-#### Constraints
+#### PM-1.1.3 Constraints
 &nbsp;&nbsp;&nbsp;&nbsp; How is the use of generative AI monitored and limited within the scope of this project?
-
+ 
 &nbsp;&nbsp;&nbsp;&nbsp; What are the requirements of the University upon students submitting works?
 
 &nbsp;&nbsp;&nbsp;&nbsp; What are the legal obligations of developers using GitHub and other online software?
@@ -27,74 +27,94 @@
 
 &nbsp;&nbsp;&nbsp;&nbsp; What IEEE and ISO recommendations should be applied in this project?
 
-#### Assumptions
+#### PM-1.1.3 Assumptions
 &nbsp;&nbsp;&nbsp;&nbsp; How much prerequisite knowledge is required for the project?
 
 ---
 ### PM-1.1.4 Change Requests
 #### PM-1.1.4a Change Request Requirements & Scope
-#### PM-1.1.4 History 
+#### PM-1.1.4b Change Request History 
 
 | CR-ID | Detailed Change Description | Reason | Assigned Party | Task List |   Impact   | Date | Approved By | Status |
 |:------|:----------------------------|:------:|:--------------:|:---------:|:----------:|-----:|:-----------:|:------:|
 |       |                             |        |                |           |            |      |             |        |
-|       |                             |        |                |           |            |      |             |        |
+
 
 ---
 ### PM-1.1.5 Work Breakdown
 #### PM-1.1.5a Work Breakdown Purpose & Scope
 #### PM-1.1.5b Work Breakdown Structure 
 
+| WP-ID | Name/Title | Purpose | Dependencies | Tasks | Deliverable | AC-ID | ST-ID |
+|:------|:-----------|:--------|-------------:|:-----:|:------------|------:|:-----:|
+|       |            |         |              |       |             |       |       |
+
+#### PM-1.1.5c Milestones
+
+| M-ID | Milestone Title | Description | Deliverables | Start Date | Status | 
+|------|-----------------|-------------|--------------|------------|--------|
+|      |                 |             |              |            |        |
+
+#### PM-1.1.5d Acceptance Criteria
+
+| AC-ID | Name/Title | Test Case | Test Description | Pass Criteria | Risk Score | ST-ID | Responsible Party | Status |   
+|-------|------------|-----------|------------------|---------------|------------|-------|-------------------|--------|
+|       |            |           |                  |               |            |       |                   |        |
+
 ---
 ### PM-1.1.6 WBS Dictionary
 #### PM-1.1.6a WBS Dictionary Purpose & Scope
 #### PM-1.1.6b WBS Glossary & Acronyms
 
-D - Deliverable
-R - Requirement
-T - Task
-FR - Functional Requirement
-PM - Project Management
-CR - Change Request
-WP - Work Product
-TK - Ticket
-TM - Team Member
-RC - Risk Category
-RA - Risk Assessment
-RI - Risk
-ST - Stakeholder
-US - User Story
-NFR - Non-Functional Requirement
-USA - Usability
-REL - Reliability
-PER - Performance
-SEC - Security
-LEG - Legal
-
-
-#### PM-1.1.6c WBS Element Descriptions
-
-| WP-ID | Name/Title | Description | Dependencies | Tasks | Deliverable | Affected Stakeholders | Responsible Party | Duration |
-|:------|:-----------|:------------|-------------:|:-----:|:------------|----------------------:|:-----------------:|:---------|
-|       |            |             |              |       |             |                       |                   |          |  
-|       |            |             |              |       |             |                       |                   |          |  
+    D - Deliverable
+    R - Requirement
+    T - Task
+    M - Milestone
+    AC - Acceptance Criteria
+    FR - Functional Requirement
+    PM - Project Management
+    CR - Change Request
+    WP - Work Product
+    TK - Ticket
+    TM - Team Member
+    RC - Risk Category
+    RA - Risk Assessment
+    RI - Risk
+    ST - Stakeholder
+    US - User Story
+    NFR - Non-Functional Requirement
+    USA - Usability
+    REL - Reliability
+    PER - Performance
+    SEC - Security
+    LEG - Legal
 
 ---
 ### PM-1.1.7 Activity List
 
-| TK-ID | Ticket Name | Ticket Description | Task List | Ticket Outcome | Assigned Team Member | Affected Work Products |
-|:------|:-----------:|:------------------:|:---------:|:--------------:|:--------------------:|-----------------------:|
-| TK-ID |             |                    |           |                |                      |                        |
+| TK-ID | Task Name | Ticket Description |     To-Do      | AC-ID | Assigned TM-ID | WP-ID |
+|:------|:---------:|:------------------:|:--------------:|:-----:|:--------------:|------:|
+|       |           |                    |                |       |                |       |
 
 ---
 ## PM-1.2 Time Management
-### PM-1.2.1 Scheduling & Resources
+### PM-1.2.1 Project Management Approach
+#### PM-1.2.1a Methodology Overview
+#### PM-1.2.1b Adopted Agile Principles
 
 ---
-### PM-1.2.2 Schedule Network Diagrams
+### PM-1.2.2 Scheduling Approach
+### PM-1.2.2a Scheduling Tools
+### PM-1.2.2b Sequencing Activities
+### PM-1.2.2c Schedule Network Diagrams
+### PM-1.2.2d Critical Path
+### PM-1.2.2e Schedule Control Process
 
 ---
-### PM-1.2.3 Project Activities & Estimations
+### PM-1.2.3 Resource Plan
+### PM-1.2.3a Resource Requirements
+### PM-1.2.3b Estimation Method 
+### PM-1.2.3c Project Activities & Duration Estimations
 
 ---
 ### PM-1.2.4 Project Schedule
@@ -110,7 +130,8 @@ LEG - Legal
 
 | TM-ID | Role | Description | Responsibilities | Assigned Party |
 |:------|------|-------------|------------------|----------------|
-|       |      |             |                  |                | 
+|       |      |             |                  |                |
+
 ---
 ### PM-1.3.2 Self Reviews:
 &nbsp;&nbsp;&nbsp;&nbsp; What was your primary role in this milestone?
@@ -125,11 +146,10 @@ LEG - Legal
 
 ---
 ### PM-1.3.3 Peer Reviews
-| Date       | Name    |  Role  | Key Contributions  |  Professionalism  |            Suggestion            |
-|------------|:--------|:------:|:------------------:|:-----------------:|:--------------------------------:|
-| DD/MM/YYYY | example | Tester | Assisting PM-1.3.3 | Very Professional | 'e' in Example could be capital. |
-|            |         |        |                    |                   |                                  |
-|            |         |        |                    |                   |                                  |
+| Date | Name | Role | Key Contributions | Professionalism | Suggestion |
+|------|:-----|:----:|:-----------------:|:---------------:|:----------:|
+|      |      |      |                   |                 |            |
+
 
 ### PM-1.3.4 Self-Reflections
 &nbsp;&nbsp;&nbsp;&nbsp; Was the peer review process fair and helpful in identifying your contributions and role within the team?
@@ -142,33 +162,34 @@ LEG - Legal
 ## PM-1.4 Risk Management
 ### PM-1.4.1 Risk Categories and Probability
 
-| RC-ID | Risk | Category | Reasoning | Work Products at Risk | Probability | 
-|:------|:-----|:--------:|:---------:|:---------------------:|:-----------:|
-|       |      |          |           |                       |             |
-|       |      |          |           |                       |             |
+| RC-ID | Category Type | Category Description | Factors | Impact | Likelihood | Probability | 
+|:------|:--------------|:---------------------|--------:|:------:|:----------:|-------------|
+|       |               |                      |         |        |            |             |    
+|       |               |                      |         |        |            |             |
 
 ---
 ### PM-1.4.2 Risk Assessment Matrix
 
-| RA-ID | Risk Name | Risk Description | Severity Level | Responsible Party |
-|:------|:----------|:----------------:|:--------------:|:-----------------:|
-|       |           |                  |                |                   |
-|       |           |                  |                |                   |
+| RA-ID | Risk Name | Category | Description | Severity Level | Affected Stakeholder | Risk Score |
+|:------|:----------|:--------:|:-----------:|:--------------:|:--------------------:|------------|
+|       |           |          |             |                |                      |            |
+|       |           |          |             |                |                      |            |
 
 ---
 ### PM-1.4.3 Risk Register
 
-| RI-ID | Risk Name | Category | Severity | Detailed Risk Description | Work Products at Risk | Quality Metrics Affected | Response Description | Responsible Description |
-|:------|:----------|:--------:|:--------:|:-------------------------:|:---------------------:|:------------------------:|:--------------------:|:-----------------------:|
-|       |           |          |          |                           |                       |                          |                      |                         |
-|       |           |          |          |                           |                       |                          |                      |                         |
+| RI-ID | Risk Name | Risk Score | Detailed Risk Description | Work Products at Risk | Quality Metrics at Risk | Mitigation Plan | Responsible Party |
+|:------|:----------|:----------:|:-------------------------:|:---------------------:|:-----------------------:|:---------------:|:-----------------:|
+|       |           |            |                           |                       |                         |                 |                   |  
+|       |           |            |                           |                       |                         |                 |                   | 
 
 ---
 ### PM-1.4.4 Risk Mitigation Plans
 #### PM-1.4.4a Overall Exposure
-#### PM-1.4.4b Review Plan
+#### PM-1.4.4b Mitigation Plans
+#### PM-1.4.4c Review Plan
 &nbsp;&nbsp;&nbsp;&nbsp; What steps are appropriate to immediately escelate past for each severity level?
-#### PM-1.4.4c Special Mitigation Factors
+
 
 ---
 # PM-2 Requirements
@@ -203,26 +224,22 @@ LEG - Legal
 
 ---
 ### PM-2.1.3 Stakeholder Register
-| ST-ID | Role            |                     Responsibilities                      | Category |   Involvement    |
-|:------|:----------------|:---------------------------------------------------------:|:--------:|:----------------:|
-| ST-01 | Project Manager |                  Team lead & developer.                   | Student  |       Full       | 
-| ST-02 | Developer/QA    |               Developer & quality analyst.                | Student  |       Full       | 
-| ST-03 | Developer/RA    |             Developer & requirement analyst.              | Student  |       Full       | 
-| ST-04 | Tutor           |           Weekly progress checks and guidance.            |  Tutor   |     Feedback     | 
-| ST-05 | Conveyor        |              Final mark and course conveyor.              |  Client  |    Final Mark    | 
-| ST-06 | Repository      |              Online repository and PR flow.               |  Tools   |     Workflow     |
-| ST-07 | Students        |            Future students and other learners.            | Student  |       None       |
-| ST-08 | Hiring Managers |       The final project could be a portfolio item.        | Business |   Future Work    |
-| ST-09 | Software Tools  | Any AI, algorithm, or sufficiently complex online system. |  Tools   | When Appropriate |
-| ST-10 | AI Algorithms   | Any AI, algorithm, or sufficiently complex online system. |  Tools   | When Appropriate |
-
+| ST-ID | Role            |                   Description                   | Category | Responsibilities |   Involvement    |
+|:------|:----------------|:-----------------------------------------------:|:--------:|------------------|:----------------:|
+| ST-01 | Project Manager |             Team lead & developer.              | Student  |                  |       Full       | 
+| ST-02 | Developer/QA    |          Developer & quality analyst.           | Student  |                  |       Full       | 
+| ST-03 | Developer/RA    |        Developer & requirement analyst.         | Student  |                  |       Full       | 
+| ST-04 | Tutor           |      Weekly progress checks and guidance.       |  Tutor   |                  |     Feedback     | 
+| ST-05 | Conveyor        |         Final mark and course conveyor.         |  Client  |                  |    Final Mark    | 
+| ST-06 | Repository      |         Online repository and PR flow.          |  Tools   |                  |     Workflow     |
+| ST-07 | Students        |       Future students and other learners.       | Student  |                  |       None       |
+| ST-08 | Hiring Managers |  The final project could be a portfolio item.   | Business |                  |   Future Work    |
+| ST-09 | Software Tools  |     Any online tool or downloaded software.     |  Tools   |                  | When Appropriate |
+| ST-10 | AI Algorithms   | Any AI, LLM, or sufficiently complex algorithm. |  Tools   |                  | When Appropriate |
+``
 ---
-## PM-2.2 High-Level Requirements
-
-| HLR-ID | Name/Title | Detailed Description |     Stakeholder IDs      |
-|:-------|:-----------|:--------------------:|:------------------------:|
-|        |            |                      |                          |
-|        |            |                      |                          |
+## PM-2.4 Project Description
+### PM-2.2.1 High-Level Requirements
 
 ### R-1 Application
 &nbsp;&nbsp;&nbsp;&nbsp;
@@ -232,54 +249,52 @@ LEG - Legal
 &nbsp;&nbsp;&nbsp;&nbsp;
 
 ---
-## PM-2.3 User Stories
+## PM-2.2.2 User Stories
 
-| US-ID | Description | Functional Requirements | Affected Stakeholders | 
-
+| US-ID | Stakeholder | User Story | FR-ID | AC-ID | NFR-ID | Priority | Status |
+|-------|-------------|------------|-------|-------|--------|----------|--------|
+|       |             |            |       |       |        |          |        |
 ---
-## PM-2.4 Project Description
-
----
-## PM-2.5 Specification & Validation
-### PM-2.5.1 Runtime Environment Requirements
-### PM-2.5.2 Screen Requirements
-### PM-2.5.3 Input Requirements
-### PM-2.5.4 Acceptance Criteria
-### PM-2.5.5 Requirements Traceability Matrix
-### PM-2.5.6 Industry Standards
+## PM-2.5 Runtime Specification
+### PM-2.5.1 Hardware Requirements
+### PM-2.5.2 Software Requirements
+### PM-2.5.3 Execution Specifications
 
 ---
 ## PM-2.6 Functional Requirements
 
-### FR1: Views
+### PM-2.6.1 FR1 - Views
 &nbsp;&nbsp;&nbsp;&nbsp;Defines the player interface consisting of multiple views with controls, information, and transition conditions.
 
 | FR-ID   |  Name   |                                                      Description                                                       |                    Tasks                    |                Pre-condition                 |   Trigger    |                               Exit                               | Post-condition | TC-ID |
 |:--------|:-------:|:----------------------------------------------------------------------------------------------------------------------:|:-------------------------------------------:|:--------------------------------------------:|:------------:|:----------------------------------------------------------------:|:--------------:|------:|
 | FR1.1   |  Menu   | Display the menu view and handle onClick events for play, change configuration, view high-scores, and the exit button. | FR1.1.1<br> FR1.1.2<br> FR1.1.3<br> FR1.1.4 |      isNotMenuView<br>viewModuleLoaded       | openMenuView | openPlayView<br>openConfigView<br>openScoreView<br>closeMenuView | closedMenuView |   TC- | 
 | FR1.1.1 | PlayBtn |                                      Pressing the play button starts a new game.                                       |                                             |                                              |              |                                                                  |                |   TC- | 
-| FR1     |         |                                                                                                                        |                                             |                                              |              |                                                                  |                |   TC- | 
-| FR1     |         |                                                                                                                        |                                             |                                              |              |                                                                  |                |   TC- | 
+| FR1.    |         |                                                                                                                        |                                             |                                              |              |                                                                  |                |   TC- | 
+| FR1.    |         |                                                                                                                        |                                             |                                              |              |                                                                  |                |   TC- | 
 
 ---
-#### FR2: Input
+### PM-2.6.2 FR2 - Input
 &nbsp;&nbsp;&nbsp;&nbsp;Description
 
 | FR-ID | Name | Description | Tasks | Pre-condition | Trigger | Exit | Post-condition | TC-ID |
 |:------|:----:|:-----------:|:-----:|:-------------:|:-------:|:----:|:--------------:|------:|
-| FR2   |      |             |       |               |         |      |                |   TC- | 
-| FR2   |      |             |       |               |         |      |                |   TC- | 
+| FR2.  |      |             |       |               |         |      |                |   TC- | 
+| FR2.  |      |             |       |               |         |      |                |   TC- | 
 
 
 ---
-#### FR3: Behaviour
+### PM-2.6.3 FR3 - Behaviour
 &nbsp;&nbsp;&nbsp;&nbsp;Description
 
-| FR-ID  | Name | Description | Tasks | Pre-condition | Trigger | Exit | Post-condition | TC-ID |
-|:-------|:----:|:-----------:|:-----:|:-------------:|:-------:|:----:|:--------------:|------:|
-| FR3    |      |             |       |               |         |      |                |   TC- | 
-| FR3    |      |             |       |               |         |      |                |   TC- | 
+| FR-ID | Name | Description | Tasks | Pre-condition | Trigger | Exit | Post-condition | TC-ID |
+|:------|:----:|:-----------:|:-----:|:-------------:|:-------:|:----:|:--------------:|------:|
+| FR3.  |      |             |       |               |         |      |                |   TC- | 
+| FR3.  |      |             |       |               |         |      |                |   TC- | 
 
+---
+## PM-2.5 Requirements Traceability Matrix
+| R-ID | Description | Source | NF/NFR-ID | Test Method | TC-ID | Priority | Risk ID | Status | 
 
 ---
 ## PM-2.7 UML Models
@@ -294,42 +309,51 @@ LEG - Legal
 ## PM-2.8 Non-Functional Requirements
 ### PM-2.8.1 Usability
 
-| NFR-USA-ID | Description/Question | Related Work Packages | Affected Stakeholder | Priority Level | Risk Severity | Responsible Party |
-|:-----------|:--------------------:|:----------------------|:---------------------|:--------------:|:-------------:|:-----------------:|
-|            |                      |                       |                      |                |               |                   |
-|            |                      |                       |                      |                |               |                   |
+| NFR-USA-ID | Description/Question | Related Work Packages | Affected Stakeholder | Acceptance Criteria | Risk Score | Responsible Party |
+|:-----------|:--------------------:|:----------------------|:---------------------|:-------------------:|:----------:|:-----------------:|
+|            |                      |                       |                      |                     |            |                   |
+|            |                      |                       |                      |                     |            |                   |
 
 ---
 ### PM-2.8.2 Reliability
 
-| NFR-REL-ID | Description/Question | Related Work Packages | Affected Stakeholder | Priority Level | Risk Severity | Responsible Party |
-|:-----------|:--------------------:|:----------------------|:---------------------|:--------------:|:-------------:|:-----------------:|
-|            |                      |                       |                      |                |               |                   |
-|            |                      |                       |                      |                |               |                   |
+| NFR-REL-ID | Description/Question | Related Work Packages | Affected Stakeholder | Acceptance Criteria | Risk Score | Responsible Party |
+|:-----------|:--------------------:|:----------------------|:---------------------|:-------------------:|:----------:|:-----------------:|
+|            |                      |                       |                      |                     |            |                   |
+|            |                      |                       |                      |                     |            |                   |
 
 ---
 ### PM-2.8.3 Performance
 
-| NFR-PER-ID | Description/Question | Related Work Packages | Affected Stakeholder | Priority Level | Risk Severity | Responsible Party |
-|:-----------|:--------------------:|:----------------------|:---------------------|:--------------:|:-------------:|:-----------------:|
-|            |                      |                       |                      |                |               |                   |
-|            |                      |                       |                      |                |               |                   |
+| NFR-PER-ID | Description/Question | Related Work Packages | Affected Stakeholder | Acceptance Criteria | Risk Score | Responsible Party |
+|:-----------|:--------------------:|:----------------------|:---------------------|:-------------------:|:----------:|:-----------------:|
+|            |                      |                       |                      |                     |            |                   |
+|            |                      |                       |                      |                     |            |                   |
 
 ---
 ### PM-2.8.4 Security
 
-| NFR-SEC-ID | Description/Question | Related Work Packages | Affected Stakeholder | Priority Level | Risk Severity | Responsible Party |
-|:-----------|:--------------------:|:----------------------|:---------------------|:--------------:|:-------------:|:-----------------:|
-|            |                      |                       |                      |                |               |                   |
-|            |                      |                       |                      |                |               |                   |
+| NFR-SEC-ID | Description/Question | Related Work Packages | Affected Stakeholder | Acceptance Criteria | Risk Score | Responsible Party |
+|:-----------|:--------------------:|:----------------------|:---------------------|:-------------------:|:----------:|:-----------------:|
+|            |                      |                       |                      |                     |            |                   |
+|            |                      |                       |                      |                     |            |                   |
 
 ---
 ### PM-2.8.5 Legal
 
-| NFR-LEG-ID | Description/Question | Related Work Packages | Affected Stakeholder | Priority Level | Risk Severity | Responsible Party |
-|:-----------|:--------------------:|:----------------------|:---------------------|:--------------:|:-------------:|:-----------------:|
-|            |                      |                       |                      |                |               |                   |
-|            |                      |                       |                      |                |               |                   |
+| NFR-LEG-ID | Description/Question | Related Work Packages | Affected Stakeholder | Acceptance Criteria | Risk Score | Responsible Party |
+|:-----------|:--------------------:|:----------------------|:---------------------|:-------------------:|:----------:|:-----------------:|
+|            |                      |                       |                      |                     |            |                   |
+|            |                      |                       |                      |                     |            |                   |
+
+---
+### PM-2.8.5 Compliance
+
+| NFR-COM-ID | Description/Question | Related Work Packages | Affected Stakeholder | Acceptance Criteria | Risk Score | Responsible Party |
+|:-----------|:--------------------:|:----------------------|:---------------------|:-------------------:|:----------:|:-----------------:|
+|            |                      |                       |                      |                     |            |                   |
+|            |                      |                       |                      |                     |            |                   |
+
 
 ---
 ### PM-2.9 Quality Metrics
