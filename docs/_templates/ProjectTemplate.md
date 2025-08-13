@@ -1,8 +1,8 @@
 # PM-1 Project Planning
 
 ---
-## PM-1.1 Project Scope
-### PM-1.1.1 Product Description
+## PM-1.1 Scope Management
+### PM-1.1.1 Project Description
 &nbsp;&nbsp;&nbsp;&nbsp; The aim of product is to emulate the final deliverable specified in the Milestone 1 Demo video. This includes planning, designing, developing, documentating, testing, and verifying quality while following object-oriented software development principles to deliver a custom Java Tetris Application using IntelliJ and GitHub. The final scope of the project includes project planning, time management, resource management, risk management, requirement analysis, functional requirements analysis, UML documentation, non-functional requirement analysis, quality assurance, unit testing, integration testing, performance testing, security testing, and a milestone final deliverable demo video.     
 
 ---
