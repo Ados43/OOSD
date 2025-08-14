@@ -1,4 +1,5 @@
-# Object-Oriented Software Development: Tetris Assignment
+# Java: Tetris Assignment
+2006ICT Object-Oriented Software Development
 
 ## Installation
 1. Prerequisite software and environment setup.  
@@ -13,6 +14,8 @@
 1. Objective of the game.  
 2. Game controls and interactions.  
 3. Scoring and progression mechanics.  
+
+---
 
 # Table of Contents
 
@@ -64,7 +67,26 @@
         - [PM-5.1 Categories (Overall Exposure)](#pm-51-categories-overall-exposure)
         - [PM-5.2 Risk Assessment Matrix](#pm-52-risk-assessment-matrix)
         - [PM-5.3 Risk Register (Review Process)](#pm-53-risk-register-review-process)
-    - [PM-6 Document History](#pm-6-document-history)
+    - [PM-6 Software Architecture (UML)](#pm-6-software-architecture-uml)
+      - [PM-6.1 Structural Diagrams](#pm-61-structural-diagrams)
+        - [PM-6.1.1 Class Diagram](#pm-611-class-diagram)
+        - [PM-6.1.2 Object Diagram](#pm-612-object-diagram)
+        - [PM-6.1.3 Component Diagram](#pm-613-component-diagram)
+        - [PM-6.1.4 Deployment Diagram](#pm-614-deployment-diagram)
+        - [PM-6.1.5 Composite Structure Diagram](#pm-615-composite-structure-diagram)
+        - [PM-6.1.6 Package Diagram](#pm-616-package-diagram)
+        - [PM-6.1.7 Profile Diagram](#pm-617-profile-diagram)
+      - [PM-6.2 Behavioural Diagrams](#pm-62-behavioural-diagrams)
+        - [PM-6.2.1 Use Case Interaction Diagram](#pm-621-use-case-interaction-diagram)
+        - [PM-6.2.2 Sequence Diagram](#pm-622-sequence-diagram)
+        - [PM-6.2.3 Activity Diagram](#pm-623-activity-diagram)
+        - [PM-6.2.4 State Machine Diagram](#pm-624-state-machine-diagram)
+        - [PM-6.2.5 Communication Diagram](#pm-625-communication-diagram)
+        - [PM-6.2.6 Interaction Overview Diagram](#pm-626-interaction-overview-diagram)
+        - [PM-6.2.7 Use Case Dependency Diagram](#pm-627-timing-diagram)
+    - [PM-7 Document History](#pm-7-document-history)
+
+---
 
 # Project Plan
 
@@ -80,21 +102,15 @@
 
 ### PM-1.2 Assumptions
 
-```md
-List prerequisite skills, knowledge, and available resources. Mention the exclusion of a learning traceability matrix due to these assumptions.  
-```
+List prerequisite skills, knowledge, and available resources. Mention the exclusion of a learning traceability matrix due to these assumptions.
 
 ### PM-1.3 Constraints
 
-```md
-Write a few sentences about the project environment and available timeframe. 
-```
+Write a few sentences about the project environment and available timeframe.
 
 ### PM-1.4 Scope Control
 
-```md
 Brief definition of scope control process.
-```
 
 ### PM-1.5 Project Milestones
 
@@ -386,10 +402,128 @@ Brief statement on the review process and frequency.
 
 ---
 
+## PM-6. Software Architecture (UML)
+
+### PM-6.1 Structural Diagrams
+
+#### PM-6.1.1 Class Diagram
+Shows the static structure of the system, including classes, attributes, methods, and
+relationships.
+
+```md
+[Insert Image]
+```
+
+#### PM-6.1.2 Object Diagram
+Represents a snapshot of the objects in a system at a specific point in time.
+
+```md
+[Insert Image]
+```
+
+#### PM-6.1.3 Component Diagram
+Depicts the organization and dependencies among software components.
+
+```md
+[Insert Image]
+```
+
+#### PM-6.1.4 Deployment Diagram
+Illustrates the internal structure of a class and the collaborations that this structure makes
+possible.
+
+```md
+[Insert Image]
+```
+
+#### PM-6.1.5 Composite Structure Diagram
+Groups related classes into packages.
+
+```md
+[Insert Image]
+```
+
+#### PM-6.1.6 Package Diagram
+Defines custom stereotypes, tagged values, and constraints.
+
+```md
+[Insert Image]
+```
+
+#### PM-6.1.7 Profile Diagram
+
+```md
+[Insert Image]
+```
+
+### PM-6.2 Behavioural Diagrams
+
+#### PM-6.2.1 Use Case Interaction Diagram
+Captures the functional requirements of the system by showing actors and their interactions
+with use cases.
+
+```md
+[Insert Image]
+```
+
+#### PM-6.2.2 Sequence Diagram
+Represents object interactions arranged in a time sequence.
+
+```md
+[Insert Image]
+```
+
+#### PM-6.2.3 Activity Diagram
+Shows the flow of control or object flow with emphasis on the sequence and conditions of the
+flow.
+
+```md
+[Insert Image]
+```
+
+#### PM-6.2.4 State Machine Diagram
+Describes the states of an object and the transitions between these states.
+
+```md
+[Insert Image]
+```
+
+#### PM-6.2.5 Communication Diagram
+Focuses on the interactions between objects and the sequence of messages.
+
+```md
+[Insert Image]
+```
+
+#### PM-6.2.6 Interaction Overview Diagram
+Combines elements of activity and sequence diagrams to show the control flow between
+different interactions.
+
+```md
+[Insert Image]
+```
+
+#### PM-6.2.7 Timing Diagram
+Shows interactions when the primary purpose is to depict time constraints
+
+```md
+[Insert Image]
+```
+
+#### PM-6.2.7 Use Case Dependency Diagram
+Represents the functionality provided by a system in terms of actors, their goals (represented
+as use cases), and any dependencies between those use cases.
+
+```md
+[Insert Image]
+```
+
+
 ---
 
-## PM-6 Document History
+## PM-7 Document History
 
-| Change Request ID | Date | Changed PM-Sections | Description of Changes | Submitted By | Approved By |
-|-------------------|------|---------------------|------------------------|--------------|-------------|
-| CR-00             | -    | -                   | -                      | -            | -           |
+| Change Request ID | Date     | Changed PM-Sections | Detailed Description of Changes                                                                          | Submitted By |
+|-------------------|----------|---------------------|----------------------------------------------------------------------------------------------------------|--------------|
+| CR-00             | -        | -                   | -                                                                                                        | -            |
+| CR-01             | 15/08/25 | PM-6, PM-7          | Inserted 'PM-6 Software Architecture etc.' and moved 'PM-6 Document 'history' to 'PM-7 Document History' | Fletcher     |
