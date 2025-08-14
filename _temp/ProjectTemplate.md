@@ -1,19 +1,3 @@
-# Object-Oriented Software Development: Tetris Assignment
-
-## Installation
-1. Prerequisite software and environment setup.  
-2. Repository download or clone procedure.  
-3. Project build and compilation steps.  
-
-## How to Run
-1. Execution method from compiled classes or packaged file.  
-2. Command-line execution process.  
-
-## How to Play
-1. Objective of the game.  
-2. Game controls and interactions.  
-3. Scoring and progression mechanics.  
-
 # Table of Contents
 
 - [Project Plan](#project-plan)
@@ -66,9 +50,9 @@
         - [PM-5.3 Risk Register (Review Process)](#pm-53-risk-register-review-process)
     - [PM-6 Document History](#pm-6-document-history)
 
-# Project Plan
-
 ---
+
+# Project Plan
 
 ## PM-1 Scope Management
 
