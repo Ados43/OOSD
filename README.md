@@ -38,7 +38,7 @@
             - [PM-2.5 High-Level Requirements](#pm-25-high-level-requirements)
             - [PM-2.6 User Stories](#pm-26-user-stories)
             - [PM-2.7 Functional Requirements](#pm-27-functional-requirements)
-            - [PM-2.8 Test Cases](#pm-28-test-cases)
+            - [PM-2.8 FR-Test Cases](#pm-28-fr-test-cases)
             - [PM-2.9 Non-functional Requirements](#pm-29-non-functional-requirements)
                 - [PM-2.9.1 Usability](#pm-291-usability)
                 - [PM-2.9.2 Reliability](#pm-292-reliability)
@@ -47,6 +47,7 @@
                 - [PM-2.9.5 Legal](#pm-295-legal)
                 - [PM-2.9.6 Compliance](#pm-296-compliance)
             - [PM-2.10 Quality Metrics](#pm-210-quality-metrics)
+            - [PM-2.11 NFR-Test Cases](#pm-211-nfr-test-cases)
     - [PM-3 Time Management](#pm-3-time-management)
         - [PM-3.1 Agile Methodology](#pm-31-agile-methodology)
         - [PM-3.2 Scheduling Process (Sequencing)](#pm-32-scheduling-process-sequencing)
@@ -84,7 +85,7 @@
         - [PM-6.2.5 Communication Diagram](#pm-625-communication-diagram)
         - [PM-6.2.6 Interaction Overview Diagram](#pm-626-interaction-overview-diagram)
         - [PM-6.2.7 Use Case Dependency Diagram](#pm-627-timing-diagram)
-    - [PM-7 Document History](#pm-7-document-history)
+    - [Document History](#document-history)
 
 ---
 
@@ -114,7 +115,7 @@ Brief definition of scope control process.
 
 ### PM-1.5 Project Milestones
 
-Brief definition of project milestones.
+Brief definition of project milestones.    
 
 | M-ID | Milestone Name | Deliverables | High-Level Description | Deadline | Status |
 |:-----|----------------|--------------|------------------------|----------|--------|
@@ -200,7 +201,7 @@ Brief definition of how user stories translate into functional requirements and 
 |:------|------------------|---------------|-------------------------|--------------|
 | FR-00 | -                | -             | -                       | -            |
 
-#### PM-2.8 Test Cases
+#### PM-2.8 FR Test Cases
 
 Describe the different types of test cases.
 
@@ -263,6 +264,14 @@ Brief description of the importance of compliance.
 ### PM-2.10 Quality Metrics
 
 Decide on quality metrics.
+
+#### PM-2.11 NFR Test Cases
+
+Describe the different types of test cases.
+
+| TC-ID | NFR-ID | Test Method | Test Input | Expected Output | Status |
+|:------|--------|-------------|------------|-----------------|--------|
+| TC-00 | -      | -           | -          | -               | -      |
 
 ---
 
@@ -521,7 +530,7 @@ as use cases), and any dependencies between those use cases.
 
 ---
 
-## PM-7 Document History
+## Document History
 
 | Change Request ID | Date     | Changed PM-Sections | Detailed Description of Changes                                                                          | Submitted By |
 |-------------------|----------|---------------------|----------------------------------------------------------------------------------------------------------|--------------|
