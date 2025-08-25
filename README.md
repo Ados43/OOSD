@@ -2,18 +2,18 @@
 2006ICT Object-Oriented Software Development
 
 ## Installation
-1. Prerequisite software and environment setup.  
-2. Repository download or clone procedure.  
-3. Project build and compilation steps.  
+1. [Prerequisite software and environment setup.]
+2. [Repository download or clone procedure.]  
+3. [Project build and compilation steps.]  
 
 ## How to Run
-1. Execution method from compiled classes or packaged file.  
-2. Command-line execution process.  
+1. [Execution method from compiled classes or packaged file.]  
+2. [Command-line execution process.]
 
 ## How to Play
-1. Objective of the game.  
-2. Game controls and interactions.  
-3. Scoring and progression mechanics.  
+1. Objective: Arrange falling tetrominoes to complete horizontal lines and score points without letting the stack reach the top. 
+2. [Game controls and interactions.]
+3. [Scoring and progression mechanics.]
 
 ---
 
@@ -21,26 +21,26 @@
 
 - [Project Plan](#project-plan)
     - [PM-1 Scope Management](#pm-1-scope-management)
-        - [PM-1.1 Documentation Scope (Project Management)](#pm-11-documentation-scope-project-management)
+        - [PM-1.1 Project Management Scope (PM)](#pm-11-project-management-scope-pm)
         - [PM-1.2 Project Scope](#pm-12-project-scope)
-        - [PM-1.3 Project Milestones](#pm-13-project-milestones)
-        - [PM-1.4 Deliverables](#pm-14-deliverables)
-        - [PM-1.5 Work Breakdown Structure](#pm-15-work-breakdown-structure)
-        - [PM-1.6 Verification (Acceptance Criteria)](#pm-16-verification-acceptance-criteria)
+        - [PM-1.3 Project Milestones (M)](#pm-13-project-milestones-m)
+        - [PM-1.4 Deliverables (D)](#pm-14-deliverables-d)
+        - [PM-1.5 Work Breakdown Structure (WBS)](#pm-15-work-breakdown-structure-wbs)
+        - [PM-1.6 Verification (AC)](#pm-16-verification-ac)
     - [PM-2 Product Analysis](#pm-2-product-analysis)
-        - [PM-2.1 Stakeholder Influences](#pm-21-stakeholder-influences)
-        - [PM-2.2 Stakeholder Register](#pm-22-stakeholder-register)
+        - [PM-2.1 Stakeholder Influences (SI)](#pm-21-stakeholder-influences-si)
+        - [PM-2.2 Stakeholder Register (ST)](#pm-22-stakeholder-register-st)
         - [PM-2.3 Detailed Product Description](#pm-23-detailed-product-description)
         - [PM-2.4 High-Level Requirements](#pm-24-high-level-requirements)
-        - [PM-2.5 User Stories](#pm-25-user-stories)
-    - [PM-3 Functional Requirements](#pm-3-functional-requirements)
-        - [PM-3.1 Application GUI](#pm-31-application-gui)
+        - [PM-2.5 User Stories (US)](#pm-25-user-stories-us)
+    - [PM-3 Functional Requirements (FR)](#pm-3-functional-requirements-fr)
+        - [PM-3.1 Application](#pm-31-application)
         - [PM-3.2 Player Controls](#pm-32-player-controls)
         - [PM-3.3 Application Behaviour](#pm-33-application-behaviour)
             - [PM-3.3.1 System Behaviour](#pm-331-system-behaviour)
             - [PM-3.3.2 Game Behaviour](#pm-332-game-behaviour)
-    - [PM-4 Non-Functional Requirements](#pm-4-non-functional-requirements)
-        - [PM-4.1 Quality Metrics](#pm-41-quality-metrics)
+    - [PM-4 Non-Functional Requirements (NFR)](#pm-4-non-functional-requirements-nfr)
+        - [PM-4.1 Quality Metrics (QM)](#pm-41-quality-metrics-qm)
         - [PM-4.2 NFR Passing Criteria (URPS+)](#pm-42-nfr-passing-criteria-urps)
     - [PM-5 Time Management](#pm-5-time-management)
         - [PM-5.1 Agile Methodology](#pm-51-agile-methodology)
@@ -51,23 +51,24 @@
         - [PM-5.6 Gantt Chart](#pm-56-gantt-chart)
     - [PM-6 HR Management](#pm-6-hr-management)
         - [PM-6.1 Project Hierarchy](#pm-61-project-hierarchy)
-        - [PM-6.2 Role Descriptions](#pm-62-role-descriptions)
+        - [PM-6.2 Role Descriptions (TM)](#pm-62-role-descriptions-tm)
         - [PM-6.3 Peer Review Process](#pm-63-peer-review-process)
             - [PM-6.3.1 Self Reviews](#pm-631-self-reviews)
             - [PM-6.3.2 Team Member Reviews](#pm-632-team-member-reviews)
             - [PM-6.3.3 Self Reflection](#pm-633-self-reflection)
     - [PM-7 Risk Management](#pm-7-risk-management)
         - [PM-7.1 Categories](#pm-71-categories)
-        - [PM-7.2 Risk Assessment Matrix](#pm-72-risk-assessment-matrix)
-        - [PM-7.3 Risk Register (Review Process)](#pm-73-risk-register-review-process)
+        - [PM-7.2 Risk Assessment Matrix (RA)](#pm-72-risk-assessment-matrix-ra)
+        - [PM-7.3 Risk Register (RI)](#pm-73-risk-register-ri)
     - [PM-8 Software Architecture (UML)](#pm-8-software-architecture-uml)
         - [PM-8.1 Structural Diagrams](#pm-81-structural-diagrams)
         - [PM-8.2 Behavioural Diagrams](#pm-82-behavioural-diagrams)
     - [PM-9 Implementation](#pm-9-implementation)
-        - [PM-9.1 GitHub File Structure](#pm-91-github-file-structure)
-        - [PM-9.2 Code Snippets](#pm-92-code-snippets)
+        - [PM-9.1 GitHub](#pm-91-github)
+        - [PM-9.2 File Structure](#pm-92-file-structure)
+        - [PM-9.3 Code Snippets](#pm-93-code-snippets)
     - [PM-10 Testing](#pm-10-testing)
-        - [PM-10.1 Test Cases](#pm-101-test-cases)
+        - [PM-10.1 Test Cases (TC)](#pm-101-test-cases-tc)
             - [PM-10.1.1 Unit Tests](#pm-1011-unit-tests)
             - [PM-10.1.2 Integration Tests](#pm-1012-integration-tests)
             - [PM-10.1.3 System Tests](#pm-1013-system-tests)
@@ -75,143 +76,139 @@
         - [PM-10.2 Test Results](#pm-102-test-results)
     - [PM-11 Final Submission](#pm-11-final-submission)
         - [PM-11.1 Demo Video Link](#pm-111-demo-video-link)
-    - [Document History](#document-history)
 
 # Project Plan
 
 ---
 
 ## PM-1 Scope Management
-### PM-1.1 Documentation Scope (Project Management)
+### PM-1.1 Project Management Scope (PM)
 
-|   PM-ID   | Section Title                                |                                    Content Description                                     |                                         PM-Dependencies                                          | Assigned | 
-|:---------:|:---------------------------------------------|:------------------------------------------------------------------------------------------:|:------------------------------------------------------------------------------------------------:|:--------:|
-| PM-0.0.0  | -                                            |                                             -                                              |                                                -                                                 |    -     |           
-|   PM-1    | Scope Management                             |        Defines the project scope, milestones, work products and acceptance criteria        |                                                -                                                 |          |      
-|  PM-1.1   | Project Management (PM)                      |                        Table of PM work products and dependencies.                         |                                                                                                  |    FC    | 
-|  PM-1.2   | Project Scope                                |                  Describes the scope control process and project impact.                   |                                              PM-1.1                                              |          |             
-|  PM-1.3   | Project Milestones                           |               Sets high-level objectives to indicate the project's timeline.               |                                              PM-1.2                                              |          |             
-|  PM-1.4   | Deliverables                                 |          Table of deliverable work products and work packages with linking info.           |                                        PM-1.3 <br> PM-1.2                                        |          |             
-|  PM-1.5   | Work Breakdown Structure                     |      Full work product list with descriptions, output, and acceptance criteria link.       |                                              PM-1.4                                              |          |             
-|  PM-1.6   | Verification (Acceptance Criteria)           |                      Table of work products and acceptance criteria.                       |                                              PM-1.5                                              |          |             
-|   PM-2    | Product Analysis                             |              Describes the project stakeholders and high-level requirements.               |                                                                                                  |          |             
-|  PM-2.1   | Stakeholder Influences                       |                        Explores stakeholder influences and impacts.                        |                                              PM-1.2                                              |          |             
-|  PM-2.2   | Stakeholder Register                         |                    Defines stakeholder information and risk categories.                    |                                              PM-2.1                                              |          |             
-|  PM-2.3   | Detailed Product Description                 |                     Describes the final project deliverable in detail.                     |                                        PM-1.2 <br> PM-2.2                                        |          |             
-|  PM-2.4   | High-Level Requirements                      |       Defines the projects high-level requirements based on the product description.       |                                              PM-2.3                                              |          |             
-|  PM-2.5   | User Stories                                 |                Table of user stories covering the high-level requirements.                 |                                              PM-2.4                                              |          |             
-|   PM-3    | Functional Requirements                      | Table of derived functional requirements from user stories, following pre-post conditions. |                                              PM-2.5                                              |          |             
-|  PM-3.1   | Application                                  |    Table of application related functional requirements covering relevant user stories.    |                                                                                                  |          |             
-|  PM-3.2   | Player Controls                              |       Table of input related functional requirements covering relevant user stories.       |                                                                                                  |          |             
-|  PM-3.3   | Application Behaviour                        |                             Defines system and game behaviour.                             |                                                                                                  |          |             
-| PM-3.3.1  | System Behaviour                             | Table of system behaviour related functional requirements covering relevant user stories.  |                                                                                                  |          |             
-| PM-3.3.2  | Game Behaviour                               |  Table of game behaviour related functional requirements covering relevant user stories.   |                                                                                                  |          |             
-|   PM-4    | Non-functional Requirements                  |                Defines the quality metrics and non-functional requirements.                |                                         PM-2.4 <br> PM-3                                         |          |             
-|  PM-4.1   | Quality Metrics                              |                                Defines the quality metrics.                                |                                                                                                  |          |             
-| PM-4.1.1  | Cohesion Maximization Metric                 |                                                                                            |                                                                                                  |          |             
-| PM-4.1.2  | Coupling Minimization Metric                 |                                                                                            |                                                                                                  |          |             
-|  PM-4.2   | NFR Passing Criteria (URPS+)                 |                 Table of non-functional requirements and passing criteria.                 |                                                                                                  |          |             
-|   PM-5    | Time Management                              |                                                                                            |                                                                                                  |          |             
-|  PM-5.1   | Agile Methodology                            |                                                                                            |                                                                                                  |          |             
-|  PM-5.2   | Scheduling Process (Sequencing)              |                                                                                            |                                              PM-1.5                                              |          |             
-|  PM-5.3   | Schedule Network Diagrams (Critical Path)    |                                                                                            |                                              PM-5.2                                              |          |             
-|  PM-5.4   | Resource Methodology (Resource Estimations)  |                                                                                            |                                                                                                  |          |             
-| PM-5.4.1  | Time Unit Model                              |                                                                                            |                                                                                                  |          |             
-| PM-5.4.2  | Time Cost Estimations (Activity Estimations) |                                                                                            |                                             PM-5.4.1                                             |          |             
-|  PM-5.5   | Project Schedule (Complete Task List)        |                                                                                            |                                             PM-5.4.2                                             |          |             
-|  PM-5.6   | Gantt Chart                                  |                                                                                            |                                              PM-5.5                                              |          |             
-|   PM-6    | HR Management                                |                                                                                            |                                                                                                  |          |             
-|  PM-6.1   | Project Hierarchy                            |                                                                                            |                                              PM-1.2                                              |          |             
-|  PM-6.2   | Role Descriptions                            |                                                                                            |                                              PM-6.1                                              |          |             
-|  PM-6.3   | Peer Review Process                          |                                                                                            |                                                                                                  |          |             
-| PM-6.3.1  | Self Reviews                                 |                                                                                            |                                                                                                  |          |             
-| PM-6.3.2  | Team Member Reviews                          |                                                                                            |                                                                                                  |          |             
-| PM-6.3.3  | Self Reflection                              |                                                                                            |                                                                                                  |          |             
-|   PM-7    | Risk Management                              |                                                                                            |                                                                                                  |          |             
-|  PM-7.1   | Categories                                   |                                                                                            |                                              PM-1.2                                              |          |             
-|  PM-7.2   | Risk Assessment Matrix                       |                                                                                            |                                              PM-7.1                                              |          |             
-|  PM-7.3   | Risk Register (Review Process)               |                                                                                            |                                        PM-2.2 <br> PM-7.2                                        |          |             
-|  PM-8.1   | Structural Diagrams                          |                                                                                            |                                               PM-3                                               |          |            
-| PM-8.1.1  | Class Diagram                                |                                                                                            |                                                                                                  |          |            
-| PM-8.1.2  | Object Diagram                               |                                                                                            |                                                                                                  |          |            
-| PM-8.1.3  | Component Diagram                            |                                                                                            |                                                                                                  |          |            
-| PM-8.1.4  | Deployment Diagram                           |                                                                                            |                                                                                                  |          |           
-| PM-8.1.5  | Composite Structure Diagram                  |                                                                                            |                                                                                                  |          |            
-| PM-8.1.6  | Package Diagram                              |                                                                                            |                                                                                                  |          |             
-| PM-8.1.7  | Profile Diagram                              |                                                                                            |                                                                                                  |          |             
-|  PM-8.2.  | Behavioural Diagrams                         |                                                                                            |                                               PM-3                                               |          |             
-| PM-8.2.1  | Use Case Interaction Diagram                 |                                                                                            |                                                                                                  |          |             
-| PM-8.2.2  | Sequence Diagram                             |                                                                                            |                                                                                                  |          |             
-| PM-8.2.3  | Activity Diagram                             |                                                                                            |                                                                                                  |          |             
-| PM-8.2.4  | State Machine Diagram                        |                                                                                            |                                                                                                  |          |             
-| PM-8.2.5  | Communication Diagram                        |                                                                                            |                                                                                                  |          |             
-| PM-8.2.6  | Interaction Overview Diagram                 |                                                                                            |                                                                                                  |          |             
-| PM-8.2.7  | Timing Diagram                               |                                                                                            |                                                                                                  |          |             
-| PM-8.2.8  | Use Case Dependency Diagram                  |                                                                                            |                                                                                                  |          |             
-|   PM-9    | Implementation                               |                                                                                            |                                               PM-8                                               |          |             
-|  PM-9.1   | GitHub                                       |                                                                                            |                                                                                                  |          |             
-|  PM-9.2   | File Structure                               |                                                                                            |                                                                                                  |          |             
-|  PM-9.3   | Code Snippets                                |                                                                                            |                                                                                                  |          |             
-|   PM-10   | Testing                                      |                                                                                            |                                               PM-9                                               |          |             
-|  PM-10.1  | Test Cases                                   |                                                                                            |                                                                                                  |          |             
-| PM-10.1.1 | Unit Tests                                   |                                                                                            |                                                                                                  |          |             
-| PM-10.1.2 | Integration Tests                            |                                                                                            |                                                                                                  |          |             
-| PM-10.1.3 | System Tests                                 |                                                                                            |                                                                                                  |          |             
-| PM-10.1.4 | Acceptance Tests                             |                                                                                            |                                                                                                  |          |             
-|  PM-10.2  | Test Results                                 |                                                                                            |                                        PM-9 <br> PM-10.1                                         |          |             
-|   PM-11   | Final Submission PDF                         |                                                                                            | PM-1 <br> PM-2 <br> PM-3 <br> PM-4 <br> PM-5 <br> PM-6 <br> PM-7 <br> PM-8 <br> PM-9 <br> PM-10  |          |             
-|  PM-11.1  | Demo Video Link                              |                                                                                            |                                                                                                  |          |             
+|   PM-ID   | Section Title                                | Content Description                                                          |                                         PM-Dependencies                                          | Assigned | 
+|:---------:|:---------------------------------------------|:-----------------------------------------------------------------------------|:------------------------------------------------------------------------------------------------:|:--------:|
+|   PM-1    | Scope Management                             | Defines the project scope, milestones, work products and acceptance criteria |                                                -                                                 |          |      
+|  PM-1.1   | Project Management (PM)                      | Table of PM work products and dependencies.                                  |                                                                                                  |    FC    | 
+|  PM-1.2   | Project Scope                                | Describes scope of the project.                                              |                                              PM-1.1                                              |          |             
+|  PM-1.3   | Project Milestones                           | Defines high-level objectives to indicate the project's timeline.            |                                              PM-1.2                                              |          |             
+|  PM-1.4   | Deliverables                                 | Table of deliverable work products and packages with linking info.           |                                        PM-1.3 <br> PM-1.2                                        |          |             
+|  PM-1.5   | Work Breakdown Structure                     | Work product list with descriptions, output, and acceptance criteria link.   |                                              PM-1.4                                              |          |             
+|  PM-1.6   | Verification (Acceptance Criteria)           | Table of work products and acceptance criteria.                              |                                              PM-1.5                                              |          |             
+|   PM-2    | Product Analysis                             | Describes the project stakeholders and high-level requirements.              |                                                                                                  |          |             
+|  PM-2.1   | Stakeholder Influences                       | Table of stakeholder influences and impacts.                                 |                                              PM-1.2                                              |          |             
+|  PM-2.2   | Stakeholder Register                         | Defines stakeholder information and risk categories.                         |                                              PM-2.1                                              |          |             
+|  PM-2.3   | Detailed Product Description                 | Describes the final project deliverable in detail.                           |                                        PM-1.2 <br> PM-2.2                                        |          |             
+|  PM-2.4   | High-Level Requirements                      | Defines the projects high-level requirements.                                |                                              PM-2.3                                              |          |             
+|  PM-2.5   | User Stories                                 | Table of user stories covering the high-level requirements.                  |                                              PM-2.4                                              |          |             
+|   PM-3    | Functional Requirements                      | Table of derived functional requirements following pre-post conditions.      |                                              PM-2.5                                              |          |             
+|  PM-3.1   | Application                                  | Table of application related functional requirements.                        |                                                                                                  |          |             
+|  PM-3.2   | Player Controls                              | Table of input related functional requirements.                              |                                                                                                  |          |             
+|  PM-3.3   | Application Behaviour                        | Defines system and game behaviour.                                           |                                                                                                  |          |             
+| PM-3.3.1  | System Behaviour                             | Table of system behaviour related functional requirements.                   |                                                                                                  |          |             
+| PM-3.3.2  | Game Behaviour                               | Table of game behaviour related functional requirements.                     |                                                                                                  |          |             
+|   PM-4    | Non-functional Requirements                  | Table of non-functional requirements.                                        |                                         PM-2.4 <br> PM-3                                         |          |             
+|  PM-4.1   | Quality Metrics                              | Defines the quality metrics.                                                 |                                                                                                  |          |             
+| PM-4.1.1  | Cohesion Maximization Metric                 | Defines cohesion metric.                                                     |                                                                                                  |          |             
+| PM-4.1.2  | Coupling Minimization Metric                 | Defines coupling metric.                                                     |                                                                                                  |          |             
+|  PM-4.2   | NFR Passing Criteria (URPS+)                 | Table of non-functional requirements and passing criteria.                   |                                                                                                  |          |             
+|   PM-5    | Time Management                              | Describes the time management process and estimations.                       |                                                                                                  |          |             
+|  PM-5.1   | Agile Methodology                            | Defines the project's agile workflow.                                        |                                                                                                  |          |             
+|  PM-5.2   | Scheduling Process (Sequencing)              | Table of sequence relationships.                                             |                                              PM-1.5                                              |          |             
+|  PM-5.3   | Schedule Network Diagrams (Critical Path)    | Image of schedule network diagrams.                                          |                                              PM-5.2                                              |          |             
+|  PM-5.4   | Resource Methodology (Resource Estimations)  | Defines the resource estimations.                                            |                                                                                                  |          |             
+| PM-5.4.1  | Time Unit Model                              | Defines the time unit model.                                                 |                                                                                                  |          |             
+| PM-5.4.2  | Time Cost Estimations (Activity Estimations) | Table of activity time cost estimates.                                       |                                             PM-5.4.1                                             |          |             
+|  PM-5.5   | Project Schedule (Complete Task List)        | Defines the project task list.                                               |                                             PM-5.4.2                                             |          |             
+|  PM-5.6   | Gantt Chart                                  | Image of project Gantt chart.                                                |                                              PM-5.5                                              |          |             
+|   PM-6    | HR Management                                | Describes the HR management process.                                         |                                                                                                  |          |             
+|  PM-6.1   | Project Hierarchy                            | Image of project hierarchy.                                                  |                                              PM-1.2                                              |          |             
+|  PM-6.2   | Role Descriptions                            | Table of team member role descriptions.                                      |                                              PM-6.1                                              |          |             
+|  PM-6.3   | Peer Review Process                          | Defines the peer review process.                                             |                                                                                                  |          |             
+| PM-6.3.1  | Self Reviews                                 | Defines the self review questions.                                           |                                                                                                  |          |             
+| PM-6.3.2  | Team Member Reviews                          | Defines the team member review questions.                                    |                                                                                                  |          |             
+| PM-6.3.3  | Self Reflection                              | Defines the self reflection questions.                                       |                                                                                                  |          |             
+|   PM-7    | Risk Management                              | Defines the risk management process.                                         |                                                                                                  |          |             
+|  PM-7.1   | Categories                                   | Table of risk categories.                                                    |                                              PM-1.2                                              |          |             
+|  PM-7.2   | Risk Assessment Matrix                       | Table of risk assessments.                                                   |                                              PM-7.1                                              |          |             
+|  PM-7.3   | Risk Register                                | Table of identified risks and response.                                      |                                        PM-2.2 <br> PM-7.2                                        |          |             
+|  PM-8.1   | Structural Diagrams                          | Describes the system's structure.                                            |                                               PM-3                                               |          |            
+| PM-8.1.1  | Class Diagram                                | Static classes, attributes, operations, and their relationships.             |                                                                                                  |          |            
+| PM-8.1.2  | Object Diagram                               | Snapshot of runtime instances and links at a moment in time.                 |                                                                                                  |          |            
+| PM-8.1.3  | Component Diagram                            | Software components, provided/required interfaces, and dependencies.         |                                                                                                  |          |            
+| PM-8.1.4  | Deployment Diagram                           | Hardware nodes/devices and where artifacts are deployed.                     |                                                                                                  |          |           
+| PM-8.1.5  | Composite Structure Diagram                  | Internal parts/ports of a classifier and their connectors.                   |                                                                                                  |          |            
+| PM-8.1.6  | Package Diagram                              | Package groupings and dependency relationships between them.                 |                                                                                                  |          |             
+| PM-8.1.7  | Profile Diagram                              | UML extensions via stereotypes, tagged values, and constraints.              |                                                                                                  |          |             
+|  PM-8.2.  | Behavioural Diagrams                         | Describes the system's behaviour.                                            |                                               PM-3                                               |          |             
+| PM-8.2.1  | Use Case Interaction Diagram                 | Actors, system use cases, and interactions at the system boundary.           |                                                                                                  |          |             
+| PM-8.2.2  | Sequence Diagram                             | Time-ordered messages between lifelines/objects.                             |                                                                                                  |          |             
+| PM-8.2.3  | Activity Diagram                             | Workflows with actions, decisions, and parallel flows.                       |                                                                                                  |          |             
+| PM-8.2.4  | State Machine Diagram                        | Object states and event-driven transitions over its lifecycle.               |                                                                                                  |          |             
+| PM-8.2.5  | Communication Diagram                        | Object links emphasizing numbered message exchanges.                         |                                                                                                  |          |             
+| PM-8.2.6  | Interaction Overview Diagram                 | High-level control flow linking multiple interactions.                       |                                                                                                  |          |             
+| PM-8.2.7  | Timing Diagram                               | State/value changes plotted against a time axis.                             |                                                                                                  |          |             
+| PM-8.2.8  | Use Case Dependency Diagram                  | Include, extend, and generalization relations among use cases.               |                                                                                                  |          |             
+|   PM-9    | Implementation                               | Describes project implementation.                                            |                                               PM-8                                               |          |             
+|  PM-9.1   | GitHub                                       | Defines project GitHub lin.                                                  |                                                                                                  |          |             
+|  PM-9.2   | File Structure                               | Displays GitHub file structure.                                              |                                                                                                  |          |             
+|  PM-9.3   | Code Snippets                                | Table of production code snippets.                                           |                                                                                                  |          |             
+|   PM-10   | Testing                                      | Describes test cases and results.                                            |                                               PM-9                                               |          |             
+|  PM-10.1  | Test Cases                                   | Defines test cases.                                                          |                                                                                                  |          |             
+| PM-10.1.1 | Unit Tests                                   | Verify a single class/function in isolation.                                 |                                                                                                  |          |             
+| PM-10.1.2 | Integration Tests                            | Verify modules work together at their boundaries.                            |                                                                                                  |          |             
+| PM-10.1.3 | System Tests                                 | Validate the whole application as a black box.                               |                                                                                                  |          |             
+| PM-10.1.4 | Acceptance Tests                             | Prove it meets user stories & acceptance criteria.                           |                                                                                                  |          |             
+|  PM-10.2  | Test Results                                 | Table of test results.                                                       |                                        PM-9 <br> PM-10.1                                         |          |             
+|   PM-11   | Final Submission PDF                         | Defines the final submission.                                                | PM-1 <br> PM-2 <br> PM-3 <br> PM-4 <br> PM-5 <br> PM-6 <br> PM-7 <br> PM-8 <br> PM-9 <br> PM-10  |          |             
+|  PM-11.1  | Demo Video Link                              | Final submission demo video link.                                            |                                                                                                  |          |             
 
 ### PM-1.2 Project Scope
-Brief definition of scope control process.
+The project implements all functional requirements shown in the demo video for a JavaFX Tetris game and packages the result as portfolio-ready material. Work covers project planning, implementation, testing, and submission only.
 
-### PM-1.3 Project Milestones
+### PM-1.3 Project Milestones (M)
 | M-ID | Milestone Name    | Deliverables              | Description                                               | Deadline | Status      |
 |:-----|-------------------|---------------------------|-----------------------------------------------------------|----------|-------------|
-| M-00 | -                 | -                         | -                                                         | -        | -           |
 | M-01 | PM-Documentation  | PM-1, 2, 3, 4, 5, 6, 7, 8 | Finalize the project plan and project management process. | 18/6/25  | In-Progress |
 | M-02 | Implementation    | PM-9                      | Push the full pre-testing implementation to GitHub.       | -        | -           |
 | M-03 | Testing           | PM-10                     | Push test functions and logs to GitHub.                   | -        | -           |
 | M-04 | Final Submission  | PM-11                     | Finalize PDF and demo video.                              | -        | -           |
 
-### PM-1.4 Deliverables
-| D-ID | Deliverable                               | High-Level Description | Input Work Products | Dependencies | Milestone        | Status |  
-|:-----|-------------------------------------------|------------------------|---------------------|--------------|------------------|--------|
-| D-00 | -                                         | -                      | -                   | -            |                  |        |
-| D-01 | Project Scope Description                 | -                      |                     |              | PM-Documentation |        |
-| D-02 | Project Milestone List                    | -                      |                     | D-01         | PM-Documentation |        |
-| D-03 | Complete Work Breakdown Structure         | -                      |                     | D-01         | PM-Documentation |        |
-| D-04 | Approved Activity List                    | -                      |                     | D-03         | PM-Documentation |        |
-| D-05 | Final Acceptance Criteria                 | -                      |                     | D-04         | PM-Documentation |        |
-| D-06 | Stakeholder Analysis                      | -                      |                     | D-01         | PM-Documentation |        |
-| D-07 | Stakeholder Register                      | -                      |                     | D-07         | PM-Documentation |        |
-| D-08 | User Stories                              | -                      |                     | D-07         | PM-Documentation |        |
-| D-09 | Functional Requirements Specification     | -                      |                     | D-08         | PM-Documentation |        |
-| D-10 | Non-Functional Requirements Specification | -                      |                     | D-11         | PM-Documentation |        |
-| D-11 | Quality Metrics                           | -                      |                     | -            | PM-Documentation |        |
-| D-12 | Time Management Plan                      | -                      |                     | D-04         | PM-Documentation |        |
-| D-13 | Project Schedule                          | -                      |                     | D-12         | PM-Documentation |        |
-| D-14 | Gantt Chart                               | -                      |                     | D-13         | PM-Documentation |        |
-| D-15 | HR Management Plan                        | -                      |                     | -            | PM-Documentation |        |
-| D-16 | Peer Reviews                              | -                      |                     | -            | PM-Documentation |        |
-| D-17 | Risk Management Plan                      | -                      |                     | D-07         | PM-Documentation |        |
-| D-18 | UML Structural Diagrams                   | -                      |                     | -            | PM-Documentation |        |
-| D-19 | UML Behavioural Diagrams                  | -                      |                     | -            | PM-Documentation |        |
-| D-20 | GitHub File Structure                     | -                      |                     | D-18,        | Implementation   |        |
-| D-21 | Codebase                                  | -                      |                     | M-01         | Implementation   |        |
-| D-22 | Test Functions                            | -                      |                     |              | Testing          |        |
-| D-23 | Testing Results                           | -                      |                     | D-22         | Testing          |        |
-| D-24 | Demo Video                                | -                      |                     | M-03         | Final Submission |        |
-| D-25 | Final Submission PDF                      | -                      |                     | D-24         | Final Submission |        |
+### PM-1.4 Deliverables (D)
+| D-ID | Deliverable                               | High-Level Description                        | Input Work Products | Dependencies | Milestone        | Status |  
+|:-----|-------------------------------------------|-----------------------------------------------|---------------------|--------------|------------------|:------:|
+| D-01 | Project Scope Description                 | Brief activity and impact statement.          | WP-01               |              | PM-Documentation |  Done  |
+| D-02 | Project Milestone List                    | The big dates and what happens on each.       |                     | D-01         | PM-Documentation |  Done  |
+| D-03 | Complete Work Breakdown Structure         | Tree of work packages/tasks.                  |                     | D-01         | PM-Documentation |        |
+| D-04 | Approved Activity List                    | Final task list.                              |                     | D-03         | PM-Documentation |        |
+| D-05 | Final Acceptance Criteria                 | Checklist to confirm requirements.            |                     | D-04         | PM-Documentation |        |
+| D-06 | Stakeholder Analysis                      | Who cares and how they influence the project. |                     | D-01         | PM-Documentation |        |
+| D-07 | Stakeholder Register                      | Contact sheet.                                |                     | D-07         | PM-Documentation |        |
+| D-08 | User Stories                              | Short “As a… I want… so that…” items.         |                     | D-07         | PM-Documentation |        |
+| D-09 | Functional Requirements Specification     | Detailed features and rules.                  |                     | D-08         | PM-Documentation |  Done  |
+| D-10 | Non-Functional Requirements Specification | Quality goals.                                |                     | D-11         | PM-Documentation |        |
+| D-11 | Quality Metrics                           | The numbers we’ll measure.                    |                     | -            | PM-Documentation |        |
+| D-12 | Time Management Plan                      | Estimations and scheduling.                   |                     | D-04         | PM-Documentation |        |
+| D-13 | Project Schedule                          | Calendar of tasks.                            |                     | D-12         | PM-Documentation |        |
+| D-14 | Gantt Chart                               | Visual timeline of the schedule.              |                     | D-13         | PM-Documentation |        |
+| D-15 | HR Management Plan                        | Team roles and responsibilities.              |                     | -            | PM-Documentation |        |
+| D-16 | Peer Reviews                              | Evidence of code reviews.                     |                     | -            | PM-Documentation |        |
+| D-17 | Risk Management Plan                      | Top risks, owners, responses.                 |                     | D-07         | PM-Documentation |        |
+| D-18 | UML Structural Diagrams                   | Static structure.                             |                     | -            | PM-Documentation |        |
+| D-19 | UML Behavioural Diagrams                  | Dynamic structure.                            |                     | -            | PM-Documentation |        |
+| D-20 | GitHub File Structure                     | Repo layout.                                  |                     | D-18,        | Implementation   |        |
+| D-21 | Codebase                                  | All source code.                              |                     | M-01         | Implementation   |        |
+| D-22 | Test Functions                            | JUnit tests.                                  |                     |              | Testing          |        |
+| D-23 | Testing Results                           | Reports showing pass/fail.                    |                     | D-22         | Testing          |        |
+| D-24 | Demo Video                                | Short video proving features work.            |                     | M-03         | Final Submission |        |
+| D-25 | Final Submission PDF                      | One PDF.                                      |                     | D-24         | Final Submission |        |
 
-### PM-1.5 Work Breakdown Structure
-| WP-ID | Work Product Name        | Description                            |  Output  |  Deliverable  |  Acceptance Criteria  |
+### PM-1.5 Work Breakdown Structure (WBS)
+| WP-ID | Work Product Name        | Description                            |  Output  |  Deliverable  |  Acceptance Criteria  | 
 |:------|--------------------------|----------------------------------------|:--------:|:-------------:|:---------------------:|
 | WP-00 | -                        | -                                      |    -     |       -       |           -           |
 | WP-01 | Project Management Table | Summarizes scope of the project plan.  |  PM-1.1  |     D-01      |         AC-01         |
 | WP-   |                          |                                        |          |               |                       |
 
-### PM-1.6 Verification (Acceptance Criteria)
+### PM-1.6 Verification (AC)
 | AC-ID |  WP-Link  | Description                                             | Acceptance Checklist                                                                 |  Priority  | Risk Score |  Status  |
 |:------|:---------:|---------------------------------------------------------|--------------------------------------------------------------------------------------|:----------:|:----------:|:--------:|
 | AC-00 |     -     | -                                                       | -                                                                                    |     -      |     -      |    -     |
@@ -221,12 +218,12 @@ Brief definition of scope control process.
 ---
 
 ## PM-2 Product Analysis
-### PM-2.1 Stakeholder Influences
+### PM-2.1 Stakeholder Influences (SI)
 | SI-ID | Identified Influence | Interest or Conflict | Possible Impact | Desired Outcome |
 |:------|----------------------|----------------------|-----------------|-----------------|
 | SI-00 | -                    | -                    | -               | -               |
 
-### PM-2.2 Stakeholder Register
+### PM-2.2 Stakeholder Register (ST)
 | ST-ID | Identified Stakeholder | Assigned Role | Associated Influences | Risk Category |
 |:------|------------------------|---------------|-----------------------|---------------|
 | ST-00 | -                      | -             | -                     | -             |
@@ -242,15 +239,15 @@ Write a detailed description of the final deliverable. Mention high level requir
 | PM-3.3.1 |    System Behaviour     |                 -                 |        -         |   FR-3    |
 | PM-3.3.2 |     Game Behaviour      |                 -                 |        -         |   FR-4    |
 
-#### PM-2.5 User Stories
+#### PM-2.5 User Stories (US)
 | US-ID | Item Name | User Story | Translated Requirement | FR-Link | Status |
 |:------|-----------|------------|------------------------|---------|--------|
 | US-00 | -         | -          | -                      | -       |        |
 
 ---
 
-## PM-3 Functional Requirements
-### PM-3.1 Application GUI
+## PM-3 Functional Requirements (FR)
+### PM-3.1 Application
 #### FR-1 Screen Views
 | FR-ID    | Item Name            |                  Dependencies                   |                                     Precondition                                      | Function Calls                                                                                                                                  |                       Postcondition                       | Test Case ID  | 
 |:---------|:---------------------|:-----------------------------------------------:|:-------------------------------------------------------------------------------------:|:------------------------------------------------------------------------------------------------------------------------------------------------|:---------------------------------------------------------:|:-------------:|
@@ -286,71 +283,77 @@ Write a detailed description of the final deliverable. Mention high level requir
 
 ### PM-3.2 Player Controls
 #### FR-2 Keyboard Inputs
-| FR-ID  | Item Name          | Dependencies | Precondition | Function Calls | Postcondition | Test Case ID | Test Case ID | 
-|:-------|:-------------------|:------------:|:------------:|:--------------:|:-------------:|:------------:|:------------:|
-| FR-00  | -                  |      -       |      -       |                |       -       |      -       |      -       |
-| FR-2.1 | keyUpInput         |      -       |              |                |       -       |      -       |      -       |
-| FR-2.2 | keyDownInput       |      -       |              |                |       -       |      -       |      -       |
-| FR-2.3 | keyLeftInput       |      -       |              |                |       -       |      -       |      -       |
-| FR-2.4 | keyRightInput      |      -       |              |                |       -       |      -       |      -       |
-| FR-2.5 | keyPInput          |      -       |              |                |       -       |      -       |      -       |
-| FR-2.6 | keyEscInput        |      -       |              |                |       -       |      -       |      -       |
-| FR-2.7 | keyboardScoreInput |      -       |              |                |       -       |      -       |      -       |
+| FR-ID  | Item Name          | Dependencies | Precondition | Function Calls | Postcondition | Test Case ID | 
+|:-------|:-------------------|:------------:|:------------:|:--------------:|:-------------:|:------------:|
+| FR-00  | -                  |      -       |      -       |                |       -       |      -       | 
+| FR-2.1 | keyUpInput         |      -       |              |                |       -       |      -       |  
+| FR-2.2 | keyDownInput       |      -       |              |                |       -       |      -       |  
+| FR-2.3 | keyLeftInput       |      -       |              |                |       -       |      -       |  
+| FR-2.4 | keyRightInput      |      -       |              |                |       -       |      -       |  
+| FR-2.5 | keyPInput          |      -       |              |                |       -       |      -       | 
+| FR-2.6 | keyEscInput        |      -       |              |                |       -       |      -       |   
+| FR-2.7 | keyboardScoreInput |      -       |              |                |       -       |      -       |   
 
 ### PM-3.3 Application Behaviour
 #### PM-3.3.1 System Behaviour
-##### FR-3 System Modules
-| FR-ID  | Item Name                 | Dependencies | Precondition | Function Calls | Postcondition | Test Case ID | Test Case ID |  
-|:-------|:--------------------------|:------------:|:------------:|:--------------:|:-------------:|:------------:|:------------:|
-| FR-00  | -                         |      -       |      -       |                |       -       |      -       |      -       |
-| FR-3.1 | systemSaveModule          |      -       |              |                |       -       |      -       |      -       |
-| FR-3.2 | systemDisplayGameModule   |      -       |              |                |       -       |      -       |      -       |
-| FR-3.3 | systemConfigurationModule |      -       |              |                |       -       |      -       |      -       |
-| FR-3.4 | systemLeaderboardModule   |      -       |              |                |       -       |      -       |      -       |
-| FR-3.5 | viewChangeModule          |      -       |              |                |       -       |      -       |      -       |
+##### FR-3 System Module
+| FR-ID  | Item Name                 | Dependencies | Precondition | Function Calls | Postcondition | Test Case ID |
+|:-------|:--------------------------|:------------:|:------------:|:--------------:|:-------------:|:------------:|
+| FR-00  | -                         |      -       |      -       |                |       -       |      -       |    
+| FR-3.1 | systemSaveModule          |      -       |              |                |       -       |      -       |     
+| FR-3.2 | systemDisplayGameModule   |      -       |              |                |       -       |      -       |    
+| FR-3.3 | systemConfigurationModule |      -       |              |                |       -       |      -       |     
+| FR-3.4 | systemLeaderboardModule   |      -       |              |                |       -       |      -       |    
+| FR-3.5 | viewChangeModule          |      -       |              |                |       -       |      -       |    
 
 #### PM-3.3.2 Game Behaviour
 ##### FR-4 Game Modules
-| FR-ID    | Item Name                | Dependencies | Precondition | Function Calls | Postcondition | Test Case ID | Test Case ID | 
-|:---------|:-------------------------|:------------:|:------------:|:--------------:|:-------------:|:------------:|:------------:|
-| FR-00    | -                        |      -       |      -       |                |       -       |      -       |      -       |
-| FR-4.1   | gameConfigModule         |      -       |              |                |       -       |      -       |      -       |
-| FR-4.2   | gameRenderModule         |      -       |              |                |       -       |      -       |      -       |
-| FR-4.3   | gameShapeSelectionModule |      -       |              |                |       -       |      -       |      -       |
-| FR-4.4   | gameShapeMovementModule  |      -       |              |                |       -       |      -       |      -       |
-| FR-4.5   | gameStateModule          |      -       |              |                |       -       |      -       |      -       |
-| FR-4.5.1 | gamePauseState           |      -       |              |                |       -       |      -       |      -       |
-| FR-4.5.2 | gameOverState            |      -       |              |                |       -       |      -       |      -       |
-| FR-4.5.3 | gameNewScoreState        |      -       |              |                |       -       |      -       |      -       |
-| FR-4.6   | gameRowUpdate            |      -       |              |                |       -       |      -       |      -       |
-| FR-4.6.1 | gameSingleUpdate         |      -       |              |                |       -       |      -       |      -       |
-| FR-4.6.2 | gameDoubleUpdate         |      -       |              |                |       -       |      -       |      -       |
-| FR-4.6.3 | gameTripleUpdate         |      -       |              |                |       -       |      -       |      -       |
-| FR-4.6.4 | gameTetrisUpdate         |      -       |              |                |       -       |      -       |      -       |
+| FR-ID    | Item Name                | Dependencies | Precondition | Function Calls | Postcondition | Test Case ID |
+|:---------|:-------------------------|:------------:|:------------:|:--------------:|:-------------:|:------------:|
+| FR-00    | -                        |      -       |      -       |                |       -       |      -       |     
+| FR-4.1   | gameConfigModule         |      -       |              |                |       -       |      -       |    
+| FR-4.2   | gameRenderModule         |      -       |              |                |       -       |      -       |      
+| FR-4.3   | gameShapeSelectionModule |      -       |              |                |       -       |      -       |     
+| FR-4.4   | gameShapeMovementModule  |      -       |              |                |       -       |      -       |     
+| FR-4.5   | gameStateModule          |      -       |              |                |       -       |      -       |     
+| FR-4.5.1 | gamePauseState           |      -       |              |                |       -       |      -       |     
+| FR-4.5.2 | gameOverState            |      -       |              |                |       -       |      -       |    
+| FR-4.5.3 | gameNewScoreState        |      -       |              |                |       -       |      -       |     
+| FR-4.6   | gameRowUpdate            |      -       |              |                |       -       |      -       |     
+| FR-4.6.1 | gameSingleUpdate         |      -       |              |                |       -       |      -       |     
+| FR-4.6.2 | gameDoubleUpdate         |      -       |              |                |       -       |      -       |     
+| FR-4.6.3 | gameTripleUpdate         |      -       |              |                |       -       |      -       |     
+| FR-4.6.4 | gameTetrisUpdate         |      -       |              |                |       -       |      -       |      
 
 ---
 
-## PM-4 Non-Functional Requirements
-### PM-4.1 Quality Metrics
-#### PM-4.1.1 Cohesion Maximization
+## PM-4 Non-Functional Requirements (NFR)
+### PM-4.1 Quality Metrics (QM)
+#### PM-4.1.1 Cohesion Maximization Metric
+| QM-ID  | Calculation                                                                    | Passing Criteria | Status |
+|:------:|--------------------------------------------------------------------------------|------------------|--------|
+| QM-COH | Percent Cohesive Classes = 100 * (# of classes with LCOM4 = 1) / total classes | > 90%            |        |
 
-#### PM-4.1.2 Coupling Minimization
+#### PM-4.1.2 Coupling Minimization Metric
+| QM-ID  | Calculation                                                                    | Passing Criteria | Status |
+|:------:|--------------------------------------------------------------------------------|------------------|--------|
+| QM-COU | Imports Per Class = # of project-internal imports outside the class's package. | Avg < 5, Max < 9 |        |
 
 ### PM-4.2 NFR Passing Criteria (URPS+)
-| NFR-ID  | Category    | Requirement Description | Pass Criteria      | PM/WP-Link  | Status |
-|:--------|-------------|-------------------------|--------------------|-------------|--------|
-| NFR-USA | Usability   | -                       | -                  | -           | -      |
-| NFR-REL | Reliability | -                       | -                  | -           | -      |
-| NFR-PER | Performance | -                       | -                  | -           | -      |
-| NFR-SEC | Security    | -                       | -                  | -           | -      |
-| NFR-LEG | Legal       | -                       | -                  | -           | -      |
-| NFR-COM | Compliance  | -                       | -                  | -           | -      |
+| NFR-ID  | Category    | Requirement Description                                                          | Pass Criteria                                                                        |
+|:--------|-------------|----------------------------------------------------------------------------------|--------------------------------------------------------------------------------------|
+| NFR-USA | Usability   | The system must be intuitive for first time players with a consistent interface. | Players can start the game with a single menu click. Menu items are clearly labeled. | 
+| NFR-REL | Reliability | Score and state consistency across app focus changes.                            | No piece duplication or score/timer changes when app focus changes.                  | 
+| NFR-PER | Performance | Stable frame rate.                                                               | Frame rate stays within 5 frames of set value.                                       | 
+| NFR-SEC | Security    | No unhandled exceptions.                                                         | 0 unhandled exceptions crash the app.                                                | 
+| NFR-LEG | Legal       | Only permitted assets with propper licensing.                                    | License file included.                                                               |
+| NFR-COM | Compliance  | Meets assignment rubric, uni policies, and target runtime.                       | Rubric checklist complete, academic integrity check complete. Builds to spec.        |
 
 ---
 
 ## PM-5 Time Management
 ### PM-5.1 Agile Methodology
-Paragraph on agile workflows linking to NFRs.
+Our three-student team runs a lightweight Scrum/Kanban flow on ~10 hrs/week each. A quick Monday stand-up, Friday team meeting (review + next-sprint planning), and weekday daily tickets time-boxed from the 10-hour budget. Work is tracked on a Trello Kanban (Backlog -> Ready -> Active -> Review -> Complete) with PM and FR sections decomposed into Work Products and mapped to Trello modules.
 
 ### PM-5.2 Scheduling Process (Sequencing)
 | SEQ-ID | Work Product | Start-Start | Start-Finish | Finish-Start | Finish-Finish |
@@ -400,7 +403,7 @@ Paragraph on agile workflows linking to NFRs.
 ![project hierarchy](_temp/PM-6.1%20Project%20Hierarchy.png "Project Hierarchy")
 
 
-### PM-6.2 Role Descriptions
+### PM-6.2 Role Descriptions (TM)
 | TM-ID  |     Role / Title     |                                   Responsibilities                                   | Assigned To | 
 |:-------|:--------------------:|:------------------------------------------------------------------------------------:|:-----------:|
 | TM-00  |          -           |                                          -                                           |      -      |    
@@ -450,12 +453,12 @@ Paragraph on agile workflows linking to NFRs.
 |:------|:----:|:-----------:|:----------:|:---------------------:|
 | CA-00 |  -   |      -      |     -      |           -           |
 
-### PM-7.2 Risk Assessment Matrix
+### PM-7.2 Risk Assessment Matrix (RA)
 | RA-ID | Risk Name | Description | Identified Factors | Probability | Impact Severity |
 |:------|:---------:|:-----------:|:------------------:|:-----------:|:---------------:|
 | RA-00 |     -     |      -      |         -          |      -      |        -        |
 
-### PM-7.3 Risk Register (Review Process)
+### PM-7.3 Risk Register (RI)
 | RI-ID | Name | Category |    Work Products     | Risk Score | RA-Links | Review Process |  
 |:------|:----:|:--------:|:--------------------:|:----------:|:--------:|:--------------:|
 | RI-00 |  -   |    -     |          -           |     -      |    -     |                |
@@ -466,7 +469,6 @@ Paragraph on agile workflows linking to NFRs.
 ### PM-8.1 Structural Diagrams
 | PM-ID    | Diagram Name                | Description                                                                                              | GitHub-Link |
 |:---------|-----------------------------|----------------------------------------------------------------------------------------------------------|-------------|
-| PM-8.1.1 | -                           | -                                                                                                        | -           |
 | PM-8.1.1 | Class Diagram               | Shows the static structure of the system, including classes, attributes, methods, and relationships.     | -           |
 | PM-8.1.2 | Object Diagram              | Represents a snapshot of the objects in a system at a specific point in time.                            | -           |
 | PM-8.1.3 | Component Diagram           | Depicts the organization and dependencies among software components.                                     | -           |
@@ -490,14 +492,16 @@ Paragraph on agile workflows linking to NFRs.
 ---
 
 ## PM-9 Implementation
-### PM-9.1 GitHub File Structure
+### PM-9.1 GitHub
 
-### PM-9.2 Code Snippets
+### PM-9.2 File Structure
+
+### PM-9.3 Code Snippets
 
 ---
 
 ## PM-10 Testing
-### PM-10.1 Test Cases
+### PM-10.1 Test Cases (TC)
 #### PM-10.1.1 Unit Tests
 | TC-ID | FR-Link | Test Description | Test Name | Preconditions | Test Steps |
 |:-----:|---------|------------------|-----------|---------------|------------|
@@ -529,14 +533,3 @@ Paragraph on agile workflows linking to NFRs.
 ## PM-11 Final Submission
 ### PM-11.1 Demo Video Link
 
----
-
-## Document History
-| Change Request ID | Date     | Changed PM-Sections                     | sDescription of Changes                                                                                 | Submitted By |
-|-------------------|----------|-----------------------------------------|---------------------------------------------------------------------------------------------------------|--------------|
-| CR-00             | -        | -                                       | -                                                                                                       | -            |
-| CR-01             | 15/08/25 | PM-6, PM-7                              | Inserted 'PM-6 Software Architecture etc.' and moved 'PM-6 Document History' to 'PM-7 Document History' | Fletcher     |
-| CR-02-1           | 16/08/25 | PM TEMPLATE UPDATE                      | Changed most PM sections.                                                                               | Fletcher     |
-| CR-02-2           | 16/08/25 | PM TEMPLATE UPDATE, REQUIREMENTS TABLES | Began filling in requirements tables with detailed information.                                         | Fletcher     |
-
-[Back to Top](#project-plan)
