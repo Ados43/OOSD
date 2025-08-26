@@ -127,35 +127,59 @@ public class TetrisGame {
         gameCanvas.setOnKeyPressed(input);
         gameCanvas.setOnKeyReleased(input);
         nextCanvas = new Canvas(6 * BLOCK_SIZE, 6 * BLOCK_SIZE);
+
         nextGc = nextCanvas.getGraphicsContext2D();
+
         Button backButton = new Button("Back");
+
         backButton.setOnAction(e -> {
+
+            int pauseCondition = 0;
+            if (!paused) { // If not paused, pause the game
+                paused = !paused;
+                pauseCondition++;
+            } 
+
             Alert a = new Alert(Alert.AlertType.CONFIRMATION,
                     "Your current progress will be lost if you return to the main menu. Are you sure?",
                     ButtonType.YES, ButtonType.NO);
+
             Optional<ButtonType> res = a.showAndWait();
+
             if (res.isPresent() && res.get() == ButtonType.YES) {
                 if (onBack != null) onBack.run();
+
+            } else {
+                if (pauseCondition > 0) paused = !paused; // Unpause if it was paused by the back button
             }
         });
+
         backButton.setFocusTraversable(false);
         HBox root = new HBox(20, gameCanvas, nextCanvas);
         root.setAlignment(Pos.CENTER);
+
         // UI components for game board and next piece preview
         StackPane rootWrapper = new StackPane(root, backButton);
         StackPane.setAlignment(backButton, Pos.TOP_LEFT);
+
         backButton.setTranslateX(10);
         backButton.setTranslateY(10);
+
         rootWrapper.setPrefSize(WIDTH * BLOCK_SIZE + (int) nextCanvas.getWidth() + 60,
                 HEIGHT * BLOCK_SIZE + 40);
+
         rootWrapper.setAlignment(Pos.CENTER);
+
         board = new char[WIDTH][HEIGHT];
+
         for (int bx = 0; bx < WIDTH; bx++)
             for (int by = 0; by < HEIGHT; by++)
                 board[bx][by] = ' ';
+
         nameField = new TextField();
         nameField.setPromptText("Enter name");
         nameField.setMaxWidth(120);
+
         Button submitHS = new Button("Submit");
         submitHS.setOnAction(e -> {
             String name = nameField.getText().trim();
@@ -165,15 +189,20 @@ public class TetrisGame {
                 highScoreSubmitted = true; // <-- mark as submitted
             }
         });
+
         highScorePane = new VBox(10, nameField, submitHS);
         highScorePane.setAlignment(Pos.CENTER);
         highScorePane.setMaxWidth(200);
         highScorePane.setVisible(false);
         rootWrapper.getChildren().add(highScorePane);
+
         spawnNewGamePieces();
+
         rootWrapper.sceneProperty().addListener((obs, oldS, newS) -> {
             if (newS != null) gameCanvas.requestFocus();
         });
+
+
         startGameLoop();
         return rootWrapper;
     }
@@ -200,7 +229,8 @@ public class TetrisGame {
                 if (startTime < 0) startTime = now;
                 if (now - lastFrame < 50_000_000) return;
                 lastFrame = now;
-                if (input.consumeRelease(KeyCode.ESCAPE)) paused = !paused;
+                if (input.consumeRelease(KeyCode.ESCAPE)) paused = !paused; // Toggle pause on ESC
+                if (input.consumeRelease(KeyCode.P)) paused = !paused; // Toggle pause on P
                 double elapsedSec = (now - startTime) / 1_000_000_000.0;
                 int decrease = (int) (elapsedSec / 3.0);
                 int currentFallInterval = Math.max(minFallInterval, baseFallInterval - decrease);

@@ -34,9 +34,9 @@ public class HelloApplication extends Application {
         splashStage.setScene(splashScene);
         splashStage.show();
 
-        //Create a 3-second delay before switching to the main menu
+        //Create a 5-second delay before switching to the main menu
         javafx.animation.PauseTransition pause =
-                new javafx.animation.PauseTransition(javafx.util.Duration.seconds(3));
+                new javafx.animation.PauseTransition(javafx.util.Duration.seconds(5));
 
         // After pause, load the main menu and close the splash screen
         pause.setOnFinished(e -> {
