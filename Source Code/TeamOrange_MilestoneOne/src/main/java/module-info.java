@@ -10,7 +10,11 @@ module org.oosd.teamorange_milestoneone {
     requires org.kordamp.bootstrapfx.core;
     requires eu.hansolo.tilesfx;
     requires com.almasb.fxgl.all;
+    requires javafx.graphics;
+    requires javafx.base;
 
     opens org.oosd.teamorange_milestoneone to javafx.fxml;
     exports org.oosd.teamorange_milestoneone;
+    exports org.oosd.teamorange_milestoneone.application.views.splash;
+    opens org.oosd.teamorange_milestoneone.application.views.splash to javafx.fxml;
 }

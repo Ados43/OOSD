@@ -134,7 +134,7 @@
                         <id>default-cli</id>
                         <configuration>
                             <mainClass>
-                                org.oosd.teamorange_milestoneone/org.oosd.teamorange_milestoneone.HelloApplication
+                                org.oosd.teamorange_milestoneone/org.oosd.teamorange_milestoneone.application.views.splash.SplashView
                             </mainClass>
                             <launcher>app</launcher>
                             <jlinkZipName>app</jlinkZipName>

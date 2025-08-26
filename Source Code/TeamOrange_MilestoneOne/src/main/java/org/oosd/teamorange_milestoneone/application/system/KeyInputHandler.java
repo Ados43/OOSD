@@ -1,4 +1,4 @@
-package org.oosd.teamorange_milestoneone;
+package org.oosd.teamorange_milestoneone.application.system;
 
 import javafx.event.EventHandler;
 import javafx.scene.input.KeyCode;

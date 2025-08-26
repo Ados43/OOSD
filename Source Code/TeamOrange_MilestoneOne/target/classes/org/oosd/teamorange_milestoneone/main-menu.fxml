@@ -6,7 +6,7 @@
 <?import javafx.geometry.Pos?>
 
 <BorderPane xmlns:fx="http://javafx.com/fxml"
-            fx:controller="org.oosd.teamorange_milestoneone.HelloController">
+            fx:controller="org.oosd.teamorange_milestoneone.application.views.MainView">
 
     <!-- Top Header -->
     <top>
