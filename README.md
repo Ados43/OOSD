@@ -1,4 +1,8 @@
-## WBS (Work Breakdown Structure)
+# Project Plan
+
+## PM-1.1 Project Scope
+
+The project implements all functional requirements shown in the demo video for a JavaFX Tetris game and packages the result as portfolio-ready material. Work covers project planning, implementation, testing, and submission only.
 
 1. Project Management
     - 1.1 Define Project Scope
@@ -34,13 +38,7 @@
 
 ---
 
-# Project Plan
-
-### PM-1.1 Project Scope
-
-The project implements all functional requirements shown in the demo video for a JavaFX Tetris game and packages the result as portfolio-ready material. Work covers project planning, implementation, testing, and submission only.
-
-### PM-1.2 Deliverables (D)
+## PM-1.2 Deliverables (D)
 
 | D-ID | Deliverable                               | High-Level Description                        | Input Work Products | Dependencies | Milestone        | Status |  
 |:-----|-------------------------------------------|-----------------------------------------------|---------------------|--------------|------------------|:------:|
@@ -48,7 +46,7 @@ The project implements all functional requirements shown in the demo video for a
 
 ---
 
-## PM-2 Functional Requirements (FR)
+## Functional Requirements (FR)
 
 ### PM-2.1 Application
 
@@ -139,7 +137,7 @@ The project implements all functional requirements shown in the demo video for a
 
 ---
 
-## PM-3 Non-Functional Requirements (NFR)
+## Non-Functional Requirements (NFR)
 
 | NFR-ID  | Category    | Requirement Description                                                          | Pass Criteria                                                                        |
 |:--------|-------------|----------------------------------------------------------------------------------|--------------------------------------------------------------------------------------|
@@ -150,9 +148,7 @@ The project implements all functional requirements shown in the demo video for a
 | NFR-LEG | Legal       | Only permitted assets with propper licensing.                                    | License file included.                                                               |
 | NFR-COM | Compliance  | Meets assignment rubric, uni policies, and target runtime.                       | Rubric checklist complete, academic integrity check complete. Builds to spec.        |
 
-## PM-4 HR Management
-
-### PM-4.1 Role Descriptions (TM)
+## Role Descriptions (TM)
 
 | TM-ID  |     Role / Title     |                                   Responsibilities                                   | Assigned To | 
 |:-------|:--------------------:|:------------------------------------------------------------------------------------:|:-----------:|
@@ -163,9 +159,11 @@ The project implements all functional requirements shown in the demo video for a
 | TM-06  |      Developer       |                Write and integrate Java code following PM standards.                 |      -      |
 | TM-08  |   Demo Coordinator   |                         Record and deliver final demo video.                         |      -      |    
 
-### PM-4.2 Peer Review Process
+---
 
-#### PM-4.2.1 Self Reviews
+### Peer Review Process
+
+#### PM-4.1 Self Reviews
 
     What was your primary role in this milestone?
     
@@ -177,14 +175,14 @@ The project implements all functional requirements shown in the demo video for a
     
     On a scale of 1 to 10, how would you rate your overall contribution to the team?
 
-#### PM-4.2.2 Team Member Reviews
+#### PM-4.2 Team Member Reviews
 
 | Date  | Review Of  | Key Contributions | Professionalism | Suggestion | Submitted By |
 |:------|:----------:|:-----------------:|:---------------:|:----------:|:------------:|
 | -     |     -      |         -         |        -        |     -      |      -       |
 |       |            |                   |                 |            |              |
 
-#### PM-4.2.3 Self Reflection
+#### PM-4.3 Self Reflection
 
     Was the peer review process fair and helpful in identifying your contributions and role within the team?
     
@@ -194,16 +192,20 @@ The project implements all functional requirements shown in the demo video for a
 
 ---
 
-## PM-5. Software Architecture (UML)
+## Software Architecture (UML)
+
+### PM-5.1 Class Diagram
+
+### PM-5.2 Activity Diagram
+
+### PM-5.3 User Case Diagram
 
 ---
 
-## PM-6 Implementation
+## Implementation
 
-### PM-6.1 GitHub
+### PM-6.1 File Structure
 
-### PM-6.2 File Structure
-
-### PM-6.3 Code Snippets
+### PM-6.2 Code Snippets
 
 ## PM-7 Final Submission Link
