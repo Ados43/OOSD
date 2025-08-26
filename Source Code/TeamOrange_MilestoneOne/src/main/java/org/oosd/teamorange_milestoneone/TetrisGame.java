@@ -23,7 +23,9 @@ import java.util.Optional;
 import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
 
+// Main Tetris game class handling gameplay, rendering, and input
 public class TetrisGame {
+    // Definition of all tetromino shapes
     private static final char[][] TETROMINOS = {
             {' ', ' ', ' ', ' ',
                     'I', 'I', 'I', 'I',
@@ -55,6 +57,7 @@ public class TetrisGame {
                     ' ', ' ', ' ', ' '}
     };
 
+    // Handles keyboard input using ConcurrentHashMap
     static class KeyInputHandler implements EventHandler<KeyEvent> {
         private final ConcurrentHashMap<KeyCode, Boolean> keys = new ConcurrentHashMap<>();
 
@@ -78,20 +81,21 @@ public class TetrisGame {
         }
     }
 
+    // Board size and block size constants (easy to implement from configuration page)
     private static final int WIDTH = 12;
     private static final int HEIGHT = 18;
     private static final int BLOCK_SIZE = 30;
 
+    // Random generator and input handler
     private final Random rand = new Random();
     private final KeyInputHandler input = new KeyInputHandler();
 
-    private StackPane rootWrapper;
-    private HBox root;
     private Canvas gameCanvas, nextCanvas;
     private GraphicsContext gc, nextGc;
-    private AnimationTimer loop;
+
     private char[][] board;
 
+    // Current piece state
     private int currentPiece, rotation, x, y;
     private int nextPiece;
     private int score = 0;
@@ -99,29 +103,31 @@ public class TetrisGame {
     private boolean paused = false;
     private boolean highScoreSubmitted = false;
 
-
+    // Back navigation callback
     private Runnable onBack;
 
+    // High score UI
     private VBox highScorePane;
     private TextField nameField;
 
-    private int baseFallInterval = 30;
-    private int minFallInterval = 5;
+    // Game speed controls (Easy to implement from configuration)
+    private final int baseFallInterval = 30;
+    private final int minFallInterval = 5;
 
+    // Sets callback for returning to main menu
     public void setOnBack(Runnable onBack) {
         this.onBack = onBack;
     }
 
+    // Builds the UI, initializes board and starts game loop
     public Parent createContent() {
         gameCanvas = new Canvas(WIDTH * BLOCK_SIZE, HEIGHT * BLOCK_SIZE);
         gc = gameCanvas.getGraphicsContext2D();
         gameCanvas.setFocusTraversable(true);
         gameCanvas.setOnKeyPressed(input);
         gameCanvas.setOnKeyReleased(input);
-
         nextCanvas = new Canvas(6 * BLOCK_SIZE, 6 * BLOCK_SIZE);
         nextGc = nextCanvas.getGraphicsContext2D();
-
         Button backButton = new Button("Back");
         backButton.setOnAction(e -> {
             Alert a = new Alert(Alert.AlertType.CONFIRMATION,
@@ -133,22 +139,20 @@ public class TetrisGame {
             }
         });
         backButton.setFocusTraversable(false);
-
-        root = new HBox(20, gameCanvas, nextCanvas);
+        HBox root = new HBox(20, gameCanvas, nextCanvas);
         root.setAlignment(Pos.CENTER);
-        rootWrapper = new StackPane(root, backButton);
+        // UI components for game board and next piece preview
+        StackPane rootWrapper = new StackPane(root, backButton);
         StackPane.setAlignment(backButton, Pos.TOP_LEFT);
         backButton.setTranslateX(10);
         backButton.setTranslateY(10);
         rootWrapper.setPrefSize(WIDTH * BLOCK_SIZE + (int) nextCanvas.getWidth() + 60,
                 HEIGHT * BLOCK_SIZE + 40);
         rootWrapper.setAlignment(Pos.CENTER);
-
         board = new char[WIDTH][HEIGHT];
         for (int bx = 0; bx < WIDTH; bx++)
             for (int by = 0; by < HEIGHT; by++)
                 board[bx][by] = ' ';
-
         nameField = new TextField();
         nameField.setPromptText("Enter name");
         nameField.setMaxWidth(120);
@@ -166,17 +170,15 @@ public class TetrisGame {
         highScorePane.setMaxWidth(200);
         highScorePane.setVisible(false);
         rootWrapper.getChildren().add(highScorePane);
-
         spawnNewGamePieces();
-
         rootWrapper.sceneProperty().addListener((obs, oldS, newS) -> {
             if (newS != null) gameCanvas.requestFocus();
         });
-
         startGameLoop();
         return rootWrapper;
     }
 
+    // Spawns a new piece and selects next piece
     private void spawnNewGamePieces() {
         currentPiece = rand.nextInt(TETROMINOS.length);
         nextPiece = rand.nextInt(TETROMINOS.length);
@@ -185,9 +187,10 @@ public class TetrisGame {
         y = 0;
     }
 
+    // Starts the main game loop, handles input and timing
     private void startGameLoop() {
-
-        loop = new AnimationTimer() {
+        // Game loop and board state
+        AnimationTimer loop = new AnimationTimer() {
             private long lastFrame = 0;
             private int fallCounter = 0;
             private long startTime = -1;
@@ -197,14 +200,10 @@ public class TetrisGame {
                 if (startTime < 0) startTime = now;
                 if (now - lastFrame < 50_000_000) return;
                 lastFrame = now;
-
                 if (input.consumeRelease(KeyCode.ESCAPE)) paused = !paused;
-
                 double elapsedSec = (now - startTime) / 1_000_000_000.0;
-                // Faster difficulty increase
                 int decrease = (int) (elapsedSec / 3.0);
                 int currentFallInterval = Math.max(minFallInterval, baseFallInterval - decrease);
-
                 if (paused && !gameOver) {
                     renderBoard(gc);
                     drawPiece(gc, currentPiece, rotation, x, y);
@@ -213,7 +212,6 @@ public class TetrisGame {
                     drawPause(gc);
                     return;
                 }
-
                 if (gameOver) {
                     renderBoard(gc);
                     drawGameOver(gc);
@@ -230,7 +228,6 @@ public class TetrisGame {
                     }
                     return;
                 }
-
                 if (input.isPressed(KeyCode.LEFT) && canMove(currentPiece, rotation, x - 1, y)) x--;
                 if (input.isPressed(KeyCode.RIGHT) && canMove(currentPiece, rotation, x + 1, y)) x++;
                 if (input.isPressed(KeyCode.DOWN)) {
@@ -241,14 +238,12 @@ public class TetrisGame {
                     int newRot = (rotation + 1) % 4;
                     if (tryRotate(currentPiece, newRot)) rotation = newRot;
                 }
-
                 fallCounter++;
                 if (fallCounter >= currentFallInterval) {
                     fallCounter = 0;
                     if (canMove(currentPiece, rotation, x, y + 1)) y++;
                     else lockAndSpawn();
                 }
-
                 renderBoard(gc);
                 drawPiece(gc, currentPiece, rotation, x, y);
                 renderNextPiece();
@@ -259,6 +254,7 @@ public class TetrisGame {
         loop.start();
     }
 
+    // Checks if piece can move to new position
     private boolean canMove(int tetromino, int rot, int posX, int posY) {
         for (int px = 0; px < 4; px++)
             for (int py = 0; py < 4; py++) {
@@ -272,6 +268,7 @@ public class TetrisGame {
         return true;
     }
 
+    // Locks current piece into board and spawns new piece
     private void lockAndSpawn() {
         placePiece(currentPiece, rotation, x, y);
         currentPiece = nextPiece;
@@ -285,6 +282,7 @@ public class TetrisGame {
         }
     }
 
+    // Places tetromino blocks into board
     private void placePiece(int tetromino, int rot, int posX, int posY) {
         for (int px = 0; px < 4; px++)
             for (int py = 0; py < 4; py++) {
@@ -297,6 +295,7 @@ public class TetrisGame {
         clearLines();
     }
 
+    // Clears completed lines and updates score
     private void clearLines() {
         int linesCleared = 0;
         for (int by = 0; by < HEIGHT; by++) {
@@ -323,6 +322,7 @@ public class TetrisGame {
         }
     }
 
+    // Calculates rotated index of a tetromino cell
     private int rotate(int px, int py, int r) {
         return switch (r & 3) {
             case 0 -> py * 4 + px;
@@ -333,6 +333,7 @@ public class TetrisGame {
         };
     }
 
+    // Attempts to rotate piece with wall kick logic
     private boolean tryRotate(int tetromino, int newRot) {
         if (canMove(tetromino, newRot, x, y)) return true;
         if (canMove(tetromino, newRot, x - 1, y)) {
@@ -354,6 +355,7 @@ public class TetrisGame {
         return false;
     }
 
+    // Draws the game board and filled cells
     private void renderBoard(GraphicsContext gc) {
         gc.setFill(Color.BLACK);
         gc.fillRect(0, 0, WIDTH * BLOCK_SIZE, HEIGHT * BLOCK_SIZE);
@@ -369,6 +371,7 @@ public class TetrisGame {
                     drawBlock(gc, board[bx][by], bx * BLOCK_SIZE, by * BLOCK_SIZE);
     }
 
+    // Draws the current active tetromino
     private void drawPiece(GraphicsContext gc, int tetromino, int rot, int posX, int posY) {
         for (int px = 0; px < 4; px++)
             for (int py = 0; py < 4; py++) {
@@ -377,6 +380,7 @@ public class TetrisGame {
             }
     }
 
+    // Renders the preview of the next piece
     private void renderNextPiece() {
         nextGc.setFill(Color.DARKGRAY);
         nextGc.fillRect(0, 0, nextCanvas.getWidth(), nextCanvas.getHeight());
@@ -411,12 +415,14 @@ public class TetrisGame {
             }
     }
 
+    // Draws score text
     private void renderScore(GraphicsContext gc) {
         gc.setFill(Color.WHITE);
         gc.setFont(Font.font(20));
         gc.fillText("Score: " + score, 10, 25);
     }
 
+    // Draws current speed text
     private void drawSpeed(GraphicsContext gc, int fallInterval) {
         gc.setFill(Color.WHITE);
         gc.setFont(Font.font(16));
@@ -424,77 +430,64 @@ public class TetrisGame {
         gc.fillText("Speed: " + speedValue, 10, 50);
     }
 
+    // Draws a single tetromino block
     private void drawBlock(GraphicsContext gc, char kind, int x, int y) {
         drawBlock(gc, kind, x, y, BLOCK_SIZE);
     }
 
+    // Draws the game over screen overlay
     private void drawGameOver(GraphicsContext gc) {
         gc.setFill(Color.color(0, 0, 0, 0.6));
         gc.fillRect(0, 0, WIDTH * BLOCK_SIZE, HEIGHT * BLOCK_SIZE);
-
         gc.setFill(Color.RED);
         gc.setFont(Font.font(40));
         gc.fillText("GAME OVER", 40, (HEIGHT * BLOCK_SIZE) / 2.0);
-
         gc.setFont(Font.font(25));
         gc.setFill(Color.WHITE);
         gc.fillText("Final Score: " + score, 60, (HEIGHT * BLOCK_SIZE) / 2.0 + 40);
-
         gc.setFont(Font.font(18));
         gc.fillText("Press R or Enter to restart", 60, (HEIGHT * BLOCK_SIZE) / 2.0 + 80);
     }
 
+    // Draws the pause overlay and text
     private void drawPause(GraphicsContext gc) {
-        // Semi-transparent overlay
         gc.setFill(Color.color(0, 0, 0, 0.5));
         gc.fillRect(0, 0, WIDTH * BLOCK_SIZE, HEIGHT * BLOCK_SIZE);
-
-        // Pause text centered
         gc.setFill(Color.YELLOW);
         gc.setFont(Font.font(40));
         String pauseText = "PAUSED";
-
         Text textNode = new Text(pauseText);
         textNode.setFont(gc.getFont());
         double textWidth = textNode.getLayoutBounds().getWidth();
         double textHeight = textNode.getLayoutBounds().getHeight();
-
         double textX = (WIDTH * BLOCK_SIZE - textWidth) / 2;
         double textY = (HEIGHT * BLOCK_SIZE + textHeight) / 2; // vertical center
         gc.fillText(pauseText, textX, textY);
-
-        // Grey out the score and speed
         gc.setFill(Color.LIGHTGRAY);
         gc.setFont(Font.font(20));
         gc.fillText("Score: " + score, 10, 25);
-
         double speedValue = Math.round((double) baseFallInterval / Math.max(minFallInterval, baseFallInterval) * 10) / 10.0;
         gc.setFont(Font.font(16));
         gc.fillText("Speed: " + speedValue, 10, 50);
     }
 
-
+    // Resets board, score, and state for new game
     private void resetGame() {
         // Clear the board
         for (int bx = 0; bx < WIDTH; bx++)
             for (int by = 0; by < HEIGHT; by++)
                 board[bx][by] = ' ';
-
-        // Reset game variables
         score = 0;
         gameOver = false;
         paused = false;
         highScoreSubmitted = false;
-
-        // Hide high score input and clear the field
         highScorePane.setVisible(false);
         nameField.setText("");
-
-        // Spawn new pieces and refocus canvas
         spawnNewGamePieces();
         gameCanvas.requestFocus();
     }
 
+    // Overloaded block drawer with size parameter
     private void drawBlock(GraphicsContext gc, char kind, int x, int y, int size) {
         Color color = switch (kind) {
             case 'I' -> Color.CYAN;

@@ -17,18 +17,23 @@
 
     <!-- Center Menu -->
     <center>
-        <VBox alignment="CENTER" spacing="20">
-            <Button text="Play Tetris" fx:id="playButton" onAction="#onPlayTetris"/>
-            <Button text="Settings" fx:id="settingsButton" onAction="#onSettings"/>
-            <Button text="High Score" fx:id="highScoreButton" onAction="#onHighScore"/>
-            <Button text="Quit" fx:id="quitButton" onAction="#onQuit"/>
+        <VBox alignment="CENTER" spacing="20" style="-fx-padding: 30;">
+            <Button text="Play Tetris" fx:id="playButton" onAction="#onPlayTetris"
+                    style="-fx-font-size: 16px; -fx-pref-width: 200px; -fx-background-radius: 8;"/>
+            <Button text="Configuration" fx:id="configurationButton" onAction="#OnConfiguration"
+                    style="-fx-font-size: 16px; -fx-pref-width: 200px; -fx-background-radius: 8;"/>
+            <Button text="High Score" fx:id="highScoreButton" onAction="#onHighScore"
+                    style="-fx-font-size: 16px; -fx-pref-width: 200px; -fx-background-radius: 8;"/>
+            <Button text="Quit" onAction="#onQuit"
+                    style="-fx-font-size: 16px; -fx-pref-width: 200px; -fx-background-radius: 8;"/>
         </VBox>
+
     </center>
 
     <!-- Bottom Status -->
     <bottom>
         <Label fx:id="statusText"
-               text="Game made by Aidan Lietz, Fletcher Carlton and Bernie Miall"
+               text="Authors: Aidan Lietz, Fletcher Carlton and Bernie Miall"
                BorderPane.alignment="CENTER"
                style="-fx-padding: 10;"/>
     </bottom>
