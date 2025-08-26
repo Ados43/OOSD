@@ -4,10 +4,7 @@ import javafx.fxml.FXML;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.CheckBox;
-import javafx.scene.control.Label;
-import javafx.scene.control.Slider;
+import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
@@ -178,7 +175,20 @@ public class HelloController {
     //Quit Application
     @FXML
     protected void onQuit() {
-        System.exit(0);
+        // Create a confirmation alert
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Confirm Exit");
+        alert.setHeaderText("Are you sure you want to quit?");
+        alert.setContentText("Choose 'OK' to exit or 'Cancel' to return to the menu.");
+
+        // Show the alert and wait for the user's response
+        alert.showAndWait().ifPresent(response -> {
+            if (response == ButtonType.OK) {
+                // Exit the application if OK is pressed
+                System.exit(0);
+            }
+            // If Cancel is pressed, do nothing (stay in menu)
+        });
     }
 
     // Utility method to reload the main menu
