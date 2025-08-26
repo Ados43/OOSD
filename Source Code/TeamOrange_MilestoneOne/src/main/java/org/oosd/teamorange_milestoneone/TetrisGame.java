@@ -1,7 +1,6 @@
 package org.oosd.teamorange_milestoneone;
 
 import javafx.animation.AnimationTimer;
-import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.canvas.Canvas;
@@ -11,7 +10,6 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
@@ -57,30 +55,6 @@ public class TetrisGame {
                     ' ', ' ', ' ', ' '}
     };
 
-    // Handles keyboard input using ConcurrentHashMap
-    static class KeyInputHandler implements EventHandler<KeyEvent> {
-        private final ConcurrentHashMap<KeyCode, Boolean> keys = new ConcurrentHashMap<>();
-
-        @Override
-        public void handle(KeyEvent e) {
-            if (e.getEventType() == KeyEvent.KEY_PRESSED) keys.put(e.getCode(), true);
-            else if (e.getEventType() == KeyEvent.KEY_RELEASED) keys.put(e.getCode(), false);
-        }
-
-        boolean isPressed(KeyCode code) {
-            return Boolean.TRUE.equals(keys.get(code));
-        }
-
-        boolean consumeRelease(KeyCode code) {
-            Boolean state = keys.get(code);
-            if (state != null && !state) {
-                keys.remove(code);
-                return true;
-            }
-            return false;
-        }
-    }
-
     // Board size and block size constants (easy to implement from configuration page)
     private static final int WIDTH = 12;
     private static final int HEIGHT = 18;
@@ -88,6 +62,8 @@ public class TetrisGame {
 
     // Random generator and input handler
     private final Random rand = new Random();
+
+    // Updated Input Handling
     private final KeyInputHandler input = new KeyInputHandler();
 
     private Canvas gameCanvas, nextCanvas;
