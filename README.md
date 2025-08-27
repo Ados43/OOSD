@@ -189,11 +189,9 @@ The project implements all functional requirements shown in the demo video for a
 
 ## Software Architecture (UML)
 
-### PM-5.1 Class Diagram
+### PM-5.1 Activity Diagram
 
-### PM-5.2 Activity Diagram
-
-### PM-5.3 User Case Diagram
+### PM-5.2 Use Case Diagram
 
 ---
 
