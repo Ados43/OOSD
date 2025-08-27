@@ -54,7 +54,6 @@ The project implements all functional requirements shown in the demo video for a
 
 | FR-ID    | Item Name            |                  Dependencies                   |                                     Precondition                                      | Function Calls                                                                                                                                  |                       Postcondition                       | Test Case ID  | 
 |:---------|:---------------------|:-----------------------------------------------:|:-------------------------------------------------------------------------------------:|:------------------------------------------------------------------------------------------------------------------------------------------------|:---------------------------------------------------------:|:-------------:|
-| FR-00    | -                    |                        -                        |                                           -                                           |                                                                                                                                                 |                                                           |               |      -       |
 | FR-1.1   | mainView             | FR-1.1.1 <br>FR-1.1.2 <br>FR-1.1.3 <br>FR-1.1.4 |                        viewChangeModule.mainView() <br>noError                        | MainView() <br>MainView.refresh()                                                                                                               |                        isMainView                         |               |           |      -       |
 | FR-1.1.1 | mainPlayBtn          | FR-1.1 <br>FR-1.2 <br>FR-3.2 <br>FR-3 <br>FR-4  |                                isMainView <br>noError                                 | viewChangeModule.playView() <br>gameConfigModule.refresh() <br>gameStateModule.new() <br>gameRenderModule.new() <br>systemDisplayModule.start() |           isPlayView <br> isPlaying <br>noError           |               |     -     |      -       |
 | FR-1.1.2 | mainConfigBtn        |                        -                        |                                isMainView <br>noError                                 | viewChangeModule.configView() <br>systemSaveModule.Config.refresh()                                                                             |                 isConfigView <br>noError                  |       -       |     -     |      -       |
@@ -90,7 +89,6 @@ The project implements all functional requirements shown in the demo video for a
 
 | FR-ID  | Item Name          | Dependencies | Precondition | Function Calls | Postcondition | Test Case ID | 
 |:-------|:-------------------|:------------:|:------------:|:--------------:|:-------------:|:------------:|
-| FR-00  | -                  |      -       |      -       |                |       -       |      -       | 
 | FR-2.1 | keyUpInput         |      -       |              |                |       -       |      -       |  
 | FR-2.2 | keyDownInput       |      -       |              |                |       -       |      -       |  
 | FR-2.3 | keyLeftInput       |      -       |              |                |       -       |      -       |  
@@ -107,7 +105,6 @@ The project implements all functional requirements shown in the demo video for a
 
 | FR-ID  | Item Name                 | Dependencies | Precondition | Function Calls | Postcondition | Test Case ID |
 |:-------|:--------------------------|:------------:|:------------:|:--------------:|:-------------:|:------------:|
-| FR-00  | -                         |      -       |      -       |                |       -       |      -       |    
 | FR-3.1 | systemSaveModule          |      -       |              |                |       -       |      -       |     
 | FR-3.2 | systemDisplayGameModule   |      -       |              |                |       -       |      -       |    
 | FR-3.3 | systemConfigurationModule |      -       |              |                |       -       |      -       |     
@@ -120,7 +117,6 @@ The project implements all functional requirements shown in the demo video for a
 
 | FR-ID    | Item Name                | Dependencies | Precondition | Function Calls | Postcondition | Test Case ID |
 |:---------|:-------------------------|:------------:|:------------:|:--------------:|:-------------:|:------------:|
-| FR-00    | -                        |      -       |      -       |                |       -       |      -       |     
 | FR-4.1   | gameConfigModule         |      -       |              |                |       -       |      -       |    
 | FR-4.2   | gameRenderModule         |      -       |              |                |       -       |      -       |      
 | FR-4.3   | gameShapeSelectionModule |      -       |              |                |       -       |      -       |     
@@ -151,8 +147,7 @@ The project implements all functional requirements shown in the demo video for a
 ## Role Descriptions (TM)
 
 | TM-ID  |     Role / Title     |                                   Responsibilities                                   | Assigned To | 
-|:-------|:--------------------:|:------------------------------------------------------------------------------------:|:-----------:|
-| TM-00  |          -           |                                          -                                           |      -      |    
+|:-------|:--------------------:|:------------------------------------------------------------------------------------:|:-----------:| 
 | TM-01  |   Project Manager    |    Define the project scope, assumptions, constraints, and manage scope changes.     |      -      |
 | TM-02  | Requirements Analyst | Identify functional and non-functional requirements based on the initial demo video. |      -      |
 | TM-03  |     UML Designer     |                  Create UML documentation (use case, activity etc.)                  |      -      |     
