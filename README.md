@@ -154,10 +154,10 @@ The project implements all functional requirements shown in the demo video for a
 |:-------|:--------------------:|:------------------------------------------------------------------------------------:|:-----------:|
 | TM-00  |          -           |                                          -                                           |      -      |    
 | TM-01  |   Project Manager    |    Define the project scope, assumptions, constraints, and manage scope changes.     |      -      |
-| TM-03  | Requirements Analyst | Identify functional and non-functional requirements based on the initial demo video. |      -      |
-| TM-06  |     UML Designer     |                  Create UML documentation (use case, activity etc.)                  |      -      |     
-| TM-06  |      Developer       |                Write and integrate Java code following PM standards.                 |      -      |
-| TM-08  |   Demo Coordinator   |                         Record and deliver final demo video.                         |      -      |    
+| TM-02  | Requirements Analyst | Identify functional and non-functional requirements based on the initial demo video. |      -      |
+| TM-03  |     UML Designer     |                  Create UML documentation (use case, activity etc.)                  |      -      |     
+| TM-04  |      Developer       |                Write and integrate Java code following PM standards.                 |      -      |
+| TM-05  |   Demo Coordinator   |                         Record and deliver final demo video.                         |      -      |    
 
 ---
 
