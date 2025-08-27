@@ -10,7 +10,13 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
+import java.util.List;
+
 public class HelloController {
+
+    // Record type to store player high scores
+    public record HighScore(String player, int score) {
+    }
 
     // References to main menu buttons from FXML
     @FXML
@@ -133,31 +139,33 @@ public class HelloController {
     protected void onHighScore() {
         Stage stage = (Stage) highScoreButton.getScene().getWindow();
 
-        // Create a table for player scores
-        javafx.scene.control.TableView<String[]> table = new javafx.scene.control.TableView<>();
-        table.setColumnResizePolicy(javafx.scene.control.TableView.CONSTRAINED_RESIZE_POLICY);
+        // Create a table for HighScore records
+        TableView<HighScore> table = new TableView<>();
+        table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
         table.setMaxWidth(400);
 
-        // Define table columns: Player and Score
-        javafx.scene.control.TableColumn<String[], String> nameCol = new javafx.scene.control.TableColumn<>("Player");
-        nameCol.setCellValueFactory(data -> new javafx.beans.property.SimpleStringProperty(data.getValue()[0]));
-        javafx.scene.control.TableColumn<String[], String> scoreCol = new javafx.scene.control.TableColumn<>("Score");
-        scoreCol.setCellValueFactory(data -> new javafx.beans.property.SimpleStringProperty(data.getValue()[1]));
+        // Define columns
+        TableColumn<HighScore, String> nameCol = new TableColumn<>("Player");
+        nameCol.setCellValueFactory(data -> new javafx.beans.property.SimpleStringProperty(data.getValue().player()));
+        TableColumn<HighScore, String> scoreCol = new TableColumn<>("Score");
+        scoreCol.setCellValueFactory(data -> new javafx.beans.property.SimpleStringProperty(String.valueOf(data.getValue().score())));
+
         table.getColumns().setAll(nameCol, scoreCol);
 
-        // Dummy high score data
-        table.getItems().addAll(
-                new String[]{"Aidan", "1200"},
-                new String[]{"Fletcher", "1100"},
-                new String[]{"Bernie", "1000"},
-                new String[]{"Sam", "950"},
-                new String[]{"Alex", "900"},
-                new String[]{"Jordan", "850"},
-                new String[]{"Chris", "800"},
-                new String[]{"Taylor", "750"},
-                new String[]{"Jamie", "700"},
-                new String[]{"Morgan", "650"}
+        // Add dummy high score data using records
+        List<HighScore> scores = List.of(
+                new HighScore("Aidan", 1200),
+                new HighScore("Fletcher", 1100),
+                new HighScore("Bernie", 1000),
+                new HighScore("Sam", 950),
+                new HighScore("Alex", 900),
+                new HighScore("Jordan", 850),
+                new HighScore("Chris", 800),
+                new HighScore("Taylor", 750),
+                new HighScore("Jamie", 700),
+                new HighScore("Morgan", 650)
         );
+        table.getItems().addAll(scores);
 
         // Back button to return to menu
         Button backButton = new Button("Back");
