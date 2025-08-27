@@ -141,8 +141,6 @@ The project implements all functional requirements shown in the demo video for a
 | NFR-REL | Reliability | Score and state consistency across app focus changes.                            | No piece duplication or score/timer changes when app focus changes.                  | 
 | NFR-PER | Performance | Stable frame rate.                                                               | Frame rate stays within 5 frames of set value.                                       | 
 | NFR-SEC | Security    | No unhandled exceptions.                                                         | 0 unhandled exceptions crash the app.                                                | 
-| NFR-LEG | Legal       | Only permitted assets with propper licensing.                                    | License file included.                                                               |
-| NFR-COM | Compliance  | Meets assignment rubric, uni policies, and target runtime.                       | Rubric checklist complete, academic integrity check complete. Builds to spec.        |
 
 ## Role Descriptions (TM)
 
