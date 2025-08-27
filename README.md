@@ -1,6 +1,6 @@
 # Project Plan
 
-## PM-1.1 Project Scope
+## PM-1.1 Work Breakdown Structure
 
 The project implements all functional requirements shown in the demo video for a JavaFX Tetris game and packages the result as portfolio-ready material. Work covers project planning, implementation, testing, and submission only.
 
@@ -40,9 +40,17 @@ The project implements all functional requirements shown in the demo video for a
 
 ## PM-1.2 Deliverables (D)
 
-| D-ID | Deliverable                               | High-Level Description                        | Input Work Products | Dependencies | Milestone        | Status |  
-|:-----|-------------------------------------------|-----------------------------------------------|---------------------|--------------|------------------|:------:|
-| D-01 | Project Scope Description                 | Brief activity and impact statement.          | WP-01               |              | PM-Documentation |  Done  |
+| D-ID | Deliverable                 | High-Level Description                                      | PM-Link | Dependencies |
+|:-----|-----------------------------|-------------------------------------------------------------|---------|--------------|
+| D-01 | Work Breakdown Structure    | Brief activity and impact statement.                        | PM-1.1  |              |
+| D-02 | Deliverables List           | List of work products.                                      | PM-1.2  | PM-1.1       |
+| D-03 | Functional Requirements     | Demo video user stories.                                    | PM-2    | PM-1.1       |
+| D-04 | Non-Functional Requirements | Usability, reliability, performance, security requirements. | PM-3    | PM-2         |
+| D-05 | Peer Reviews                | Self and group reviews.                                     | PM-4    | PM-6         |
+| D-06 | Software Architecture       | UML Documentation                                           | PM-5    | PM-3         |
+| D-07 | Implementation              | Output codebase.                                            | PM-6    | PM-5         |
+| D-08 | Demo Video                  | Final PDF document.                                         | PM-7    | PM-6         |
+
 
 ---
 
@@ -52,84 +60,61 @@ The project implements all functional requirements shown in the demo video for a
 
 #### FR-1 Screen Views
 
-| FR-ID    | Item Name            |                  Dependencies                   |                                     Precondition                                      | Function Calls                                                                                                                                  |                       Postcondition                       | Test Case ID  | 
-|:---------|:---------------------|:-----------------------------------------------:|:-------------------------------------------------------------------------------------:|:------------------------------------------------------------------------------------------------------------------------------------------------|:---------------------------------------------------------:|:-------------:|
-| FR-1.1   | mainView             | FR-1.1.1 <br>FR-1.1.2 <br>FR-1.1.3 <br>FR-1.1.4 |                        viewChangeModule.mainView() <br>noError                        | MainView() <br>MainView.refresh()                                                                                                               |                        isMainView                         |               |           |      -       |
-| FR-1.1.1 | mainPlayBtn          | FR-1.1 <br>FR-1.2 <br>FR-3.2 <br>FR-3 <br>FR-4  |                                isMainView <br>noError                                 | viewChangeModule.playView() <br>gameConfigModule.refresh() <br>gameStateModule.new() <br>gameRenderModule.new() <br>systemDisplayModule.start() |           isPlayView <br> isPlaying <br>noError           |               |     -     |      -       |
-| FR-1.1.2 | mainConfigBtn        |                        -                        |                                isMainView <br>noError                                 | viewChangeModule.configView() <br>systemSaveModule.Config.refresh()                                                                             |                 isConfigView <br>noError                  |       -       |     -     |      -       |
-| FR-1.1.3 | mainScoreBtn         |                        -                        |                                isMainView <br>noError                                 | viewChangeModule.scoreView()  <br>systemSaveModule.Leaderboard.refresh()                                                                        |                  isScoreView <br>noError                  |       -       |     -     |      -       |
-| FR-1.1.4 | mainExitBtn          |                        -                        |                                isMainView <br>noError                                 | changeViewModule.exit()                                                                                                                         |                      EXIT_CONDITION                       |       -       |     -     |      -       |
-| FR-1.2   | playView             |                        -                        |                                                                                       |                                                                                                                                                 |                                                           |       -       |     -     |      -       |
-| FR-1.2.1 | playGameView         |                        -                        |                                                                                       |                                                                                                                                                 |                                                           |       -       |     -     |      -       |
-| FR-1.2.2 | playScoreView        |                        -                        |                                                                                       |                                                                                                                                                 |                                                           |       -       |     -     |      -       |
-| FR-1.2.3 | playExitBtn          |                        -                        |                                                                                       |                                                                                                                                                 |                                                           |       -       |     -     |      -       |
-| FR-1.2.4 | playExitDialog       |                        -                        |                                                                                       |                                                                                                                                                 |                                                           |       -       |     -     |      -       |
-| FR-1.2.5 | playNewScoreDialog   |                        -                        |                                                                                       |                                                                                                                                                 |                                                           |       -       |     -     |      -       |
-| FR-1.3   | configView           |                        -                        |    viewChangeModule.configView() <br>systemSaveModule.Config.refresh() <br>noError    | ConfigView() <br>ConfigView.refresh()                                                                                                           |                 isConfigView <br>noError                  |       -       |     -     |      -       |
-| FR-1.3.1 | configWidthView      |                        -                        |          isConfigView <br>systemConfigModule.WidthState.return() <br>noError          | systemConfigModule.WeightState.set(x)                                                                                                           |         systemConfigModule.hasChanges <br>noError         |       -       |     -     |      -       |
-| FR-1.3.2 | configHeightView     |                        -                        |         isConfigView <br>systemConfigModule.HeightState.return() <br>noError          | systemConfigModule.HeightState.set(x)                                                                                                           |         systemConfigModule.hasChanges <br>noError         |       -       |     -     |      -       |
-| FR-1.3.3 | configDifficultyView |                        -                        |       isConfigView <br>systemConfigModule.DifficultyState.return() <br>noError        | systemConfigModule.DifficultyState.set(x)                                                                                                       |         systemConfigModule.hasChanges <br>noError         |       -       |     -     |      -       |
-| FR-1.3.4 | configMusicView      |                        -                        |          isConfigView <br>systemConfigModule.MusicState.return() <br>noError          | systemConfigModule.MusicState.toggle()                                                                                                          |         systemConfigModule.hasChanges <br>noError         |       -       |     -     |      -       |
-| FR-1.3.5 | configAiView         |                        -                        |           isConfigView <br>systemConfigModule.AIState.return() <br>noError            | systemConfigModule.AIState.toggle()                                                                                                             |         systemConfigModule.hasChanges <br>noError         |       -       |     -     |      -       |
-| FR-1.3.6 | configExtendedView   |                        -                        |        isConfigView <br>systemConfigModule.ExtendedState.return() <br>noError         | systemConfigModule.ExtendedState.toggle()                                                                                                       |         systemConfigModule.hasChanges <br>noError         |       -       |     -     |      -       |
-| FR-1.3.7 | configExitBtn        |                        -                        |                               isConfigView <br>noError                                | systemConfigModule.saveFile() <br>viewChangeModule.mainView()                                                                                   | isMenuView <br>systemConfigModule.hasNoChange <br>noError |       -       |     -     |      -       |
-| FR-1.4   | scoreView            |                        -                        | viewChangeModule.scoreView() <br> systemSaveModule.Leaderboard.refresh() <br> noError | ScoreView() <br>ScoreView.refresh()                                                                                                             |                  isScoreView <br>noError                  |       -       |     -     |      -       |
-| FR-1.4.1 | scoreTopScoresView   |                        -                        |          isScoreView <br> systemLeaderboardModule.returnScores() <br>noError          | systemLeaderboardModule.returnScores()                                                                                                          |                 scoresVisible <br>noError                 |       -       |     -     |      -       |
-| FR-1.4.2 | scoreTopNamesView    |                        -                        |          isScoreView <br> systemLeaderboardModule.returnNames() <br>noError           | systemLeaderboardModule.returnNames()                                                                                                           |                 namesVisible <br>noError                  |       -       |     -     |      -       |
-| FR-1.4.3 | scoreExitBtn         |                        -                        |                                isScoreView <br>noError                                | viewChangeModule.mainView()                                                                                                                     |                  isMainView <br>noError                   |       -       |     -     |      -       |
-| FR-1.5   | splashView           |                        -                        |                                viewChangeModule.init()                                | SplashView() <br>SplashView.refresh() <br>splashView.wait() <br>viewChangeModule.mainView()                                                     |                  isMainView <br>noError                   |       -       |     -     |      -       |
-| FR-1.5.1 | splashCodeView       |                        -                        |                               isSplashView <br>noError                                | SplashView.returnCode()                                                                                                                         |               splashCodeVisible <br>noError               |       -       |     -     |      -       |
-| FR-1.5.2 | splashAuthorView     |                        -                        |                               isSplashView <br>noError                                | SplashView.returnAuthor()                                                                                                                       |              splashAuthorVisible <br>noError              |       -       |     -     |      -       |
-| FR-1.5.3 | splashTitleView      |                        -                        |                               isSplashView <br>noError                                | splashView.returnTitle()                                                                                                                        |              splashTitleVisible <br>noError               |       -       |     -     |      -       |
-| FR-1.5.4 | splashPositionView   |                        -                        |                               isSplashView <br>noError                                | SplashView.center()                                                                                                                             |             splashPositionCenter <br>noError              |       -       |     -     |      -       |
+| FR-ID    | Item Name            | Description                                                                                                                                         | Precondition | Postcondition  |   Status    | 
+|:---------|:---------------------|:----------------------------------------------------------------------------------------------------------------------------------------------------|:------------:|:--------------:|:-----------:|
+| FR-1.1.1 | mainView             | Displays the menu view with buttons to start a new game, change configuration settings, view high-scores, and close the application.                |  App starts  |  Menu visible  |  COMPLETE   |    
+| FR-1.1.1 | mainPlayBtn          | When the player uses the play button, the menu view closes, the game view opens, and a new game starts.                                             | Menu visible |  Game running  |  COMPLETE   |    
+| FR-1.1.2 | mainConfigBtn        | When the player clicks the configuration button, the menu view closes and the configuration view opens.                                             | Menu visible |  Config open   |  COMPLETE   |    
+| FR-1.1.3 | mainScoreBtn         | When the player clicks the high-score button, the menu view closes and the high-score view opens                                                    | Menu visible |  Scores open   |  COMPLETE   |     
+| FR-1.1.4 | mainExitBtn          | When the player clicks the high-score button, the menu view closes and the high-score view opens.                                                   | Menu visible |   App closed   |  COMPLETE   |     
+| FR-1.2   | playView             | Displays  and starts the game play view, including the game board, score, and an exit button.                                                       | Menu visible |  Game visible  |  COMPLETE   |    
+| FR-1.2.1 | playGameView         | Displays  and starts the game play view, including the game board, score, and an exit button.                                                       | Game running |  Gameplay on   |  COMPLETE   |     
+| FR-1.2.2 | playScoreView        | The game board displays the play area at the configured settings and renders tetrominoes real-time within the moveable play area.                   | Game running |  Score shown   |  COMPLETE   |     
+| FR-1.2.3 | playExitBtn          | When the player clicks the Exit button, the game pauses and a confirmation dialog opens.                                                            | Game running |  Dialog Open   |  COMPLETE   |     
+| FR-1.2.4 | playExitDialog       | When the player clicks the confirm option in the exit confirmation, the dialog closes, game ends, play view closes, and the menu view opens.        | Dialog open  |  Menu Visible  |  COMPLETE   |     
+| FR-1.2.5 | playNewScoreDialog   | When the player achieves a high score prompt for name.                                                                                              |  Game over   |  Name Entered  |  COMPLETE   |     
+| FR-1.3   | configView           | Displays the configuration view with options for game board size (width × height), difficulty level, music option, AI option, Extended mode option. | Menu visible |  Config open   |  COMPLETE   |     
+| FR-1.3.1 | configWidthView      | When the player changes the width field, the in-game width setting is updated.                                                                      | Config open  |   Width set    | PLACEHOLDER |     
+| FR-1.3.2 | configHeightView     | When the player changes the height field, the in-game height setting is updated.                                                                    | Config open  |   Height set   | PLACEHOLDER |     
+| FR-1.3.3 | configDifficultyView | When the player adjusts the slider, the in-game difficulty level is updated.                                                                        | Config open  | Difficulty Set | PLACEHOLDER |     
+| FR-1.3.4 | configMusicView      | When the player switches the toggle option it enables or disables the background music.                                                             | Config open  |   Music Set    | PLACEHOLDER |     
+| FR-1.3.5 | configAiView         | When the player switches the AI toggle option it enables or disables the in-game AI setting.                                                        | Config open  |     AI set     | PLACEHOLDER |     
+| FR-1.3.6 | configExtendedView   | When the player switches the Extended toggle option it enables or disables the in-game extended setting.                                            | Config open  |  Extended set  | PLACEHOLDER |     
+| FR-1.3.7 | configExitBtn        | When the player clicks the Back button, the configuration view closes and the menu view opens.                                                      | Config open  |  Menu Visible  |  COMPLETE   |     
+| FR-1.4   | scoreView            | Displays the high-score view and loads, then displays ten names and scores.                                                                         | Menu Visible |  Scores open   |  COMPLETE   |     
+| FR-1.4.1 | scoreTopScoresView   | The window displays scores next to each name.                                                                                                       | Scores open  |  Scores shown  |  COMPLETE   |     
+| FR-1.4.2 | scoreTopNamesView    | The window loads and displays the top 10 names from the high-score file.                                                                            | Scores open  |  Names shown   |  COMPLETE   |     
+| FR-1.4.3 | scoreExitBtn         | When the player clicks the Back button, the high-score view closes and the menu view opens.                                                         | Scores open  |  Menu visible  |  COMPLETE   |     
+| FR-1.5   | splashView           | Displays a centered splash window containing the course code, authors, game title, and application details (language and version).                  |  App starts  |  Menu visible  |  COMPLETE   |     
+   
 
 ### PM-2.2 Player Controls
 
 #### FR-2 Keyboard Inputs
 
-| FR-ID  | Item Name          | Dependencies | Precondition | Function Calls | Postcondition | Test Case ID | 
-|:-------|:-------------------|:------------:|:------------:|:--------------:|:-------------:|:------------:|
-| FR-2.1 | keyUpInput         |      -       |              |                |       -       |      -       |  
-| FR-2.2 | keyDownInput       |      -       |              |                |       -       |      -       |  
-| FR-2.3 | keyLeftInput       |      -       |              |                |       -       |      -       |  
-| FR-2.4 | keyRightInput      |      -       |              |                |       -       |      -       |  
-| FR-2.5 | keyPInput          |      -       |              |                |       -       |      -       | 
-| FR-2.6 | keyEscInput        |      -       |              |                |       -       |      -       |   
-| FR-2.7 | keyboardScoreInput |      -       |              |                |       -       |      -       |   
+| FR-ID  | Item Name          |                                                   Description                                                    | Precondition  | Postcondition |  Status  |  
+|:-------|:-------------------|:----------------------------------------------------------------------------------------------------------------:|:-------------:|:-------------:|:--------:|
+| FR-2   | Input              |                Defines the keyboard input controls for rotating, moving, and changing game state.                | Game running  | Input handled | COMPLETE |     
+| FR-2.1 | keyUpInput         |                        When the player presses the Up key, the current tetromino rotates.                        | Game running  | Piece rotated | COMPLETE |      
+| FR-2.2 | keyDownInput       |                    When the player presses the Down key, the current tetromino falls faster.                     | Game running  |  piece moved  | COMPLETE |       
+| FR-2.3 | keyLeftInput       |                When the player presses the Left key, the current tetromino attempts to move left.                | Game running  |  Piece moved  | COMPLETE |       
+| FR-2.4 | keyRightInput      |               When the player presses the right key, the current tetromino attempts to move right.               | Game running  |  Piece moved  | COMPLETE |     
+| FR-2.5 | keyPInput          |             When the player presses the 'p' key, the game pauses and a paused message is displayed.              | Game running  |  Game paused  | COMPLETE |     
+| FR-2.6 | keyEscInput        | When the player presses the 'esc' key, a confirmation dialog opens and the game is paused if it is not already.  | Game running  |  Dialog open  | COMPLETE |      
 
 ### PM-2.3 Application Behaviour
 
-#### PM-2.3.1 System Behaviour
-
-##### FR-3 System Module
-
-| FR-ID  | Item Name                 | Dependencies | Precondition | Function Calls | Postcondition | Test Case ID |
-|:-------|:--------------------------|:------------:|:------------:|:--------------:|:-------------:|:------------:|
-| FR-3.1 | systemSaveModule          |      -       |              |                |       -       |      -       |     
-| FR-3.2 | systemDisplayGameModule   |      -       |              |                |       -       |      -       |    
-| FR-3.3 | systemConfigurationModule |      -       |              |                |       -       |      -       |     
-| FR-3.4 | systemLeaderboardModule   |      -       |              |                |       -       |      -       |    
-| FR-3.5 | viewChangeModule          |      -       |              |                |       -       |      -       |    
-
-#### PM-2.3.2 Game Behaviour
-
-##### FR-4 Game Modules
-
-| FR-ID    | Item Name                | Dependencies | Precondition | Function Calls | Postcondition | Test Case ID |
-|:---------|:-------------------------|:------------:|:------------:|:--------------:|:-------------:|:------------:|
-| FR-4.1   | gameConfigModule         |      -       |              |                |       -       |      -       |    
-| FR-4.2   | gameRenderModule         |      -       |              |                |       -       |      -       |      
-| FR-4.3   | gameShapeSelectionModule |      -       |              |                |       -       |      -       |     
-| FR-4.4   | gameShapeMovementModule  |      -       |              |                |       -       |      -       |     
-| FR-4.5   | gameStateModule          |      -       |              |                |       -       |      -       |     
-| FR-4.5.1 | gamePauseState           |      -       |              |                |       -       |      -       |     
-| FR-4.5.2 | gameOverState            |      -       |              |                |       -       |      -       |    
-| FR-4.5.3 | gameNewScoreState        |      -       |              |                |       -       |      -       |     
-| FR-4.6   | gameRowUpdate            |      -       |              |                |       -       |      -       |     
-| FR-4.6.1 | gameSingleUpdate         |      -       |              |                |       -       |      -       |     
-| FR-4.6.2 | gameDoubleUpdate         |      -       |              |                |       -       |      -       |     
-| FR-4.6.3 | gameTripleUpdate         |      -       |              |                |       -       |      -       |     
-| FR-4.6.4 | gameTetrisUpdate         |      -       |              |                |       -       |      -       |      
+| FR-ID  | Item Name                |                                                           Description                                                           | Precondition | Postcondition |  Status   |
+|:-------|:-------------------------|:-------------------------------------------------------------------------------------------------------------------------------:|:------------:|:-------------:|:---------:| 
+| FR-3   | TetrisApp                |                            Defines the gameplay logic, including scoring, pausing, and tetrominoes.                             | Game running |  Game active  | COMPLETE  |        
+| FR-3.1 | gameShapeSelectionModule |    Tetrominoes are modeled in the seven standard shapes, represented by the letters I, O, T, S, Z, J, L. Selected at random.    | Game running |  Piece shown  | COMPLETE  |         
+| FR-3.4 | gamePauseState           |                           When the game is paused, the game actions stop and a message is displayed.                            | Game running |  Game paused  | COMPLETE  |         
+| FR-3.5 | gameOverState            |                                         When tetrominoes land while spawning end game.                                          | Game running |   Game over   | COMPLETE  |        
+| FR-3.6 | gameRowUpdate            | When the player completes a row of tetrominoes, it removes the row and increases the score based on the number of rows removed. | Game running | Score updated | COMPLETE  |        
+| FR-3.6 | gameSingleUpdate         |                                   When one row is removed the score increases by 100 points.                                    | Game running | Score updated | COMPLETE  |          
+| FR-3.7 | gameDoubleUpdate         |                                  When two rows are removed the score increases by 300 points.                                   | Game running | Score updated | COMPLETE  |          
+| FR-3.8 | gameTripleUpdate         |                                  When two rows are removed the score increases by 300 points.                                   | Game running | Score updated | COMPLETE  |          
+| FR-3.9 | gameTetrisUpdate         |                                 When four rows are removed the score increases by 1200 points.                                  | Game running | Score updated | COMPLETE  |          
 
 ---
 
@@ -154,9 +139,9 @@ The project implements all functional requirements shown in the demo video for a
 
 ---
 
-### Peer Review Process
+## Peer Review Process
 
-#### PM-4.1 Self Reviews
+### PM-4.1 Self Reviews
 
     What was your primary role in this milestone?
     
@@ -168,14 +153,7 @@ The project implements all functional requirements shown in the demo video for a
     
     On a scale of 1 to 10, how would you rate your overall contribution to the team?
 
-#### PM-4.2 Team Member Reviews
-
-| Date  | Review Of  | Key Contributions | Professionalism | Suggestion | Submitted By |
-|:------|:----------:|:-----------------:|:---------------:|:----------:|:------------:|
-| -     |     -      |         -         |        -        |     -      |      -       |
-|       |            |                   |                 |            |              |
-
-#### PM-4.3 Self Reflection
+### PM-4.2 Self Reflection
 
     Was the peer review process fair and helpful in identifying your contributions and role within the team?
     
