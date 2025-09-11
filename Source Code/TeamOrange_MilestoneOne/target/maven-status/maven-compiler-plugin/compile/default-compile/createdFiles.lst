@@ -5,6 +5,7 @@ org\oosd\teamorange_milestoneone\HighScoreRow.class
 org\oosd\teamorange_milestoneone\TetrisGame.class
 org\oosd\teamorange_milestoneone\HelloApplication.class
 org\oosd\teamorange_milestoneone\TetrisGame$KeyInputHandler.class
+org\oosd\teamorange_milestoneone\MediaManager.class
 module-info.class
 org\oosd\teamorange_milestoneone\Launcher.class
 org\oosd\teamorange_milestoneone\HighScoreStore.class

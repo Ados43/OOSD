@@ -11,6 +11,7 @@ module org.oosd.teamorange_milestoneone {
     requires org.kordamp.bootstrapfx.core;
     requires eu.hansolo.tilesfx;
     requires com.almasb.fxgl.all;
+    requires javafx.media;
 
     opens org.oosd.teamorange_milestoneone to javafx.fxml, com.google.gson;
     exports org.oosd.teamorange_milestoneone;

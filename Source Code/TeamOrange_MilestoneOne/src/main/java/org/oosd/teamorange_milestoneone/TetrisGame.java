@@ -6,10 +6,7 @@ import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.HBox;
@@ -77,6 +74,22 @@ public class TetrisGame {
         this.highScoreStore = store;
     }
 
+    private MediaManager mediaManager;
+
+    public void setMediaManager(MediaManager mm) {
+        this.mediaManager = mm;
+    }
+
+    // HUD elements
+    private Label playerLabel;
+    private Label scoreLabel;
+    private Label levelLabel;
+    private Label linesLabel;
+
+    // Track total lines cleared
+    private int totalLinesCleared = 0;
+
+
     private final ConcurrentHashMap<KeyCode, Boolean> keys = new ConcurrentHashMap<>();
     private static final int WIDTH = 12;
     private static final int HEIGHT = 18;
@@ -134,9 +147,11 @@ public class TetrisGame {
         gameCanvas.setOnKeyPressed(input);
         gameCanvas.setOnKeyReleased(input);
 
+        // preview canvas
         nextCanvas = new Canvas(6 * BLOCK_SIZE, 6 * BLOCK_SIZE);
         nextGc = nextCanvas.getGraphicsContext2D();
 
+        // --- Back button ---
         Button backButton = new Button("Back");
         backButton.setOnAction(e -> {
             Alert a = new Alert(Alert.AlertType.CONFIRMATION,
@@ -149,39 +164,85 @@ public class TetrisGame {
         });
         backButton.setFocusTraversable(false);
 
-        rootRow = new HBox(20, gameCanvas, nextCanvas);
+        // --- HUD labels ---
+        playerLabel = new Label("Player: Human");
+        scoreLabel = new Label("Score: 0");
+        levelLabel = new Label("Level: 1");
+        linesLabel = new Label("Lines: 0");
+
+
+        VBox hudBox = new VBox(10, playerLabel, scoreLabel, levelLabel, linesLabel);
+        hudBox.setAlignment(Pos.TOP_CENTER);
+
+
+        // --- mute buttons ---
+        Button muteMusicBtn = new Button(mediaManager != null && mediaManager.isMusicMuted() ? "Unmute Music" : "Mute Music");
+        muteMusicBtn.setFocusTraversable(false);
+        muteMusicBtn.setOnAction(e -> {
+            if (mediaManager.isMusicMuted()) {
+                mediaManager.setMusicMuted(false);
+                mediaManager.playBgMusic();
+            } else {
+                mediaManager.setMusicMuted(true);
+                mediaManager.stopBgMusic();
+            }
+            muteMusicBtn.setText(mediaManager.isMusicMuted() ? "Unmute Music" : "Mute Music");
+            gameCanvas.requestFocus();
+        });
+
+        Button muteSfxBtn = new Button(mediaManager != null && mediaManager.isSfxMuted() ? "Unmute SFX" : "Mute SFX");
+        muteSfxBtn.setFocusTraversable(false);
+        muteSfxBtn.setOnAction(e -> {
+            if (mediaManager != null) {
+                mediaManager.toggleSfxMute();
+                muteSfxBtn.setText(mediaManager.isSfxMuted() ? "Unmute SFX" : "Mute SFX");
+            }
+            gameCanvas.requestFocus(); // keep arrows in game
+        });
+
+        // Mute buttons as part of side panel
+        VBox muteBox = new VBox(5, muteMusicBtn, muteSfxBtn);
+        muteBox.setAlignment(Pos.TOP_CENTER);
+
+// Right panel: next piece + HUD + mute buttons
+        VBox rightPanel = new VBox(20, nextCanvas, hudBox, muteBox);
+        rightPanel.setAlignment(Pos.TOP_CENTER);
+
+        rootRow = new HBox(40, gameCanvas, rightPanel); // add spacing between board + side panel
         rootRow.setAlignment(Pos.CENTER);
 
-        // UI components for game board and next piece preview
         rootWrapper = new StackPane(rootRow, backButton);
         StackPane.setAlignment(backButton, Pos.TOP_LEFT);
         backButton.setTranslateX(10);
         backButton.setTranslateY(10);
-        // Pref size will be computed responsively; see resizeToAvailable(...)
+
 
         rootWrapper.setAlignment(Pos.CENTER);
 
+        // init board
         board = new char[WIDTH][HEIGHT];
         for (int bx = 0; bx < WIDTH; bx++)
             for (int by = 0; by < HEIGHT; by++)
                 board[bx][by] = ' ';
 
+        // High score submission
         nameField = new TextField();
         nameField.setPromptText("Enter name");
         nameField.setMaxWidth(120);
         Button submitHS = new Button("Submit");
+        submitHS.setFocusTraversable(false);
         submitHS.setOnAction(e -> {
             String name = nameField.getText().trim();
             if (!name.isEmpty()) {
                 if (highScoreStore != null) {
                     highScoreStore.add(name, score);
-                    // show Top 10 quickly, then hide the panel
                     String msg = highScoreStore.formatTop10();
-                    new javafx.scene.control.Alert(javafx.scene.control.Alert.AlertType.INFORMATION, msg).showAndWait();
+                    new Alert(Alert.AlertType.INFORMATION, msg).showAndWait();
                 }
                 highScorePane.setVisible(false);
                 highScoreSubmitted = true;
             }
+            gameCanvas.requestFocus(); // back to game
         });
 
         highScorePane = new VBox(10, nameField, submitHS);
@@ -190,22 +251,36 @@ public class TetrisGame {
         highScorePane.setVisible(false);
         rootWrapper.getChildren().add(highScorePane);
 
-        spawnNewGamePieces();
-
-        // Focus & responsive sizing hooks once scene is attached
+        // Focus & resize hooks
         rootWrapper.sceneProperty().addListener((obs, oldS, newS) -> {
             if (newS != null) {
                 gameCanvas.requestFocus();
-                // Bind resize events to recompute cell size and canvas bounds
-                resizeToAvailable(newS.getWidth(), newS.getHeight());
                 newS.widthProperty().addListener((o, ov, nv) -> resizeToAvailable(newS.getWidth(), newS.getHeight()));
                 newS.heightProperty().addListener((o, ov, nv) -> resizeToAvailable(newS.getWidth(), newS.getHeight()));
             }
         });
 
+        // Update HUD
+        if (playerLabel != null) {
+            playerLabel.setText("Player: Human");
+            scoreLabel.setText("Score: " + score);
+            linesLabel.setText("Lines: " + totalLinesCleared);
+        }
+
+
+        backButton.setFocusTraversable(false);
+        muteMusicBtn.setFocusTraversable(false);
+        muteSfxBtn.setFocusTraversable(false);
+        submitHS.setFocusTraversable(false);
+        nameField.setFocusTraversable(false);
+
+        spawnNewGamePieces();
+
         startGameLoop();
+        if (mediaManager != null) mediaManager.playBgMusic();
         return rootWrapper;
     }
+
 
     // Spawns a new piece and selects next piece
     // Compute block size and canvas sizes from current scene size
@@ -259,6 +334,15 @@ public class TetrisGame {
                 if (input.consumeRelease(KeyCode.ESCAPE)) paused = !paused;
 
                 double elapsedSec = (now - startTime) / 1_000_000_000.0;
+                int currentLevel = 1 + (int) (elapsedSec / 30.0); // level-up every 30s (example)
+
+                if (playerLabel != null) {
+                    playerLabel.setText("Player: Human");
+                    scoreLabel.setText("Score: " + score);
+                    linesLabel.setText("Lines: " + totalLinesCleared);
+                    levelLabel.setText("Level: " + currentLevel);
+                }
+
                 int decrease = (int) (elapsedSec / 3.0);
                 int currentFallInterval = Math.max(minFallInterval, baseFallInterval - decrease);
 
@@ -312,6 +396,7 @@ public class TetrisGame {
                     if (!highScoreSubmitted) highScorePane.setVisible(true);
                     if (input.consumePress(KeyCode.R) || input.consumePress(KeyCode.ENTER)) resetGame();
                 }
+
             }
         }.start();
     }
@@ -332,12 +417,20 @@ public class TetrisGame {
     private void lockAndSpawn() {
         placePiece(currentPiece, rotation, x, y);
         clearLines();
+        if (mediaManager != null) mediaManager.playSound("drop");
         currentPiece = nextPiece;
         rotation = 0;
         x = WIDTH / 2 - 2;
         y = 0;
         nextPiece = rand.nextInt(TETROMINOS.length);
-        if (!canMove(currentPiece, rotation, x, y)) gameOver = true;
+        if (!canMove(currentPiece, rotation, x, y)) {
+            gameOver = true;
+            if (mediaManager != null) {
+                mediaManager.stopBgMusic();
+                mediaManager.playSound("game_over");
+            }
+        }
+
     }
 
     private void placePiece(int tetromino, int rot, int posX, int posY) {
@@ -370,11 +463,20 @@ public class TetrisGame {
                 for (int bx = 0; bx < WIDTH; bx++) board[bx][0] = ' ';
             }
         }
+
         if (linesCleared == 1) score += 100;
         else if (linesCleared == 2) score += 300;
         else if (linesCleared == 3) score += 600;
         else if (linesCleared >= 4) score += 1000;
+
+        // 🔊 Play correct sound
+        if (linesCleared > 0 && mediaManager != null) {
+            if (linesCleared == 4) mediaManager.playSound("tetris_clear");
+            else mediaManager.playSound("line_clear");
+        }
+        totalLinesCleared += linesCleared;
     }
+
 
     private int rotate(int px, int py, int r) {
         return switch (r & 3) {
@@ -509,6 +611,10 @@ public class TetrisGame {
         highScoreSubmitted = false;
         highScorePane.setVisible(false);
         nameField.setText("");
+
+        startTime = -1;   // 🔥 reset speed progression
+        fallCounter = 0;
+
         spawnNewGamePieces();
         gameCanvas.requestFocus();
     }
@@ -529,6 +635,7 @@ public class TetrisGame {
         gc.setStroke(Color.BLACK);
         gc.strokeRect(x, y, size, size);
     }
+
 
     // Simple input helper with press/consume semantics
     private class KeyInputHandler implements EventHandler<KeyEvent> {
