@@ -2,19 +2,15 @@
 
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<?import javafx.geometry.Insets?>
-<?import javafx.geometry.Pos?>
 
 <BorderPane xmlns:fx="http://javafx.com/fxml"
             fx:controller="org.oosd.teamorange_milestoneone.HelloController">
-
     <!-- Top Header -->
     <top>
         <Label text="Welcome to the Game Hub!"
                BorderPane.alignment="CENTER"
                style="-fx-font-size: 24px; -fx-padding: 10;"/>
     </top>
-
     <!-- Center Menu -->
     <center>
         <VBox alignment="CENTER" spacing="20" style="-fx-padding: 30;">
@@ -22,14 +18,12 @@
                     style="-fx-font-size: 16px; -fx-pref-width: 200px; -fx-background-radius: 8;"/>
             <Button text="Configuration" fx:id="configurationButton" onAction="#OnConfiguration"
                     style="-fx-font-size: 16px; -fx-pref-width: 200px; -fx-background-radius: 8;"/>
-            <Button text="High Score" fx:id="highScoreButton" onAction="#onHighScore"
+            <Button fx:id="highScoreButton" text="High Scores" onAction="#onShowHighScores"
                     style="-fx-font-size: 16px; -fx-pref-width: 200px; -fx-background-radius: 8;"/>
             <Button text="Quit" onAction="#onQuit"
                     style="-fx-font-size: 16px; -fx-pref-width: 200px; -fx-background-radius: 8;"/>
         </VBox>
-
     </center>
-
     <!-- Bottom Status -->
     <bottom>
         <Label fx:id="statusText"

@@ -22,22 +22,34 @@ public class HelloController {
     @FXML
     private Button playButton, configurationButton, highScoreButton;
 
+    private final HighScoreStore highScoreStore = new HighScoreStore();
+
     @FXML
     protected void onPlayTetris() {
-        // Create a new Tetris game instance and its root node
         TetrisGame game = new TetrisGame();
+        game.setHighScoreStore(highScoreStore); // <-- pass store
+
         Parent tetrisRoot = game.createContent();
-
-        // Get reference to the current stage (main window)
         Stage stage = (Stage) playButton.getScene().getWindow();
-
-        // Allow returning to the main menu via game’s back action
         game.setOnBack(() -> goBackToMenu(stage));
 
-        // Set Tetris scene in the stage
         stage.setScene(new Scene(tetrisRoot, 800, 600));
+        stage.setMinWidth(640);
+        stage.setMinHeight(480);
         stage.show();
     }
+
+    @FXML
+    protected void onShowHighScores() {
+        Stage stage = (Stage) playButton.getScene().getWindow();
+
+        Parent view = HighScoreView.create(highScoreStore, () -> goBackToMenu(stage));
+        Scene scene = new Scene(view, 800, 600);
+
+        stage.setScene(scene);
+        stage.show();
+    }
+
 
     //Configuration Menu
     @FXML
