@@ -477,7 +477,6 @@ public class TetrisGame {
         totalLinesCleared += linesCleared;
     }
 
-
     private int rotate(int px, int py, int r) {
         return switch (r & 3) {
             case 0 -> py * 4 + px;

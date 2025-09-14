@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="system.controllers.GameController">
+    <center>
+        <GridPane fx:id="boardGrid" gridLinesVisible="true" />
+    </center>
+    <right>
+        <VBox spacing="10">
+            <Label text="Score:" />
+            <Label fx:id="scoreLabel" text="0" />
+            <Label text="Level:" />
+            <Label fx:id="levelLabel" text="1" />
+            <Label text="Lines:" />
+            <Label fx:id="linesLabel" text="0" />
+            <Button fx:id="pauseButton" onAction="#handlePause" text="Pause" />
+            <Button fx:id="menuButton" onAction="#handleBackToMenu" text="Menu" />
+        </VBox>
+    </right>
+</BorderPane>
