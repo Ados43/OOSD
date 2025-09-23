@@ -36,7 +36,7 @@ public class ViewModule {
     }
 
     private void setupMainScene() {
-        Scene scene = new Scene(mainContainer, 1024, 768);
+        Scene scene = new Scene(mainContainer, 1024, 768); // remove numbers
         scene.getStylesheets().add(getClass().getResource("/styles.css").toExternalForm());
         primaryStage.setScene(scene);
     }
@@ -92,5 +92,8 @@ public class ViewModule {
 
     public void setSystemProcess(SystemProcess systemProcess) {
         this.systemProcess = systemProcess;
+    }
+    public void getSystemProcess() {
+        return this.systemProcess;
     }
 }

@@ -56,6 +56,13 @@ public class SystemProcess {
         testFileIO();
         System.out.println("=== Initialization Complete ===");
 
+        System.out.println("=== Skipping Tests ===");
+        System.out.println("=== Waiting 5 seconds... ===");
+        try {
+            Thread.sleep(3000);
+        } catch (InterruptedException e) { e.printStackTrace(); }
+        System.out.println("=== Done waiting ===");
+
         // After tests, show main menu
         Platform.runLater(() -> viewModule.showMainMenu());
     }
