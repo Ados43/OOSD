@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.geometry.Pos?>
+
+<BorderPane xmlns:fx="http://javafx.com/fxml"
+            fx:controller="org.oosd.teamorange_milestoneone.HelloController">
+
+    <!-- Top Header -->
+    <top>
+        <Label text="Welcome to the Game Hub!"
+               BorderPane.alignment="CENTER"
+               style="-fx-font-size: 24px; -fx-padding: 10;"/>
+    </top>
+
+    <!-- Center Menu -->
+    <center>
+        <VBox alignment="CENTER" spacing="20">
+            <Button text="Play Tetris" fx:id="playButton" onAction="#onPlayTetris"/>
+            <Button text="Settings" fx:id="settingsButton" onAction="#onSettings"/>
+            <Button text="High Score" fx:id="highScoreButton" onAction="#onHighScore"/>
+            <Button text="Quit" fx:id="quitButton" onAction="#onQuit"/>
+        </VBox>
+    </center>
+
+    <!-- Bottom Status -->
+    <bottom>
+        <Label fx:id="statusText"
+               text="Game made by Aidan Lietz, Fletcher and Bernie"
+               BorderPane.alignment="CENTER"
+               style="-fx-padding: 10;"/>
+    </bottom>
+</BorderPane>

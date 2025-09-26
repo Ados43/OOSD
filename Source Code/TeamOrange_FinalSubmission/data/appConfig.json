@@ -1,0 +1,10 @@
+{
+  "fieldWidth": 15,
+  "fieldHeight": 28,
+  "gameLevel": 10,
+  "musicOn": true,
+  "sfxOn": true,
+  "extendedMode": false,
+  "player1": "HUMAN",
+  "player2": "HUMAN"
+}

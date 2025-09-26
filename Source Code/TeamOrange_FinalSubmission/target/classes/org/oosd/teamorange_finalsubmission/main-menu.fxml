@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane xmlns:fx="http://javafx.com/fxml"
+            fx:controller="org.oosd.teamorange_finalsubmission.HelloController">
+    <!-- Top Header -->
+    <top>
+        <Label text="Welcome to the Game Hub!"
+               BorderPane.alignment="CENTER"
+               style="-fx-font-size: 24px; -fx-padding: 10;"/>
+    </top>
+    <!-- Center Menu -->
+    <center>
+        <VBox alignment="CENTER" spacing="20" style="-fx-padding: 30;">
+            <Button text="Play Tetris" fx:id="playButton" onAction="#onPlayTetris"
+                    style="-fx-font-size: 16px; -fx-pref-width: 200px; -fx-background-radius: 8;"/>
+            <Button text="Configuration" fx:id="configurationButton" onAction="#onConfiguration"
+                    style="-fx-font-size: 16px; -fx-pref-width: 200px; -fx-background-radius: 8;"/>
+            <Button fx:id="highScoreButton" text="High Scores" onAction="#onShowHighScores"
+                    style="-fx-font-size: 16px; -fx-pref-width: 200px; -fx-background-radius: 8;"/>
+            <Button text="Quit" onAction="#onQuit"
+                    style="-fx-font-size: 16px; -fx-pref-width: 200px; -fx-background-radius: 8;"/>
+        </VBox>
+    </center>
+    <!-- Bottom Status -->
+    <bottom>
+        <Label fx:id="statusText"
+               text="Authors: Aidan Lietz, Fletcher Carlton and Bernie Miall"
+               BorderPane.alignment="CENTER"
+               style="-fx-padding: 10;"/>
+    </bottom>
+</BorderPane>
