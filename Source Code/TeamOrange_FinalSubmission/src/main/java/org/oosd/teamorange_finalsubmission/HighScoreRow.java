@@ -6,11 +6,13 @@ public class HighScoreRow {
     private final SimpleStringProperty rank;
     private final SimpleStringProperty name;
     private final SimpleStringProperty score;
+    private final SimpleStringProperty config;
 
-    public HighScoreRow(int rank, String name, int score) {
+    public HighScoreRow(int rank, String name, int score, String config) {
         this.rank = new SimpleStringProperty(String.valueOf(rank));
         this.name = new SimpleStringProperty(name);
         this.score = new SimpleStringProperty(String.valueOf(score));
+        this.config = new SimpleStringProperty(config);
     }
 
     public SimpleStringProperty rankProperty() {
@@ -23,5 +25,9 @@ public class HighScoreRow {
 
     public SimpleStringProperty scoreProperty() {
         return score;
+    }
+
+    public SimpleStringProperty configProperty() {
+        return config;
     }
 }

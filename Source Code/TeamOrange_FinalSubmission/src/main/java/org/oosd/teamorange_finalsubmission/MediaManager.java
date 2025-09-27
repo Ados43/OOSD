@@ -9,7 +9,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class MediaManager {
-    private final Map<String, MediaPlayer> sounds = new HashMap<>();
+    private final Map<String, Media> sfxMedia = new HashMap<>();
     private MediaPlayer bgPlayer;
     private boolean musicMuted = false;
     private boolean sfxMuted = false;
@@ -33,9 +33,10 @@ public class MediaManager {
     private void loadSound(String key, String path) {
         URL url = getClass().getResource(path);
         if (url != null) {
-            sounds.put(key, new MediaPlayer(new Media(url.toExternalForm())));
+            sfxMedia.put(key, new Media(url.toExternalForm()));
         }
     }
+
 
     // --- Background music control ---
     public void playBgMusic() {
@@ -49,12 +50,16 @@ public class MediaManager {
     // --- SFX ---
     public void playSound(String key) {
         if (sfxMuted) return;
-        MediaPlayer mp = sounds.get(key);
-        if (mp != null) {
-            mp.stop();
-            mp.play();
-        }
+        Media media = sfxMedia.get(key);
+        if (media == null) return;
+
+        MediaPlayer mp = new MediaPlayer(media); // fresh instance => overlapping allowed
+        mp.setOnEndOfMedia(() -> {
+            mp.dispose();                        // free resources after playback
+        });
+        mp.play();
     }
+
 
     // --- Mute state setters/getters ---
     public void setMusicMuted(boolean muted) {

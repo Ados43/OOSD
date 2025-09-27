@@ -47,7 +47,6 @@ public class HelloController {
                 cfg.player1,
                 cfg.player2
         );
-        game.setExtendedMode(cfg.extendedMode);
 
         Parent tetrisRoot = game.createContent();
         Stage stage = (Stage) playButton.getScene().getWindow();
@@ -57,9 +56,10 @@ public class HelloController {
             goBackToMenu(stage);
         });
 
-        stage.setScene(new Scene(tetrisRoot, 800, 600));
-        stage.setMinWidth(640);
-        stage.setMinHeight(480);
+        stage.setScene(new Scene(tetrisRoot, 1200, 900)); // was 800x600
+        stage.setMinWidth(900);
+        stage.setMinHeight(700);
+
         stage.show();
     }
 

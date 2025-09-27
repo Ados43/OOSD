@@ -20,9 +20,7 @@ public class HighScoreStore {
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
     private static final Type LIST_TYPE = new TypeToken<List<HighScoreEntry>>() {
     }.getType();
-    // Save JSON in a 'data' folder in project root
     private static final Path FILE = Paths.get("data", "highscores.json");
-
 
     private static void ensureParent() throws IOException {
         Files.createDirectories(FILE.getParent());
@@ -32,7 +30,6 @@ public class HighScoreStore {
             }
         }
     }
-
 
     private static synchronized List<HighScoreEntry> load() {
         try {
@@ -56,13 +53,25 @@ public class HighScoreStore {
         }
     }
 
-    public synchronized void add(String name, int score) {
+    // ---- Public API ----
+
+    /**
+     * New preferred method: include a human-readable config string.
+     */
+    public synchronized void add(String name, int score, String config) {
         List<HighScoreEntry> list = load();
-        list.add(new HighScoreEntry(name, score, Instant.now().toEpochMilli()));
+        list.add(new HighScoreEntry(name, score, Instant.now().toEpochMilli(), config));
         list.sort(Comparator.comparingInt(HighScoreEntry::score).reversed()
                 .thenComparingLong(HighScoreEntry::timestamp));
         if (list.size() > 10) list = list.subList(0, 10);
         save(list);
+    }
+
+    /**
+     * Backward-compat overload. Uses "----" if no config provided.
+     */
+    public synchronized void add(String name, int score) {
+        add(name, score, "----");
     }
 
     public synchronized List<HighScoreEntry> top10() {
@@ -81,7 +90,8 @@ public class HighScoreStore {
         StringBuilder sb = new StringBuilder("Top 10 High Scores\n\n");
         for (int i = 0; i < top.size(); i++) {
             HighScoreEntry e = top.get(i);
-            sb.append(String.format("%2d. %-12s %6d\n", i + 1, e.name(), e.score()));
+            String conf = e.config() == null ? "----" : e.config();
+            sb.append(String.format("%2d. %-12s %6d   %s\n", i + 1, e.name(), e.score(), conf));
         }
         if (top.isEmpty()) sb.append("(no scores yet)");
         return sb.toString();

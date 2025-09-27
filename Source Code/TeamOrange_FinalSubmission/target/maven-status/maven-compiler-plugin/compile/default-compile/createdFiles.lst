@@ -1,5 +1,8 @@
 org\oosd\teamorange_finalsubmission\HighScoreView.class
+org\oosd\teamorange_finalsubmission\TetrisGame$5.class
 org\oosd\teamorange_finalsubmission\HighScoreStore$1.class
+org\oosd\teamorange_finalsubmission\TetrisGame$PlayerState.class
+org\oosd\teamorange_finalsubmission\TetrisGame$3.class
 org\oosd\teamorange_finalsubmission\AppConfig.class
 org\oosd\teamorange_finalsubmission\HelloApplication.class
 org\oosd\teamorange_finalsubmission\HighScoreRow.class
@@ -8,6 +11,7 @@ module-info.class
 org\oosd\teamorange_finalsubmission\HighScoreStore.class
 org\oosd\teamorange_finalsubmission\HelloController$1.class
 org\oosd\teamorange_finalsubmission\TetrisGame$1.class
+org\oosd\teamorange_finalsubmission\TetrisGame$4.class
 org\oosd\teamorange_finalsubmission\Launcher.class
 org\oosd\teamorange_finalsubmission\HelloController$HighScore.class
 org\oosd\teamorange_finalsubmission\TetrisGame$2.class

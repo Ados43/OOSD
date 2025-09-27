@@ -18,27 +18,43 @@ public class HighScoreView {
 
         TableColumn<HighScoreRow, String> cRank = new TableColumn<>("#");
         cRank.setCellValueFactory(data -> data.getValue().rankProperty());
+        cRank.setMaxWidth(60);
+        cRank.setMinWidth(60);
 
         TableColumn<HighScoreRow, String> cName = new TableColumn<>("Name");
         cName.setCellValueFactory(data -> data.getValue().nameProperty());
 
         TableColumn<HighScoreRow, String> cScore = new TableColumn<>("Score");
         cScore.setCellValueFactory(data -> data.getValue().scoreProperty());
+        cScore.setMaxWidth(120);
+        cScore.setMinWidth(120);
 
-        table.getColumns().addAll(cRank, cName, cScore);
+        TableColumn<HighScoreRow, String> cConfig = new TableColumn<>("Config");
+        cConfig.setCellValueFactory(data -> data.getValue().configProperty());
+
+        table.getColumns().addAll(cRank, cName, cScore, cConfig);
 
         Runnable refresh = () -> {
             List<HighScoreEntry> top = store.top10();
             ObservableList<HighScoreRow> rows = FXCollections.observableArrayList();
+
+            // Fill with actual results
             for (int i = 0; i < top.size(); i++) {
                 HighScoreEntry e = top.get(i);
-                rows.add(new HighScoreRow(i + 1, e.name(), e.score()));
+                String cfg = (e.config() == null || e.config().isBlank()) ? "----" : e.config();
+                rows.add(new HighScoreRow(i + 1, e.name(), e.score(), cfg));
             }
+
+            // Pad with blanks up to 10
+            for (int i = top.size(); i < 10; i++) {
+                rows.add(new HighScoreRow(i + 1, "----", 0, "----"));
+            }
+
             table.setItems(rows);
         };
         refresh.run();
 
-        Button clear = new Button("Clear / Reset");
+        Button clear = new Button("Clear High Scores");
         clear.setOnAction(e -> {
             Alert a = new Alert(Alert.AlertType.CONFIRMATION, "Clear all high scores?", ButtonType.YES, ButtonType.NO);
             a.showAndWait().ifPresent(btn -> {
@@ -64,4 +80,3 @@ public class HighScoreView {
         return root;
     }
 }
-
