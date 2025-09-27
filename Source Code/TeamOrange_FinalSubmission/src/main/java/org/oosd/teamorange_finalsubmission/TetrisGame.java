@@ -132,6 +132,10 @@ public class TetrisGame {
     private TetrisAI aiP1, aiP2;
     private TetrisAI.BestMove planP1, planP2;
 
+    // External player support
+    private ExternalClient extP1, extP2;
+    private Label extWarn1, extWarn2; // small per-board warning
+
     // Per-player high-score UI + flags
     private VBox hsPaneP1, hsPaneP2;
     private TextField hsNameP1, hsNameP2;
@@ -199,6 +203,11 @@ public class TetrisGame {
         aiP1 = (cfgP1 == PlayerType.AI) ? new TetrisAI(TETROMINOS, boardW, boardH) : null;
         aiP2 = (cfgP2 == PlayerType.AI) ? new TetrisAI(TETROMINOS, boardW, boardH) : null;
 
+        // External instances if selected in config
+        extP1 = (cfgP1 == PlayerType.EXTERNAL) ? new ExternalClient() : null;
+        extP2 = (cfgP2 == PlayerType.EXTERNAL) ? new ExternalClient() : null;
+
+
         // derive speed from level (faster at higher level)
         baseFallInterval = Math.max(10, 34 - (cfgLevel - 1) * 3);
 
@@ -264,6 +273,25 @@ public class TetrisGame {
 
 
         }
+
+        // Per-board tiny warning labels for external server state
+        extWarn1 = new Label("External server unavailable");
+        extWarn1.setStyle("-fx-background-color: rgba(255,80,80,0.85); -fx-text-fill: white; -fx-padding: 4 8; -fx-background-radius: 6; -fx-font-size: 12;");
+        extWarn1.setVisible(false);
+        StackPane.setAlignment(extWarn1, Pos.TOP_RIGHT);
+        StackPane.setMargin(extWarn1, new javafx.geometry.Insets(8, 8, 0, 0));
+        boardStack1.getChildren().add(extWarn1);
+
+        if (boardStack2 != null) {
+            extWarn2 = new Label("External server unavailable");
+            extWarn2.setStyle("-fx-background-color: rgba(255,80,80,0.85); -fx-text-fill: white; -fx-padding: 4 8; -fx-background-radius: 6; -fx-font-size: 12;");
+            extWarn2.setVisible(false);
+            StackPane.setAlignment(extWarn2, Pos.TOP_RIGHT);
+            StackPane.setMargin(extWarn2, new javafx.geometry.Insets(8, 8, 0, 0));
+            boardStack2.getChildren().add(extWarn2);
+        }
+
+
         rootRow.setAlignment(Pos.CENTER);
         VBox mainColumn = new VBox(10, buildInfoBar(), rootRow);
         mainColumn.setAlignment(Pos.TOP_CENTER);
@@ -440,21 +468,155 @@ public class TetrisGame {
         ps.currentPiece = sharedSequence.get(ps.nextIndex++ % sharedSequence.size());
         ps.rotation = 0;
         ps.x = Math.max(0, boardW / 2 - 2);
-        ps.y = 1; // start one row inside the field so the whole tetromino is visible
+        ps.y = 1; // fully visible spawn
 
-        // If this player is AI, pre-compute the best (col, rotation)
+        // AI plan (local)
         if (ps == p1 && aiP1 != null && !ps.gameOver) {
             planP1 = aiP1.findBestMove(copyBoard(ps.board), ps.currentPiece);
         } else if (ps == p2 && aiP2 != null && !ps.gameOver) {
             planP2 = aiP2.findBestMove(copyBoard(ps.board), ps.currentPiece);
         }
+
+        // External plan (async one-shot per spawn)
+        if (ps == p1 && extP1 != null && !ps.gameOver) {
+            PureGame g = buildPureGameSnapshot(ps);
+            extP1.requestMoveAsync(g).whenComplete((move, ex) -> {
+                if (move == null || ex != null) {
+                    // server down or bad reply
+                    javafx.application.Platform.runLater(() -> {
+                        if (extWarn1 != null) extWarn1.setVisible(true);
+                    });
+                    return;
+                }
+                // Op semantics: opX==0 => leftmost (x=0). opRotate=#times to rotate from spawn (0..3).
+                int desiredRot = move.opRotate() & 3;
+                int[] bounds = pieceBounds(ps.currentPiece, desiredRot);
+
+                // Server gives opX as the LEFTMOST BLOCK column.
+                // Convert to our 4×4-origin x (ps.x) by subtracting minX of the piece.
+                int desiredOriginX = move.opX() - bounds[0];
+
+                // Legal range for 4×4 origin given the piece bounds at this rotation
+                int minOrigin = -bounds[0];
+                int maxOrigin = boardW - 1 - bounds[1];
+
+                // Clamp
+                desiredOriginX = Math.max(minOrigin, Math.min(maxOrigin, desiredOriginX));
+
+                planP1 = TetrisAI.BestMove.of(desiredOriginX, desiredRot);
+
+                javafx.application.Platform.runLater(() -> {
+                    if (extWarn1 != null) extWarn1.setVisible(false);
+                });
+            });
+        } else if (ps == p2 && extP2 != null && !ps.gameOver) {
+            PureGame g = buildPureGameSnapshot(ps);
+            extP2.requestMoveAsync(g).whenComplete((move, ex) -> {
+                if (move == null || ex != null) {
+                    javafx.application.Platform.runLater(() -> {
+                        if (extWarn2 != null) extWarn2.setVisible(true);
+                    });
+                    return;
+                }
+                int desiredRot = move.opRotate() & 3;
+                int[] bounds = pieceBounds(ps.currentPiece, desiredRot);
+
+                // Server gives opX as the LEFTMOST BLOCK column.
+                // Convert to our 4×4-origin x (ps.x) by subtracting minX of the piece.
+                int desiredOriginX = move.opX() - bounds[0];
+
+                // Legal range for 4×4 origin given the piece bounds at this rotation
+                int minOrigin = -bounds[0];
+                int maxOrigin = boardW - 1 - bounds[1];
+
+                // Clamp
+                desiredOriginX = Math.max(minOrigin, Math.min(maxOrigin, desiredOriginX));
+
+                planP2 = TetrisAI.BestMove.of(desiredOriginX, desiredRot);
+
+                javafx.application.Platform.runLater(() -> {
+                    if (extWarn2 != null) extWarn2.setVisible(false);
+                });
+            });
+        }
     }
+
 
     private char[][] copyBoard(char[][] src) {
         char[][] dst = new char[boardW][boardH];
         for (int x = 0; x < boardW; x++) System.arraycopy(src[x], 0, dst[x], 0, boardH);
         return dst;
     }
+
+    private PureGame buildPureGameSnapshot(PlayerState ps) {
+        PureGame g = new PureGame();
+        g.setWidth(boardW);
+        g.setHeight(boardH);
+        g.setCells(boardToIntRows(ps.board)); // [y][x]
+
+        int nextIdx = sharedSequence.get(ps.nextIndex % sharedSequence.size());
+        g.setCurrentShape(shapeMatrixTrim(ps.currentPiece, 0)); // server decides rotation, so 0
+        g.setNextShape(shapeMatrixTrim(nextIdx, 0));
+
+        return g;
+    }
+
+    private int[][] boardToIntRows(char[][] b) {
+        int[][] rows = new int[boardH][boardW]; // [y][x]
+        for (int y = 0; y < boardH; y++) {
+            for (int x = 0; x < boardW; x++) {
+                rows[y][x] = (b[x][y] == ' ') ? 0 : 1;
+            }
+        }
+        return rows;
+    }
+
+    /**
+     * returns minimal 0/1 matrix for tetromino at rotation r
+     */
+    private int[][] shapeMatrixTrim(int tetIdx, int r) {
+        int minX = 4, maxX = -1, minY = 4, maxY = -1;
+        for (int px = 0; px < 4; px++)
+            for (int py = 0; py < 4; py++) {
+                char c = TETROMINOS[tetIdx][rotate(px, py, r)];
+                if (c != ' ') {
+                    if (px < minX) minX = px;
+                    if (px > maxX) maxX = px;
+                    if (py < minY) minY = py;
+                    if (py > maxY) maxY = py;
+                }
+            }
+        if (maxX < minX || maxY < minY) {
+            return new int[][]{{}}; // empty (shouldn't happen)
+        }
+        int w = maxX - minX + 1, h = maxY - minY + 1;
+        int[][] m = new int[h][w];
+        for (int px = 0; px < 4; px++)
+            for (int py = 0; py < 4; py++) {
+                char c = TETROMINOS[tetIdx][rotate(px, py, r)];
+                if (c != ' ') m[py - minY][px - minX] = 1;
+            }
+        return m;
+    }
+
+    /**
+     * [minX, maxX, minY, maxY] bounds for a piece at rotation r
+     */
+    private int[] pieceBounds(int tetIdx, int r) {
+        int minX = 4, maxX = -1, minY = 4, maxY = -1;
+        for (int px = 0; px < 4; px++)
+            for (int py = 0; py < 4; py++) {
+                char c = TETROMINOS[tetIdx][rotate(px, py, r)];
+                if (c != ' ') {
+                    if (px < minX) minX = px;
+                    if (px > maxX) maxX = px;
+                    if (py < minY) minY = py;
+                    if (py > maxY) maxY = py;
+                }
+            }
+        return new int[]{minX, maxX, minY, maxY};
+    }
+
 
     // ====== Loop ======
     private void startGameLoop() {
@@ -503,17 +665,18 @@ public class TetrisGame {
                 // --- Controls ---
                 if (cfgP1 == PlayerType.HUMAN) {
                     handlePlayer1Input(p1);
-                } else if (cfgP1 == PlayerType.AI) {
-                    driveAI(p1, planP1);
+                } else if (cfgP1 == PlayerType.AI || cfgP1 == PlayerType.EXTERNAL) {
+                    driveAI(p1, planP1); // EXTERNAL reuses the same driver with a plan from the server
                 }
 
                 if (p2 != null) {
                     if (cfgP2 == PlayerType.HUMAN) {
                         handlePlayer2Input(p2);
-                    } else if (cfgP2 == PlayerType.AI) {
+                    } else if (cfgP2 == PlayerType.AI || cfgP2 == PlayerType.EXTERNAL) {
                         driveAI(p2, planP2);
                     }
                 }
+
 
                 // --- Gravity / locks ---
                 stepPlayer(p1, currentFallInterval);

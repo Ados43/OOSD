@@ -10,8 +10,12 @@ import java.util.*;
  */
 public class TetrisAI {
 
-    public record BestMove(int col, int rotation, int score) {
+    public static record BestMove(int col, int rotation, int score) {
+        public static BestMove of(int col, int rotation) {
+            return new BestMove(col, rotation, 0); // default score (or landingRow) as appropriate
+        }
     }
+
 
     private final char[][] shapes;  // same 4x4 definitions used by the game
     private final int W, H;

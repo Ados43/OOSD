@@ -6,6 +6,18 @@
     "config": "15x30(1) AI Single (P1)"
   },
   {
+    "name": "External vs AI",
+    "score": 8500,
+    "timestamp": 1758955677677,
+    "config": "10x20(1) EXTERNAL + AI (P1)"
+  },
+  {
+    "name": "AI vs External",
+    "score": 6700,
+    "timestamp": 1758955672651,
+    "config": "10x20(1) EXTERNAL + AI (P2)"
+  },
+  {
     "name": "AI Test 1",
     "score": 6400,
     "timestamp": 1758949363860,
@@ -46,11 +58,5 @@
     "score": 0,
     "timestamp": 1758947995705,
     "config": "5x15(1) HUMAN + HUMAN (P2)"
-  },
-  {
-    "name": "asdw",
-    "score": 0,
-    "timestamp": 1758948166612,
-    "config": "10x20(1) HUMAN Single (P1)"
   }
 ]
