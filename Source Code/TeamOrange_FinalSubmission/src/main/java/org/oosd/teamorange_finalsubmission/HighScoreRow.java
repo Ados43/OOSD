@@ -2,12 +2,14 @@ package org.oosd.teamorange_finalsubmission;
 
 import javafx.beans.property.SimpleStringProperty;
 
+// Table row model
 public class HighScoreRow {
     private final SimpleStringProperty rank;
     private final SimpleStringProperty name;
     private final SimpleStringProperty score;
     private final SimpleStringProperty config;
 
+    // Constructor
     public HighScoreRow(int rank, String name, int score, String config) {
         this.rank = new SimpleStringProperty(String.valueOf(rank));
         this.name = new SimpleStringProperty(name);
@@ -15,6 +17,7 @@ public class HighScoreRow {
         this.config = new SimpleStringProperty(config);
     }
 
+    // Properties
     public SimpleStringProperty rankProperty() {
         return rank;
     }

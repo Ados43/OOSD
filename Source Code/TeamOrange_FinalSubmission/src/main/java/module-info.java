@@ -5,7 +5,7 @@ module org.oosd.teamorange_finalsubmission {
     requires javafx.media;
     requires javafx.web;
 
-    // Third-party UI library's
+    // Third-party UI
     requires org.controlsfx.controls;
     requires com.dlsc.formsfx;
     requires net.synedra.validatorfx;
@@ -14,13 +14,14 @@ module org.oosd.teamorange_finalsubmission {
     requires eu.hansolo.tilesfx;
     requires com.almasb.fxgl.all;
 
-    // JSON (Jackson) for ExternalClient
-    requires com.fasterxml.jackson.databind;
-    requires com.fasterxml.jackson.core;
-    requires com.fasterxml.jackson.annotation;
+    // JSON (Jackson)
+    requires com.fasterxml.jackson.databind;   // sufficient; transitively brings core+annotations
 
-    // (Optional) Gson — only keep if you still use it somewhere
+    // Gson
     requires com.google.gson;
+
+    // JetBrains annotations
+    requires static org.jetbrains.annotations;
 
     exports org.oosd.teamorange_finalsubmission;
     opens org.oosd.teamorange_finalsubmission to javafx.fxml, com.fasterxml.jackson.databind;

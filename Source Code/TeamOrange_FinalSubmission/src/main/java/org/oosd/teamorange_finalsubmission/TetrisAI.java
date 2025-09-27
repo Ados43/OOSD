@@ -2,56 +2,43 @@ package org.oosd.teamorange_finalsubmission;
 
 import java.util.*;
 
-/**
- * A lightweight Tetris AI that picks a target column+rotation for the current piece
- * by simulating drops and scoring the resulting board with a simple heuristic.
- * <p>
- * Board orientation expected: board[x][y], where (0,0) is top-left, ' ' is empty.
- */
+// Tetris AI heuristic
 public class TetrisAI {
 
-    public static record BestMove(int col, int rotation, int score) {
+    // Best move record
+    public record BestMove(int col, int rotation, int score) {
         public static BestMove of(int col, int rotation) {
-            return new BestMove(col, rotation, 0); // default score (or landingRow) as appropriate
+            return new BestMove(col, rotation, 0);
         }
     }
 
-
-    private final char[][] shapes;  // same 4x4 definitions used by the game
+    // Fields
+    private final char[][] shapes;
     private final int W, H;
-
     private final BoardEvaluator evaluator = new BoardEvaluator();
 
+    // Constructor
     public TetrisAI(char[][] shapes, int boardW, int boardH) {
         this.shapes = shapes;
         this.W = boardW;
         this.H = boardH;
     }
 
-    /**
-     * Find the best (col, rotation) for the given piece on the given board snapshot.
-     */
+    // Find best move
     public BestMove findBestMove(char[][] board, int pieceIndex) {
         int bestScore = Integer.MIN_VALUE;
         BestMove best = null;
-
-        // Only evaluate unique rotations for this piece to save work.
         int[] rotations = uniqueRotationsFor(pieceIndex);
-
         for (int rot : rotations) {
             Bounds b = pieceBounds(pieceIndex, rot);
             int minCol = -b.minX;
             int maxCol = (W - 1) - b.maxX;
-
             for (int col = minCol; col <= maxCol; col++) {
-                // Simulate a hard drop for this (rotation, col)
                 char[][] sim = copyBoard(board);
                 int dropY = getDropRow(sim, pieceIndex, rot, col);
-                if (dropY < -b.minY) continue; // doesn't fit
-
-                place(sim, pieceIndex, rot, col, dropY, 'X');
+                if (dropY < -b.minY) continue;
+                place(sim, pieceIndex, rot, col, dropY);
                 sim = clearFullLines(sim);
-
                 int score = evaluator.evaluateBoard(sim);
                 if (score > bestScore) {
                     bestScore = score;
@@ -62,12 +49,12 @@ public class TetrisAI {
         return best;
     }
 
-    // ===== Helpers =====
-
+    // Bounds holder
     private static final class Bounds {
         int minX, maxX, minY, maxY;
     }
 
+    // Piece bounds
     private Bounds pieceBounds(int piece, int rot) {
         Bounds bb = new Bounds();
         bb.minX = 4;
@@ -91,12 +78,14 @@ public class TetrisAI {
         return bb;
     }
 
+    // Drop row
     private int getDropRow(char[][] b, int piece, int rot, int col) {
         int y = 0;
         while (canPlace(b, piece, rot, col, y)) y++;
         return y - 1;
     }
 
+    // Placement check
     private boolean canPlace(char[][] b, int piece, int rot, int col, int row) {
         for (int px = 0; px < 4; px++)
             for (int py = 0; py < 4; py++) {
@@ -109,16 +98,18 @@ public class TetrisAI {
         return true;
     }
 
-    private void place(char[][] b, int piece, int rot, int col, int row, char mark) {
+    // Place piece
+    private void place(char[][] b, int piece, int rot, int col, int row) {
         for (int px = 0; px < 4; px++)
             for (int py = 0; py < 4; py++) {
                 char c = shapes[piece][rotateIndex(px, py, rot)];
                 if (c == ' ') continue;
                 int x = col + px, y = row + py;
-                if (x >= 0 && x < W && y >= 0 && y < H) b[x][y] = mark;
+                if (x >= 0 && x < W && y >= 0 && y < H) b[x][y] = 'X';
             }
     }
 
+    // Clear full lines
     private char[][] clearFullLines(char[][] b) {
         char[][] out = copyBoard(b);
         int dstY = H - 1;
@@ -131,29 +122,26 @@ public class TetrisAI {
                 }
             }
             if (!full) {
-                // keep this row
                 if (dstY != y) {
                     for (int x = 0; x < W; x++) out[x][dstY] = out[x][y];
                 }
                 dstY--;
             }
         }
-        // fill the rest with empty
         for (int y = dstY; y >= 0; y--)
             for (int x = 0; x < W; x++)
                 out[x][y] = ' ';
         return out;
     }
 
+    // Copy board
     private char[][] copyBoard(char[][] src) {
         char[][] dst = new char[W][H];
         for (int x = 0; x < W; x++) System.arraycopy(src[x], 0, dst[x], 0, H);
         return dst;
     }
 
-    /**
-     * Deduplicate rotations (O=1, S/Z=2, others=4) by shape comparison.
-     */
+    // Unique rotations
     private int[] uniqueRotationsFor(int piece) {
         List<Integer> uniq = new ArrayList<>();
         Set<String> shapesSeen = new HashSet<>();
@@ -167,9 +155,7 @@ public class TetrisAI {
         return uniq.stream().mapToInt(Integer::intValue).toArray();
     }
 
-    /**
-     * Same rotation math as the game.
-     */
+    // Rotate index
     private static int rotateIndex(int px, int py, int r) {
         return switch (r & 3) {
             case 0 -> py * 4 + px;
@@ -179,24 +165,24 @@ public class TetrisAI {
         };
     }
 
-    // ===== Simple board heuristic =====
-
+    // Board evaluator
     static class BoardEvaluator {
+        // Evaluate board
         int evaluateBoard(char[][] board) {
             int heightScore = maxHeight(board);
             int holesScore = holes(board);
             int linesCleared = clearedLines(board);
             int bumpinessScore = bumpiness(board);
-            // weights can be tuned
             return (-4 * heightScore) + (3 * linesCleared) - (5 * holesScore) - (2 * bumpinessScore);
         }
 
+        // Max column height
         private int maxHeight(char[][] b) {
-            int W = b.length, H = b[0].length, max = 0;
-            for (int x = 0; x < W; x++) {
+            int H = b[0].length, max = 0;
+            for (char[] chars : b) {
                 int h = 0;
                 for (int y = 0; y < H; y++) {
-                    if (b[x][y] != ' ') {
+                    if (chars[y] != ' ') {
                         h = H - y;
                         break;
                     }
@@ -206,24 +192,26 @@ public class TetrisAI {
             return max;
         }
 
+        // Count holes
         private int holes(char[][] b) {
-            int W = b.length, H = b[0].length, holes = 0;
-            for (int x = 0; x < W; x++) {
+            int H = b[0].length, holes = 0;
+            for (char[] chars : b) {
                 boolean blockSeen = false;
                 for (int y = 0; y < H; y++) {
-                    if (b[x][y] != ' ') blockSeen = true;
+                    if (chars[y] != ' ') blockSeen = true;
                     else if (blockSeen) holes++;
                 }
             }
             return holes;
         }
 
+        // Count full lines
         private int clearedLines(char[][] b) {
-            int W = b.length, H = b[0].length, count = 0;
+            int H = b[0].length, count = 0;
             for (int y = 0; y < H; y++) {
                 boolean full = true;
-                for (int x = 0; x < W; x++) {
-                    if (b[x][y] == ' ') {
+                for (char[] chars : b) {
+                    if (chars[y] == ' ') {
                         full = false;
                         break;
                     }
@@ -233,6 +221,7 @@ public class TetrisAI {
             return count;
         }
 
+        // Surface bumpiness
         private int bumpiness(char[][] b) {
             int W = b.length, H = b[0].length;
             int[] heights = new int[W];

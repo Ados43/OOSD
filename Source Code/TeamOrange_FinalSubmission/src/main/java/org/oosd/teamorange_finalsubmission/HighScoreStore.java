@@ -16,12 +16,15 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
+// High scores storage
 public class HighScoreStore {
+    // Gson setup
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
     private static final Type LIST_TYPE = new TypeToken<List<HighScoreEntry>>() {
     }.getType();
     private static final Path FILE = Paths.get("data", "highscores.json");
 
+    // Ensure file exists
     private static void ensureParent() throws IOException {
         Files.createDirectories(FILE.getParent());
         if (!Files.exists(FILE)) {
@@ -31,6 +34,7 @@ public class HighScoreStore {
         }
     }
 
+    // Load list
     private static synchronized List<HighScoreEntry> load() {
         try {
             ensureParent();
@@ -43,6 +47,7 @@ public class HighScoreStore {
         }
     }
 
+    // Save list
     private static synchronized void save(List<HighScoreEntry> list) {
         try {
             ensureParent();
@@ -53,11 +58,7 @@ public class HighScoreStore {
         }
     }
 
-    // ---- Public API ----
-
-    /**
-     * New preferred method: include a human-readable config string.
-     */
+    // Add with config
     public synchronized void add(String name, int score, String config) {
         List<HighScoreEntry> list = load();
         list.add(new HighScoreEntry(name, score, Instant.now().toEpochMilli(), config));
@@ -67,13 +68,7 @@ public class HighScoreStore {
         save(list);
     }
 
-    /**
-     * Backward-compat overload. Uses "----" if no config provided.
-     */
-    public synchronized void add(String name, int score) {
-        add(name, score, "----");
-    }
-
+    // Fetch top 10
     public synchronized List<HighScoreEntry> top10() {
         List<HighScoreEntry> list = load();
         list.sort(Comparator.comparingInt(HighScoreEntry::score).reversed()
@@ -81,19 +76,9 @@ public class HighScoreStore {
         return list.size() > 10 ? new ArrayList<>(list.subList(0, 10)) : list;
     }
 
+    // Clear all
     public synchronized void clear() {
         save(new ArrayList<>());
     }
 
-    public synchronized String formatTop10() {
-        List<HighScoreEntry> top = top10();
-        StringBuilder sb = new StringBuilder("Top 10 High Scores\n\n");
-        for (int i = 0; i < top.size(); i++) {
-            HighScoreEntry e = top.get(i);
-            String conf = e.config() == null ? "----" : e.config();
-            sb.append(String.format("%2d. %-12s %6d   %s\n", i + 1, e.name(), e.score(), conf));
-        }
-        if (top.isEmpty()) sb.append("(no scores yet)");
-        return sb.toString();
-    }
 }

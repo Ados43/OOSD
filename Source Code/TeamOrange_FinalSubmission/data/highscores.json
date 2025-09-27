@@ -1,62 +1,14 @@
 [
   {
-    "name": "AI Test 3",
-    "score": 10900,
-    "timestamp": 1758949592734,
-    "config": "15x30(1) AI Single (P1)"
+    "name": "AI 2",
+    "score": 4900,
+    "timestamp": 1758963589571,
+    "config": "5x15(10) AI + AI (P2)"
   },
   {
-    "name": "External vs AI",
-    "score": 8500,
-    "timestamp": 1758955677677,
-    "config": "10x20(1) EXTERNAL + AI (P1)"
-  },
-  {
-    "name": "AI vs External",
-    "score": 6700,
-    "timestamp": 1758955672651,
-    "config": "10x20(1) EXTERNAL + AI (P2)"
-  },
-  {
-    "name": "AI Test 1",
-    "score": 6400,
-    "timestamp": 1758949363860,
-    "config": "10x20(1) AI Single (P1)"
-  },
-  {
-    "name": "Ai vs Me",
-    "score": 6400,
-    "timestamp": 1758950736196,
-    "config": "10x20(1) HUMAN + AI (P2)"
-  },
-  {
-    "name": "AI test 2",
-    "score": 5000,
-    "timestamp": 1758949411424,
-    "config": "5x15(1) AI Single (P1)"
-  },
-  {
-    "name": "AI Test 5",
-    "score": 4800,
-    "timestamp": 1758949633073,
-    "config": "5x15(10) AI Single (P1)"
-  },
-  {
-    "name": "Me vs AI",
-    "score": 1600,
-    "timestamp": 1758950732574,
-    "config": "10x20(1) HUMAN + AI (P1)"
-  },
-  {
-    "name": "Player 1 Tryhard",
-    "score": 1000,
-    "timestamp": 1758947991174,
-    "config": "5x15(1) HUMAN + HUMAN (P1)"
-  },
-  {
-    "name": "Player 2 no hard",
-    "score": 0,
-    "timestamp": 1758947995705,
-    "config": "5x15(1) HUMAN + HUMAN (P2)"
+    "name": "AI 1",
+    "score": 4900,
+    "timestamp": 1758963590624,
+    "config": "5x15(10) AI + AI (P1)"
   }
 ]

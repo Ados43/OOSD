@@ -8,28 +8,31 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
+// Audio manager
 public class MediaManager {
+    // Fields
     private final Map<String, Media> sfxMedia = new HashMap<>();
     private MediaPlayer bgPlayer;
     private boolean musicMuted = false;
     private boolean sfxMuted = false;
 
+    // Load audio
     public MediaManager() {
         loadSound("drop", "/sounds/drop.mp3");
         loadSound("line_clear", "/sounds/line_clear.mp3");
         loadSound("tetris_clear", "/sounds/tetris_clear.mp3");
         loadSound("game_over", "/sounds/game_over.mp3");
-
         URL bgUrl = getClass().getResource("/sounds/bg_music.mp3");
         if (bgUrl != null) {
             Media media = new Media(bgUrl.toExternalForm());
             bgPlayer = new MediaPlayer(media);
-            bgPlayer.setOnEndOfMedia(() -> bgPlayer.seek(Duration.ZERO)); // loop
+            bgPlayer.setOnEndOfMedia(() -> bgPlayer.seek(Duration.ZERO));
             bgPlayer.setMute(musicMuted);
             bgPlayer.setVolume(0.5);
         }
     }
 
+    // Load sfx helper
     private void loadSound(String key, String path) {
         URL url = getClass().getResource(path);
         if (url != null) {
@@ -37,31 +40,27 @@ public class MediaManager {
         }
     }
 
-
-    // --- Background music control ---
+    // Play bgm
     public void playBgMusic() {
         if (bgPlayer != null && !musicMuted) bgPlayer.play();
     }
 
+    // Stop bgm
     public void stopBgMusic() {
         if (bgPlayer != null) bgPlayer.stop();
     }
 
-    // --- SFX ---
+    // Play sfx
     public void playSound(String key) {
         if (sfxMuted) return;
         Media media = sfxMedia.get(key);
         if (media == null) return;
-
-        MediaPlayer mp = new MediaPlayer(media); // fresh instance => overlapping allowed
-        mp.setOnEndOfMedia(() -> {
-            mp.dispose();                        // free resources after playback
-        });
+        MediaPlayer mp = new MediaPlayer(media);
+        mp.setOnEndOfMedia(mp::dispose);
         mp.play();
     }
 
-
-    // --- Mute state setters/getters ---
+    // Set mute flags
     public void setMusicMuted(boolean muted) {
         musicMuted = muted;
         if (bgPlayer != null) {
@@ -82,7 +81,7 @@ public class MediaManager {
         return sfxMuted;
     }
 
-    // Optional convenience for in-game toggles:
+    // Toggle helpers
     public void toggleMusic() {
         setMusicMuted(!musicMuted);
         if (!musicMuted) playBgMusic();

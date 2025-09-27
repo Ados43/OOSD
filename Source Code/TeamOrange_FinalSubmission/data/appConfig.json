@@ -5,6 +5,6 @@
   "musicOn": true,
   "sfxOn": true,
   "extendedMode": true,
-  "player1": "EXTERNAL",
-  "player2": "EXTERNAL"
+  "player1": "HUMAN",
+  "player2": "AI"
 }

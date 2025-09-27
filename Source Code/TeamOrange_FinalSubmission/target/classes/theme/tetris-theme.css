@@ -1,0 +1,218 @@
+/* Root theme vars */
+.root {
+    -brand-bg:        #0c1022;
+    -brand-bg-2:      #161b37;
+    -brand-surface:   #1f2649;
+    -brand-surface-2: #2b3361;
+    -brand-accent:    #5df2ff;
+    -brand-warn:      #ff6a6a;
+    -text-hi:         #ffffff;
+    -text-mid:        #c9d4ff;
+    -text-muted:      #8ea0cc;
+    -fx-background-color:
+        linear-gradient(from 0% 0% to 100% 100%, -brand-bg 0%, -brand-bg-2 60%, #1a1137 100%);
+}
+
+/* App background helper */
+.app-bg {
+    -fx-background-color:
+        linear-gradient(from 0% 0% to 100% 100%, -brand-bg 0%, -brand-bg-2 60%, #1a1137 100%);
+}
+
+/* Screen wrappers */
+.screen--main-menu,
+.screen--config {
+    -fx-padding: 28;
+}
+
+/* Title sizes */
+.screen--main-menu .screen-title { -fx-font-size: 64px; }
+.screen--config .screen-title     { -fx-font-size: 48px; }
+
+/* Base label */
+.label {
+    -fx-text-fill: -text-mid;
+    -fx-font-size: 13px;
+}
+
+/* Big title style */
+.screen-title {
+    -fx-font-size: 56px;
+    -fx-font-weight: 800;
+    -fx-text-fill: #dee9ff;
+    -fx-padding: 16 0 10 0;
+    -fx-alignment: center;
+}
+
+/* Config card */
+.menu-card {
+    -fx-padding: 24 20 20 20;
+}
+
+/* Primary buttons */
+.primary-btn {
+    -fx-pref-width: 380px;
+    -fx-pref-height: 48px;
+    -fx-font-size: 18px;
+}
+
+/* Config buttons */
+.menu-btn {
+    -fx-pref-width: 220px;
+    -fx-pref-height: 44px;
+    -fx-font-size: 16px;
+}
+
+/* Form labels */
+.form-grid .label {
+    -fx-font-size: 15px;
+}
+
+/* Config labels */
+.config-label {
+    -fx-font-size: 15px;
+    -fx-text-fill: #e7efff;
+}
+
+/* Slider ticks */
+.slider .axis {
+    -fx-tick-label-fill: white;
+}
+
+/* Checkbox/radio text */
+.check-box, .radio-button {
+    -fx-text-fill: -text-mid;
+    -fx-font-size: 15px;
+}
+
+/* Radio visuals */
+.radio-button .radio {
+    -fx-min-width: 18px;
+    -fx-min-height: 18px;
+    -fx-pref-width: 18px;
+    -fx-pref-height: 18px;
+    -fx-max-width: 18px;
+    -fx-max-height: 18px;
+
+    -fx-background-color: -brand-surface-2;
+    -fx-background-insets: 0;
+    -fx-background-radius: 999;
+
+    -fx-border-color: rgba(255,255,255,0.45);
+    -fx-border-width: 2px;
+    -fx-border-radius: 999;
+
+    -fx-padding: 0;
+}
+
+.radio-button:focused .radio,
+.radio-button:selected .radio {
+    -fx-border-color: -brand-accent;
+}
+
+.radio-button .dot {
+    -fx-min-width: 8px;
+    -fx-min-height: 8px;
+    -fx-pref-width: 8px;
+    -fx-pref-height: 8px;
+    -fx-max-width: 8px;
+    -fx-max-height: 8px;
+
+    -fx-background-radius: 999;
+    -fx-background-insets: 0;
+    -fx-background-color: transparent;
+    -fx-translate-x: 0;
+    -fx-translate-y: 0;
+}
+.radio-button:selected .dot {
+    -fx-background-color: -brand-accent;
+}
+
+/* Checkbox visuals */
+.check-box .box {
+    -fx-background-color: -brand-surface-2;
+    -fx-border-color: rgba(255,255,255,0.12);
+}
+.check-box:selected .mark {
+    -fx-background-color: -brand-accent;
+}
+
+/* Button base look */
+.button {
+    -fx-background-color:
+        linear-gradient(from 0% 0% to 0% 100%, #2c3a82 0%, #273472 100%),
+        linear-gradient(from 0% 0% to 0% 100%, #2e3c87 0%, #25306b 100%);
+    -fx-background-insets: 0, 1;
+    -fx-background-radius: 12, 11;
+    -fx-text-fill: -text-hi;
+    -fx-font-weight: 700;
+    -fx-padding: 10 16 10 16;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.35), 12, 0.2, 0, 6);
+    -fx-cursor: hand;
+}
+
+/* Button hover */
+.button:hover {
+    -fx-background-color:
+        linear-gradient(from 0% 0% to 0% 100%, #3650b3 0%, #2b439b 100%),
+        linear-gradient(from 0% 0% to 0% 100%, #3650b3 0%, #2b439b 100%);
+}
+
+/* Button pressed/default */
+.button:pressed { -fx-translate-y: 1px; }
+.button:default {
+    -fx-background-color:
+        linear-gradient(from 0% 0% to 0% 100%, #1bbdd1 0%, #0ea0bc 100%);
+    -fx-text-fill: #02122a;
+}
+
+/* TableView base */
+.table-view {
+    -fx-background-color: transparent;
+    -fx-control-inner-background: transparent;
+    -fx-background-insets: 0;
+    -fx-padding: 0;
+    -fx-text-background-color: -text-hi;
+    -fx-table-cell-border-color: transparent;
+}
+
+/* Table header bg */
+.table-view > .column-header-background {
+    -fx-background-color:
+        linear-gradient(from 0% 0% to 0% 100%, rgba(93,242,255,0.18) 0%, rgba(93,242,255,0.05) 100%);
+    -fx-background-insets: 0;
+}
+
+/* Header/filler look */
+.table-view .column-header,
+.table-view .filler {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+}
+
+/* Row look */
+.table-row-cell {
+    -fx-background-color: transparent;
+    -fx-background-insets: 0;
+}
+
+/* Cell look */
+.table-cell {
+    -fx-text-fill: -text-hi;
+    -fx-padding: 8 12 8 12;
+    -fx-border-color: transparent;
+    -fx-background-insets: 0;
+}
+
+/* Empty placeholder */
+.table-view .placeholder > .label {
+    -fx-text-fill: -text-mid;
+}
+
+/* Hide scrollbars */
+.table-view .scroll-bar:vertical,
+.table-view .scroll-bar:horizontal {
+    -fx-opacity: 0;
+    -fx-max-width: 0;
+    -fx-max-height: 0;
+}

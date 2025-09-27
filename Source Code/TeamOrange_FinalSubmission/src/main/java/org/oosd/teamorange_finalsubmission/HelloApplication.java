@@ -1,50 +1,54 @@
 package org.oosd.teamorange_finalsubmission;
 
+import javafx.animation.PauseTransition;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
 
+// App bootstrap
 public class HelloApplication extends Application {
 
+    // Start UI
     @Override
     public void start(Stage stage) {
-        // Create a separate splash stage (window) to show the splash screen image
         Stage splashStage = new Stage();
         javafx.scene.image.ImageView splashImage = new javafx.scene.image.ImageView(
                 Objects.requireNonNull(HelloApplication.class.getResource("splash.png")).toExternalForm()
         );
-
-        // Configure splash image properties (scaling, smoothing, caching)
         splashImage.setPreserveRatio(true);
         splashImage.setSmooth(true);
         splashImage.setCache(true);
-
-        // Put splash image inside a StackPane so it is centered
         javafx.scene.layout.StackPane splashRoot = new javafx.scene.layout.StackPane(splashImage);
         Scene splashScene = new Scene(splashRoot, 600, 400);
-
-        // Dynamically bind splash image size to scene size
         splashImage.fitWidthProperty().bind(splashScene.widthProperty());
         splashImage.fitHeightProperty().bind(splashScene.heightProperty());
-
-        // Show splash screen
         splashStage.setScene(splashScene);
         splashStage.show();
 
-        //Create a 3-second delay before switching to the main menu
-        javafx.animation.PauseTransition pause =
-                new javafx.animation.PauseTransition(javafx.util.Duration.seconds(3));
+        // Delay then load menu
+        PauseTransition pause = getPauseTransition(stage, splashStage);
+        pause.play();
+    }
 
-        // After pause, load the main menu and close the splash screen
+    // Splash delay
+    @NotNull
+    private static PauseTransition getPauseTransition(Stage stage, Stage splashStage) {
+        PauseTransition pause = new PauseTransition(javafx.util.Duration.seconds(3));
         pause.setOnFinished(e -> {
             try {
                 FXMLLoader fxmlLoader = new FXMLLoader(
                         HelloApplication.class.getResource("main-menu.fxml")
                 );
                 Scene scene = new Scene(fxmlLoader.load(), 800, 600);
+                scene.getStylesheets().add(
+                        Objects.requireNonNull(
+                                HelloApplication.class.getResource("/theme/tetris-theme.css")
+                        ).toExternalForm()
+                );
                 stage.setTitle("Game Hub");
                 stage.setScene(scene);
                 stage.show();
@@ -53,8 +57,6 @@ public class HelloApplication extends Application {
                 ex.printStackTrace();
             }
         });
-
-        // Start countdown for splash
-        pause.play();
+        return pause;
     }
 }

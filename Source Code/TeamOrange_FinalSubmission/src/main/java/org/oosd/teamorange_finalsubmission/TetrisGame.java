@@ -10,6 +10,7 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.*;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
@@ -19,51 +20,51 @@ import javafx.scene.text.Text;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
 
+@SuppressWarnings({"FieldMayBeLocal", "SameParameterValue"}) // calm “can be local” & “same arg every call”
 public class TetrisGame {
 
-    // Tetromino shapes (all 4x4, row-major, length 16)
+    // Tetromino definitions
     private static final char[][] TETROMINOS = {
-            { // I
+            {
                     ' ', ' ', ' ', ' ',
                     'I', 'I', 'I', 'I',
                     ' ', ' ', ' ', ' ',
                     ' ', ' ', ' ', ' '
             },
-            { // O
+            {
                     ' ', ' ', ' ', ' ',
                     ' ', 'O', 'O', ' ',
                     ' ', 'O', 'O', ' ',
                     ' ', ' ', ' ', ' '
             },
-            { // J
+            {
                     'J', ' ', ' ', ' ',
                     'J', 'J', 'J', ' ',
                     ' ', ' ', ' ', ' ',
                     ' ', ' ', ' ', ' '
             },
-            { // L
+            {
                     ' ', ' ', 'L', ' ',
                     'L', 'L', 'L', ' ',
                     ' ', ' ', ' ', ' ',
                     ' ', ' ', ' ', ' '
             },
-            { // S
+            {
                     ' ', 'S', 'S', ' ',
                     'S', 'S', ' ', ' ',
                     ' ', ' ', ' ', ' ',
                     ' ', ' ', ' ', ' '
             },
-            { // T
+            {
                     ' ', 'T', ' ', ' ',
                     'T', 'T', 'T', ' ',
                     ' ', ' ', ' ', ' ',
                     ' ', ' ', ' ', ' '
             },
-            { // Z
+            {
                     'Z', 'Z', ' ', ' ',
                     ' ', 'Z', 'Z', ' ',
                     ' ', ' ', ' ', ' ',
@@ -71,7 +72,7 @@ public class TetrisGame {
             }
     };
 
-    // ====== Injected collaborators ======
+    // Dependencies
     private HighScoreStore highScoreStore;
 
     public void setHighScoreStore(HighScoreStore store) {
@@ -84,7 +85,7 @@ public class TetrisGame {
         this.mediaManager = mm;
     }
 
-    // ====== Config from HelloController / appConfig.json ======
+    // Config values
     private int cfgWidth = 12;
     private int cfgHeight = 18;
     private int cfgLevel = 1;
@@ -101,54 +102,54 @@ public class TetrisGame {
         this.cfgExtended = extended;
         this.cfgP1 = p1;
         this.cfgP2 = p2;
-
         if (mediaManager != null) {
             mediaManager.setMusicMuted(!musicOn);
             mediaManager.setSfxMuted(!sfxOn);
         }
     }
 
-    // ====== Rendering/layout sizing ======
-    private int boardW; // live from cfgWidth
-    private int boardH; // live from cfgHeight
+    // Rendering sizes
+    private int boardW;
+    private int boardH;
     private static final int BLOCK_SIZE = 30;
     private double blockSize = BLOCK_SIZE;
 
-    // UI roots
-    private HBox rootRow;
     private StackPane rootWrapper;
     private StackPane boardStack1, boardStack2;
 
+    // Canvases and contexts
     private Canvas gameCanvas1, nextCanvas1;
-    private Canvas gameCanvas2, nextCanvas2; // used only in extend mode
+    private Canvas gameCanvas2, nextCanvas2;
     private GraphicsContext gc1, nextGc1;
     private GraphicsContext gc2, nextGc2;
 
-    // HUD
-    private Label p1PlayerLabel, p1ScoreLabel, p1LevelLabel, p1LinesLabel, p1MusicLabel, p1SfxLabel;
-    private Label p2PlayerLabel, p2ScoreLabel, p2LevelLabel, p2LinesLabel; // music/sfx shown once
+    private Label p1ScoreLabel;
+    private Label p1LevelLabel;
+    private Label p1LinesLabel;
+    private Label p1MusicLabel;
+    private Label p1SfxLabel;
+    private Label p2ScoreLabel;
+    private Label p2LevelLabel;
+    private Label p2LinesLabel;
 
-    // AI support
+    // AI fields
     private TetrisAI aiP1, aiP2;
     private TetrisAI.BestMove planP1, planP2;
 
-    // External player support
+    // External clients
     private ExternalClient extP1, extP2;
-    private Label extWarn1, extWarn2; // small per-board warning
+    private Label extWarn1, extWarn2;
 
-    // Per-player high-score UI + flags
+    // High score UI
     private VBox hsPaneP1, hsPaneP2;
     private TextField hsNameP1, hsNameP2;
     private Button hsSubmitP1, hsSubmitP2;
     private boolean submittedP1 = false, submittedP2 = false;
 
-
-    // Input
+    // Keyboard input
     private final ConcurrentHashMap<KeyCode, Boolean> keys = new ConcurrentHashMap<>();
     private final KeyInputHandler input = new KeyInputHandler();
 
-    // Game loop & timing
-    private AnimationTimer gameLoop;
     private int baseFallInterval = 30;
     private final int minFallInterval = 5;
     private long startTime = -1;
@@ -156,21 +157,22 @@ public class TetrisGame {
 
     private Runnable onBack;
 
-    // ====== Two-player state ======
+    // Player state (per player)
     private static class PlayerState {
         char[][] board;
         int currentPiece, rotation, x, y;
         int score = 0;
         int lines = 0;
-        int nextIndex = 0; // index into shared sequence
+        int nextIndex = 0;
         boolean gameOver = false;
         int fallCounter = 0;
     }
 
-    private PlayerState p1, p2;          // p2 only used when cfgExtended && both HUMAN for this step
-    private List<Integer> sharedSequence; // same item order for both players
+    // Two-player state
+    private PlayerState p1, p2;
+    private List<Integer> sharedSequence;
 
-    // ====== Basic helpers ======
+    // Size helpers
     private int cell() {
         return (int) Math.max(1, Math.floor(blockSize));
     }
@@ -183,77 +185,66 @@ public class TetrisGame {
         return boardH * cell();
     }
 
+    // Callbacks & toggles
     public void setOnBack(Runnable onBack) {
         this.onBack = onBack;
     }
 
+    @SuppressWarnings("unused")
     public void setExtendedMode(boolean enabled) {
         this.cfgExtended = enabled;
     }
 
-    public void setAiPlay(boolean enabled) { /* reserved for later */ }
-
-    // ====== Build UI and start ======
+    // Build UI & start
     public Parent createContent() {
-        // live sizes
+        // Live sizes
         boardW = cfgWidth;
         boardH = cfgHeight;
 
-        // AI instances if selected in config
+        // Players/AI/External
         aiP1 = (cfgP1 == PlayerType.AI) ? new TetrisAI(TETROMINOS, boardW, boardH) : null;
         aiP2 = (cfgP2 == PlayerType.AI) ? new TetrisAI(TETROMINOS, boardW, boardH) : null;
-
-        // External instances if selected in config
         extP1 = (cfgP1 == PlayerType.EXTERNAL) ? new ExternalClient() : null;
         extP2 = (cfgP2 == PlayerType.EXTERNAL) ? new ExternalClient() : null;
 
-
-        // derive speed from level (faster at higher level)
+        // Speed from level
         baseFallInterval = Math.max(10, 34 - (cfgLevel - 1) * 3);
 
-        // init players & shared sequence
+        // Init players & sequence
         p1 = createInitialPlayerState();
-        submittedP1 = false;
-        submittedP2 = false;
-
+        submittedP1 = submittedP2 = false;
         if (cfgExtended) p2 = createInitialPlayerState();
-        sharedSequence = generateSharedSequence(50_000, 123456789L); // long enough, fixed seed
+        sharedSequence = generateSharedSequence(50_000, 123456789L);
         spawnNewPiece(p1);
         if (p2 != null) spawnNewPiece(p2);
 
-        // canvases
+        // Canvases & HUDs
         gameCanvas1 = new Canvas(boardPixelW(), boardPixelH());
         gc1 = gameCanvas1.getGraphicsContext2D();
         nextCanvas1 = new Canvas(6 * BLOCK_SIZE, 6 * BLOCK_SIZE);
         nextGc1 = nextCanvas1.getGraphicsContext2D();
-
         VBox rightPanel1 = buildHudForPlayer1();
 
-        if (p2 == null) {
-            // --- Single player layout ---
-            boardStack1 = new StackPane(gameCanvas1);
-            boardStack1.setPrefSize(boardPixelW(), boardPixelH());
-            StackPane.setAlignment(gameCanvas1, Pos.CENTER);
+        boardStack1 = new StackPane(gameCanvas1);
+        boardStack1.setPrefSize(boardPixelW(), boardPixelH());
+        StackPane.setAlignment(gameCanvas1, Pos.CENTER);
 
-            // mount P1 high-score pane ON the board stack
-            // (hsPaneP1 is built later in this method; adding now or after build is fine)
+        // Layout: one or two columns
+        HBox rootLeftOrSingle;
+        // UI containers
+        HBox rootRow;
+        if (p2 == null) {
             VBox p1Side = new VBox(20, nextCanvas1, rightPanel1);
             p1Side.setAlignment(Pos.TOP_CENTER);
-
-            rootRow = new HBox(40, boardStack1, p1Side);
+            rootLeftOrSingle = new HBox(20, boardStack1, p1Side);
+            rootLeftOrSingle.setAlignment(Pos.TOP_CENTER);
+            rootRow = new HBox(40, rootLeftOrSingle);
         } else {
-            // second player canvases
             gameCanvas2 = new Canvas(boardPixelW(), boardPixelH());
             gc2 = gameCanvas2.getGraphicsContext2D();
             nextCanvas2 = new Canvas(6 * BLOCK_SIZE, 6 * BLOCK_SIZE);
             nextGc2 = nextCanvas2.getGraphicsContext2D();
-
             VBox rightPanel2 = buildHudForPlayer2();
-
-            // For each player: Board | (Next + Stats) side-by-side
-            boardStack1 = new StackPane(gameCanvas1);
-            boardStack1.setPrefSize(boardPixelW(), boardPixelH());
-            StackPane.setAlignment(gameCanvas1, Pos.CENTER);
 
             boardStack2 = new StackPane(gameCanvas2);
             boardStack2.setPrefSize(boardPixelW(), boardPixelH());
@@ -265,16 +256,13 @@ public class TetrisGame {
             p2Side.setAlignment(Pos.TOP_CENTER);
 
             HBox col1 = new HBox(20, boardStack1, p1Side);
-            HBox col2 = new HBox(20, boardStack2, p2Side);
             col1.setAlignment(Pos.TOP_CENTER);
+            HBox col2 = new HBox(20, boardStack2, p2Side);
             col2.setAlignment(Pos.TOP_CENTER);
-
             rootRow = new HBox(40, col1, col2);
-
-
         }
 
-        // Per-board tiny warning labels for external server state
+        // External warnings
         extWarn1 = new Label("External server unavailable");
         extWarn1.setStyle("-fx-background-color: rgba(255,80,80,0.85); -fx-text-fill: white; -fx-padding: 4 8; -fx-background-radius: 6; -fx-font-size: 12;");
         extWarn1.setVisible(false);
@@ -291,107 +279,113 @@ public class TetrisGame {
             boardStack2.getChildren().add(extWarn2);
         }
 
+        // Header row
+        Label gameTitle = new Label("Enhanced Tetris Game");
+        gameTitle.getStyleClass().add("screen-title");
+        gameTitle.setMaxWidth(Double.MAX_VALUE);
 
-        rootRow.setAlignment(Pos.CENTER);
-        VBox mainColumn = new VBox(10, buildInfoBar(), rootRow);
-        mainColumn.setAlignment(Pos.TOP_CENTER);
-
-        // Back button
         Button backButton = new Button("Back");
         backButton.setFocusTraversable(false);
         backButton.setOnAction(e -> {
             Alert a = new Alert(Alert.AlertType.CONFIRMATION,
                     "Your current progress will be lost if you return to the main menu. Are you sure?",
                     ButtonType.YES, ButtonType.NO);
-            Optional<ButtonType> res = a.showAndWait();
-            if (res.isPresent() && res.get() == ButtonType.YES) {
-                paused = true; // ensure no more locks/sounds
+            if (a.showAndWait().filter(ButtonType.YES::equals).isPresent()) {
+                paused = true;
                 if (mediaManager != null) mediaManager.stopBgMusic();
                 if (onBack != null) onBack.run();
             }
         });
 
-        rootWrapper = new StackPane(mainColumn, backButton);
-        StackPane.setAlignment(backButton, Pos.TOP_LEFT);
-        backButton.setTranslateX(10);
-        backButton.setTranslateY(10);
+        BorderPane titleRow = createTitleRow(backButton, gameTitle); // small extract to satisfy suggestion
 
-        // ---------- Per-player High Score panes ----------
+        // Settings bar
+        HBox infoBar = buildInfoBar();
+        infoBar.setAlignment(Pos.CENTER);
+
+        // Header layout
+        VBox header = new VBox(6, titleRow, infoBar);
+        header.setAlignment(Pos.TOP_CENTER);
+        header.setPadding(new javafx.geometry.Insets(6, 8, 12, 8));
+
+        // Content layout
+        rootRow.setAlignment(Pos.CENTER);
+        rootRow.setSpacing(40);
+        rootRow.setPadding(new javafx.geometry.Insets(10, 20, 20, 20));
+
+        // Root wrapper
+        BorderPane wrapper = new BorderPane();
+        wrapper.setTop(header);
+        wrapper.setCenter(rootRow);
+        wrapper.setPadding(new javafx.geometry.Insets(16, 16, 50, 16));
+        rootWrapper = new StackPane(wrapper);
+        rootWrapper.getStyleClass().add("app-bg");
+
+        // High score panes
         hsNameP1 = new TextField();
         hsNameP1.setPromptText("Name (P1)");
         hsNameP1.setPrefColumnCount(12);
         hsNameP1.setMaxWidth(180);
-        ;
         hsSubmitP1 = new Button("Submit P1");
-        hsSubmitP1.setFocusTraversable(false);  // don’t steal arrow/WASD traversal
+        hsSubmitP1.setFocusTraversable(false);
         hsSubmitP1.setOnAction(e -> {
             if (!submittedP1) {
                 String name = hsNameP1.getText().trim();
-                if (!name.isEmpty() && highScoreStore != null) {
+                if (!name.isEmpty() && highScoreStore != null)
                     highScoreStore.add(name, p1.score, buildConfigString() + " (P1)");
-                }
                 submittedP1 = true;
                 hsSubmitP1.setDisable(true);
                 hsPaneP1.setVisible(false);
                 hsPaneP1.setMaxWidth(220);
                 hsNameP1.setMinWidth(220);
-                // Return focus to the remaining active board if any
                 if (p2 != null && !p2.gameOver) gameCanvas2.requestFocus();
                 else gameCanvas1.requestFocus();
             }
         });
-
         hsPaneP1 = new VBox(8, new Label("High Score (P1)"), hsNameP1, hsSubmitP1);
         hsPaneP1.setAlignment(Pos.CENTER);
         hsPaneP1.setStyle("-fx-background-color: rgba(0,0,0,0.65); -fx-padding: 12; -fx-background-radius: 8;");
         hsPaneP1.setVisible(false);
-
-        // Right-side (P2)
-        hsNameP2 = new TextField();
-        hsNameP2.setPromptText("Name (P2)");
-        hsNameP2.setPrefColumnCount(12);
-        hsNameP2.setMaxWidth(180);
-        hsSubmitP2 = new Button("Submit P2");
-        hsSubmitP2.setFocusTraversable(false);
-        hsSubmitP2.setOnAction(e -> {
-            if (!submittedP2) {
-                String name = hsNameP2.getText().trim();
-                if (!name.isEmpty() && highScoreStore != null) {
-                    highScoreStore.add(name, (p2 != null ? p2.score : 0), buildConfigString() + " (P2)");
-                }
-                submittedP2 = true;
-                hsSubmitP2.setDisable(true);
-                hsPaneP2.setVisible(false);
-                hsPaneP2.setMaxWidth(220);
-                hsPaneP2.setMinWidth(220);
-                // Return focus to the remaining active board if any
-                if (!p1.gameOver) gameCanvas1.requestFocus();
-                else if (gameCanvas2 != null) gameCanvas2.requestFocus();
-            }
-        });
-
-        hsPaneP2 = new VBox(8, new Label("High Score (P2)"), hsNameP2, hsSubmitP2);
-        hsPaneP2.setAlignment(Pos.CENTER);
-        hsPaneP2.setStyle("-fx-background-color: rgba(0,0,0,0.65); -fx-padding: 12; -fx-background-radius: 8;");
-        hsPaneP2.setVisible(false);
-
-        // Mount panes over their own boards
         StackPane.setAlignment(hsPaneP1, Pos.CENTER);
         boardStack1.getChildren().add(hsPaneP1);
 
         if (boardStack2 != null) {
+            hsNameP2 = new TextField();
+            hsNameP2.setPromptText("Name (P2)");
+            hsNameP2.setPrefColumnCount(12);
+            hsNameP2.setMaxWidth(180);
+            hsSubmitP2 = new Button("Submit P2");
+            hsSubmitP2.setFocusTraversable(false);
+            hsSubmitP2.setOnAction(e -> {
+                if (!submittedP2) {
+                    String name = hsNameP2.getText().trim();
+                    if (!name.isEmpty() && highScoreStore != null)
+                        highScoreStore.add(name, p2 != null ? p2.score : 0, buildConfigString() + " (P2)");
+                    submittedP2 = true;
+                    hsSubmitP2.setDisable(true);
+                    hsPaneP2.setVisible(false);
+                    hsPaneP2.setMaxWidth(220);
+                    hsPaneP2.setMinWidth(220);
+                    if (!p1.gameOver) gameCanvas1.requestFocus();
+                    else if (gameCanvas2 != null) gameCanvas2.requestFocus();
+                }
+            });
+            hsPaneP2 = new VBox(8, new Label("High Score (P2)"), hsNameP2, hsSubmitP2);
+            hsPaneP2.setAlignment(Pos.CENTER);
+            hsPaneP2.setStyle("-fx-background-color: rgba(0,0,0,0.65); -fx-padding: 12; -fx-background-radius: 8;");
+            hsPaneP2.setVisible(false);
             StackPane.setAlignment(hsPaneP2, Pos.CENTER);
             boardStack2.getChildren().add(hsPaneP2);
         }
 
-        // input focus
+        // Input focus
         for (Canvas c : (p2 == null ? new Canvas[]{gameCanvas1} : new Canvas[]{gameCanvas1, gameCanvas2})) {
             c.setFocusTraversable(true);
             c.setOnKeyPressed(input);
             c.setOnKeyReleased(input);
         }
 
-        // scene resize hooks
+        // Resize hooks
         rootWrapper.sceneProperty().addListener((obs, o, s) -> {
             if (s != null) {
                 s.widthProperty().addListener((oo, a, b) -> resizeToAvailable(rootWrapper.getWidth(), rootWrapper.getHeight()));
@@ -399,22 +393,33 @@ public class TetrisGame {
             }
         });
 
-        // Force an initial resize + focus once the scene is ready
+        // Initial resize
         Platform.runLater(() -> {
             resizeToAvailable(rootWrapper.getWidth(), rootWrapper.getHeight());
             if (gameCanvas1 != null) gameCanvas1.requestFocus();
         });
 
-        // start bgm and loop
+        // Start audio & loop
         if (mediaManager != null) mediaManager.playBgMusic();
         startGameLoop();
 
         return rootWrapper;
     }
 
+    // small helper to quiet “extract method” suggestion
+    private BorderPane createTitleRow(Button backButton, Label gameTitle) {
+        BorderPane titleRow = new BorderPane();
+        titleRow.setLeft(backButton);
+        titleRow.setCenter(gameTitle);
+        titleRow.setPadding(new javafx.geometry.Insets(50, 10, 10, 10));
+        return titleRow;
+    }
+
+    // Build P1 HUD
     private VBox buildHudForPlayer1() {
         String p1Desc = (cfgP1 == null) ? "Human" : cfgP1.name();
-        p1PlayerLabel = new Label("Player 1: " + p1Desc);
+        // HUD labels
+        Label p1PlayerLabel = new Label("Player 1: " + p1Desc);
         p1ScoreLabel = new Label("Score: 0");
         p1LevelLabel = new Label("Level: " + cfgLevel);
         p1LinesLabel = new Label("Lines: 0");
@@ -424,9 +429,10 @@ public class TetrisGame {
         return hud;
     }
 
+    // Build P2 HUD
     private VBox buildHudForPlayer2() {
         String p2Desc = (cfgP2 == null) ? "Human" : cfgP2.name();
-        p2PlayerLabel = new Label("Player 2: " + p2Desc);
+        Label p2PlayerLabel = new Label("Player 2: " + p2Desc);
         p2ScoreLabel = new Label("Score: 0");
         p2LevelLabel = new Label("Level: " + cfgLevel);
         p2LinesLabel = new Label("Lines: 0");
@@ -436,18 +442,17 @@ public class TetrisGame {
         return hud;
     }
 
+    // Build info bar
     private HBox buildInfoBar() {
-        // Re-use these labels so existing toggle code updates them
         p1MusicLabel = new Label((mediaManager != null && !mediaManager.isMusicMuted()) ? "Music: ON" : "Music: OFF");
         p1SfxLabel = new Label((mediaManager != null && !mediaManager.isSfxMuted()) ? "Sound: ON" : "Sound: OFF");
         Label hint = new Label("M: Toggle Music   •   N: Toggle Sound");
-
         HBox bar = new HBox(20, p1MusicLabel, p1SfxLabel, hint);
         bar.setAlignment(Pos.CENTER);
         return bar;
     }
 
-    // ====== Init helpers ======
+    // New player state
     private PlayerState createInitialPlayerState() {
         PlayerState ps = new PlayerState();
         ps.board = new char[boardW][boardH];
@@ -457,6 +462,8 @@ public class TetrisGame {
         return ps;
     }
 
+    // Shared piece sequence
+    @SuppressWarnings("SameParameterValue")
     private List<Integer> generateSharedSequence(int length, long seed) {
         Random r = new Random(seed);
         List<Integer> seq = new ArrayList<>(length);
@@ -464,52 +471,43 @@ public class TetrisGame {
         return seq;
     }
 
+    // Spawn new piece
     private void spawnNewPiece(PlayerState ps) {
         ps.currentPiece = sharedSequence.get(ps.nextIndex++ % sharedSequence.size());
         ps.rotation = 0;
         ps.x = Math.max(0, boardW / 2 - 2);
-        ps.y = 1; // fully visible spawn
+        ps.y = 1;
 
-        // AI plan (local)
+        // Local AI plan
         if (ps == p1 && aiP1 != null && !ps.gameOver) {
             planP1 = aiP1.findBestMove(copyBoard(ps.board), ps.currentPiece);
         } else if (ps == p2 && aiP2 != null && !ps.gameOver) {
             planP2 = aiP2.findBestMove(copyBoard(ps.board), ps.currentPiece);
         }
 
-        // External plan (async one-shot per spawn)
+        // External plan P1
         if (ps == p1 && extP1 != null && !ps.gameOver) {
             PureGame g = buildPureGameSnapshot(ps);
             extP1.requestMoveAsync(g).whenComplete((move, ex) -> {
                 if (move == null || ex != null) {
-                    // server down or bad reply
                     javafx.application.Platform.runLater(() -> {
                         if (extWarn1 != null) extWarn1.setVisible(true);
                     });
                     return;
                 }
-                // Op semantics: opX==0 => leftmost (x=0). opRotate=#times to rotate from spawn (0..3).
                 int desiredRot = move.opRotate() & 3;
                 int[] bounds = pieceBounds(ps.currentPiece, desiredRot);
-
-                // Server gives opX as the LEFTMOST BLOCK column.
-                // Convert to our 4×4-origin x (ps.x) by subtracting minX of the piece.
                 int desiredOriginX = move.opX() - bounds[0];
-
-                // Legal range for 4×4 origin given the piece bounds at this rotation
                 int minOrigin = -bounds[0];
                 int maxOrigin = boardW - 1 - bounds[1];
-
-                // Clamp
                 desiredOriginX = Math.max(minOrigin, Math.min(maxOrigin, desiredOriginX));
-
                 planP1 = TetrisAI.BestMove.of(desiredOriginX, desiredRot);
-
                 javafx.application.Platform.runLater(() -> {
                     if (extWarn1 != null) extWarn1.setVisible(false);
                 });
             });
         } else if (ps == p2 && extP2 != null && !ps.gameOver) {
+            // External plan P2
             PureGame g = buildPureGameSnapshot(ps);
             extP2.requestMoveAsync(g).whenComplete((move, ex) -> {
                 if (move == null || ex != null) {
@@ -520,20 +518,11 @@ public class TetrisGame {
                 }
                 int desiredRot = move.opRotate() & 3;
                 int[] bounds = pieceBounds(ps.currentPiece, desiredRot);
-
-                // Server gives opX as the LEFTMOST BLOCK column.
-                // Convert to our 4×4-origin x (ps.x) by subtracting minX of the piece.
                 int desiredOriginX = move.opX() - bounds[0];
-
-                // Legal range for 4×4 origin given the piece bounds at this rotation
                 int minOrigin = -bounds[0];
                 int maxOrigin = boardW - 1 - bounds[1];
-
-                // Clamp
                 desiredOriginX = Math.max(minOrigin, Math.min(maxOrigin, desiredOriginX));
-
                 planP2 = TetrisAI.BestMove.of(desiredOriginX, desiredRot);
-
                 javafx.application.Platform.runLater(() -> {
                     if (extWarn2 != null) extWarn2.setVisible(false);
                 });
@@ -541,28 +530,28 @@ public class TetrisGame {
         }
     }
 
-
+    // Copy board
     private char[][] copyBoard(char[][] src) {
         char[][] dst = new char[boardW][boardH];
         for (int x = 0; x < boardW; x++) System.arraycopy(src[x], 0, dst[x], 0, boardH);
         return dst;
     }
 
+    // Snapshot for external
     private PureGame buildPureGameSnapshot(PlayerState ps) {
         PureGame g = new PureGame();
         g.setWidth(boardW);
         g.setHeight(boardH);
-        g.setCells(boardToIntRows(ps.board)); // [y][x]
-
+        g.setCells(boardToIntRows(ps.board));
         int nextIdx = sharedSequence.get(ps.nextIndex % sharedSequence.size());
-        g.setCurrentShape(shapeMatrixTrim(ps.currentPiece, 0)); // server decides rotation, so 0
+        g.setCurrentShape(shapeMatrixTrim(ps.currentPiece, 0));
         g.setNextShape(shapeMatrixTrim(nextIdx, 0));
-
         return g;
     }
 
+    // Board to int rows
     private int[][] boardToIntRows(char[][] b) {
-        int[][] rows = new int[boardH][boardW]; // [y][x]
+        int[][] rows = new int[boardH][boardW];
         for (int y = 0; y < boardH; y++) {
             for (int x = 0; x < boardW; x++) {
                 rows[y][x] = (b[x][y] == ' ') ? 0 : 1;
@@ -571,9 +560,8 @@ public class TetrisGame {
         return rows;
     }
 
-    /**
-     * returns minimal 0/1 matrix for tetromino at rotation r
-     */
+    // Trimmed shape matrix
+    @SuppressWarnings("SameParameterValue")
     private int[][] shapeMatrixTrim(int tetIdx, int r) {
         int minX = 4, maxX = -1, minY = 4, maxY = -1;
         for (int px = 0; px < 4; px++)
@@ -586,9 +574,7 @@ public class TetrisGame {
                     if (py > maxY) maxY = py;
                 }
             }
-        if (maxX < minX || maxY < minY) {
-            return new int[][]{{}}; // empty (shouldn't happen)
-        }
+        if (maxX < minX || maxY < minY) return new int[][]{{}};
         int w = maxX - minX + 1, h = maxY - minY + 1;
         int[][] m = new int[h][w];
         for (int px = 0; px < 4; px++)
@@ -599,9 +585,7 @@ public class TetrisGame {
         return m;
     }
 
-    /**
-     * [minX, maxX, minY, maxY] bounds for a piece at rotation r
-     */
+    // Piece bounds
     private int[] pieceBounds(int tetIdx, int r) {
         int minX = 4, maxX = -1, minY = 4, maxY = -1;
         for (int px = 0; px < 4; px++)
@@ -617,22 +601,30 @@ public class TetrisGame {
         return new int[]{minX, maxX, minY, maxY};
     }
 
-
-    // ====== Loop ======
+    // Start game loop
     private void startGameLoop() {
-        gameLoop = new AnimationTimer() {
+        // Pause toggle
+        // Audio toggles
+        // Time & speed
+        // HUD update
+        // Controls
+        // Gravity & lock
+        // Render
+        // Game over overlays
+        // Game loop timing
+        AnimationTimer gameLoop = new AnimationTimer() {
             private long lastFrame = 0;
 
             @Override
             public void handle(long now) {
                 if (startTime < 0) startTime = now;
-                if (now - lastFrame < 50_000_000) return; // ~20 fps tick
+                if (now - lastFrame < 50_000_000) return;
                 lastFrame = now;
 
-                // global pause toggle
+                // Pause toggle
                 if (input.consumeRelease(KeyCode.ESCAPE)) paused = !paused;
 
-                // audio toggles
+                // Audio toggles
                 if (input.consumePress(KeyCode.M) && mediaManager != null) {
                     mediaManager.toggleMusic();
                     p1MusicLabel.setText(mediaManager.isMusicMuted() ? "Music: OFF" : "Music: ON");
@@ -642,9 +634,10 @@ public class TetrisGame {
                     p1SfxLabel.setText(mediaManager.isSfxMuted() ? "SFX: OFF" : "SFX: ON");
                 }
 
+                // Time & speed
                 double elapsedSec = (now - startTime) / 1_000_000_000.0;
                 int currentLevel = Math.max(1, cfgLevel + (int) (elapsedSec / 30.0));
-                int timeDecrease = (int) (elapsedSec / 3.0);
+                int timeDecrease = (int) (elapsedSec / 5.0);
                 int currentFallInterval = Math.max(minFallInterval, baseFallInterval - timeDecrease);
 
                 // HUD update
@@ -662,13 +655,12 @@ public class TetrisGame {
                     return;
                 }
 
-                // --- Controls ---
+                // Controls
                 if (cfgP1 == PlayerType.HUMAN) {
                     handlePlayer1Input(p1);
                 } else if (cfgP1 == PlayerType.AI || cfgP1 == PlayerType.EXTERNAL) {
-                    driveAI(p1, planP1); // EXTERNAL reuses the same driver with a plan from the server
+                    driveAI(p1, planP1);
                 }
-
                 if (p2 != null) {
                     if (cfgP2 == PlayerType.HUMAN) {
                         handlePlayer2Input(p2);
@@ -677,29 +669,28 @@ public class TetrisGame {
                     }
                 }
 
-
-                // --- Gravity / locks ---
+                // Gravity & lock
                 stepPlayer(p1, currentFallInterval);
                 if (p2 != null) stepPlayer(p2, currentFallInterval);
 
-                // Draw
+                // Render
                 renderAll(currentFallInterval);
 
-                // Draw per-player GAME OVER overlay only for the player that actually lost
+                // Game over overlays
                 if (p1.gameOver) {
                     drawGameOver(gc1, p1.score, "P1");
-                    if (!submittedP1) hsPaneP1.setVisible(true);  // no autofocus
+                    if (!submittedP1) hsPaneP1.setVisible(true);
                 }
                 if (p2 != null && p2.gameOver) {
                     drawGameOver(gc2, p2.score, "P2");
-                    if (!submittedP2) hsPaneP2.setVisible(true);  // no autofocus
+                    if (!submittedP2) hsPaneP2.setVisible(true);
                 }
-
             }
         };
         gameLoop.start();
     }
 
+    // Handle P1 input
     private void handlePlayer1Input(PlayerState ps) {
         if (ps.gameOver) return;
         if (input.consumePress(KeyCode.LEFT) && canMove(ps, ps.rotation, ps.x - 1, ps.y)) ps.x--;
@@ -717,7 +708,7 @@ public class TetrisGame {
         }
     }
 
-    // WASD + SHIFT
+    // Handle P2 input
     private void handlePlayer2Input(PlayerState ps) {
         if (ps.gameOver) return;
         if (input.consumePress(KeyCode.A) && canMove(ps, ps.rotation, ps.x - 1, ps.y)) ps.x--;
@@ -735,6 +726,7 @@ public class TetrisGame {
         }
     }
 
+    // Gravity step
     private void stepPlayer(PlayerState ps, int currentFallInterval) {
         if (ps.gameOver) return;
         ps.fallCounter++;
@@ -745,7 +737,7 @@ public class TetrisGame {
         }
     }
 
-    // ====== Rules ======
+    // Collision check
     private boolean canMove(PlayerState ps, int rot, int posX, int posY) {
         for (int px = 0; px < 4; px++)
             for (int py = 0; py < 4; py++) {
@@ -758,6 +750,7 @@ public class TetrisGame {
         return true;
     }
 
+    // Lock piece & spawn
     private void lockAndSpawn(PlayerState ps) {
         placePiece(ps, ps.currentPiece, ps.rotation, ps.x, ps.y);
         int cleared = clearLines(ps);
@@ -777,6 +770,7 @@ public class TetrisGame {
         }
     }
 
+    // Place piece
     private void placePiece(PlayerState ps, int tetromino, int rot, int posX, int posY) {
         for (int px = 0; px < 4; px++)
             for (int py = 0; py < 4; py++) {
@@ -787,6 +781,7 @@ public class TetrisGame {
             }
     }
 
+    // Clear lines
     private int clearLines(PlayerState ps) {
         int linesCleared = 0;
         for (int by = 0; by < boardH; by++) {
@@ -805,16 +800,15 @@ public class TetrisGame {
                 for (int bx = 0; bx < boardW; bx++) ps.board[bx][0] = ' ';
             }
         }
-
         if (linesCleared == 1) ps.score += 100;
         else if (linesCleared == 2) ps.score += 300;
         else if (linesCleared == 3) ps.score += 600;
         else if (linesCleared >= 4) ps.score += 1000;
-
         ps.lines += linesCleared;
         return linesCleared;
     }
 
+    // Rotate index
     private int rotate(int px, int py, int r) {
         return switch (r & 3) {
             case 0 -> py * 4 + px;
@@ -824,16 +818,13 @@ public class TetrisGame {
         };
     }
 
-    // ====== Rendering ======
+    // Render everything
     private void renderAll(int currentFallInterval) {
-        // P1
         renderBoard(gc1, p1);
         drawPiece(gc1, p1.currentPiece, p1.rotation, p1.x, p1.y);
         renderNextPiece(nextGc1, p1);
         renderScore(gc1, p1.score);
         drawSpeed(gc1, currentFallInterval);
-
-        // P2
         if (p2 != null) {
             renderBoard(gc2, p2);
             drawPiece(gc2, p2.currentPiece, p2.rotation, p2.x, p2.y);
@@ -841,31 +832,24 @@ public class TetrisGame {
             renderScore(gc2, p2.score);
             drawSpeed(gc2, currentFallInterval);
         }
-
         if (paused) {
             drawPause(gc1);
             if (gc2 != null) drawPause(gc2);
         }
     }
 
+    // Responsive resize
     private void resizeToAvailable(double sceneW, double sceneH) {
-        // Layout spacing assumptions
         double spacing = 20;
         double columns = (p2 == null) ? 1 : 2;
-
-        // Reserve enough width for side panels per column
         double sidePerColumn = Math.max(160, Math.min(sceneW * (0.22 / columns), 260));
-
-        // Calculate available space for board
         double columnWidth = (sceneW - (columns - 1) * 40 - 60) / columns;
         double availW = Math.max(200, columnWidth - sidePerColumn - spacing);
         double availH = Math.max(200, sceneH - 160);
 
-        // Scale cell size so the full board always fits
-        int newCell = (int) Math.max(12, Math.floor(Math.min(availW / boardW, availH / boardH)));
-        blockSize = newCell;
+        // remove redundant temp local: assign directly
+        blockSize = Math.max(12d, Math.floor(Math.min(availW / boardW, availH / boardH)));
 
-        // Resize canvases
         gameCanvas1.setWidth(boardPixelW());
         gameCanvas1.setHeight(boardPixelH());
         nextCanvas1.setWidth(sidePerColumn);
@@ -884,7 +868,7 @@ public class TetrisGame {
         renderAll(Math.max(minFallInterval, baseFallInterval));
     }
 
-
+    // Draw board
     private void renderBoard(GraphicsContext gc, PlayerState ps) {
         gc.setFill(Color.BLACK);
         gc.fillRect(0, 0, boardPixelW(), boardPixelH());
@@ -900,6 +884,7 @@ public class TetrisGame {
                     drawBlock(gc, ps.board[bx][by], bx * cell(), by * cell());
     }
 
+    // Draw active piece
     private void drawPiece(GraphicsContext gc, int tetromino, int rot, int posX, int posY) {
         for (int px = 0; px < 4; px++)
             for (int py = 0; py < 4; py++) {
@@ -908,6 +893,7 @@ public class TetrisGame {
             }
     }
 
+    // Draw next piece
     private void renderNextPiece(GraphicsContext ngc, PlayerState ps) {
         ngc.setFill(Color.DARKGRAY);
         ngc.fillRect(0, 0, nextCanvas1.getWidth(), nextCanvas1.getHeight());
@@ -951,12 +937,14 @@ public class TetrisGame {
             }
     }
 
+    // Draw score
     private void renderScore(GraphicsContext gc, int score) {
         gc.setFill(Color.WHITE);
         gc.setFont(Font.font(20));
         gc.fillText("Score: " + score, 10, 25);
     }
 
+    // Draw speed
     private void drawSpeed(GraphicsContext gc, int fallInterval) {
         gc.setFill(Color.WHITE);
         gc.setFont(Font.font(16));
@@ -964,6 +952,7 @@ public class TetrisGame {
         gc.fillText("Speed: " + speedValue, 10, 50);
     }
 
+    // Draw pause
     private void drawPause(GraphicsContext gc) {
         gc.setFill(Color.color(0, 0, 0, 0.5));
         gc.fillRect(0, 0, boardPixelW(), boardPixelH());
@@ -979,16 +968,14 @@ public class TetrisGame {
         gc.fillText(pauseText, textX, textY);
     }
 
-    // TetrisGame.java  — replace the whole method
+    // Draw game over
     private void drawGameOver(GraphicsContext gc, int score, String tag) {
-        // Dim just the board
         gc.setFill(Color.color(0, 0, 0, 0.6));
         gc.fillRect(0, 0, boardPixelW(), boardPixelH());
 
         double cx = boardPixelW() / 2.0;
         double cy = boardPixelH() / 2.0;
 
-        // Line 1: "GAME OVER"
         gc.setFill(Color.RED);
         gc.setFont(Font.font(36));
         String l1 = "GAME OVER";
@@ -997,7 +984,6 @@ public class TetrisGame {
         }}.getLayoutBounds().getWidth();
         gc.fillText(l1, Math.max(8, cx - l1w / 2), cy - 18);
 
-        // Line 2: "(P1)" or "(P2)" directly under it
         gc.setFont(Font.font(22));
         String l2 = "(" + tag + ")";
         double l2w = new Text(l2) {{
@@ -1005,7 +991,6 @@ public class TetrisGame {
         }}.getLayoutBounds().getWidth();
         gc.fillText(l2, Math.max(8, cx - l2w / 2), cy + 6);
 
-        // Line 3: Final score
         gc.setFill(Color.WHITE);
         gc.setFont(Font.font(20));
         String l3 = "Final Score: " + score;
@@ -1014,7 +999,6 @@ public class TetrisGame {
         }}.getLayoutBounds().getWidth();
         gc.fillText(l3, Math.max(8, cx - l3w / 2), cy + 32);
 
-        // Line 4: hint
         gc.setFont(Font.font(15));
         String l4 = "Enter name to submit high score";
         double l4w = new Text(l4) {{
@@ -1023,11 +1007,12 @@ public class TetrisGame {
         gc.fillText(l4, Math.max(8, cx - l4w / 2), cy + 54);
     }
 
-
+    // Draw single block
     private void drawBlock(GraphicsContext gc, char kind, int x, int y) {
         drawBlock(gc, kind, x, y, cell());
     }
 
+    // Draw sized block
     private void drawBlock(GraphicsContext gc, char kind, int x, int y, int size) {
         Color color = switch (kind) {
             case 'I' -> Color.CYAN;
@@ -1045,6 +1030,7 @@ public class TetrisGame {
         gc.strokeRect(x, y, size, size);
     }
 
+    // Config summary
     private String buildConfigString() {
         String size = cfgWidth + "x" + cfgHeight + "(" + cfgLevel + ")";
         String p1s = (cfgP1 == null ? "HUMAN" : cfgP1.name());
@@ -1053,7 +1039,7 @@ public class TetrisGame {
         return size + " " + p1s + " + " + p2s;
     }
 
-    // ====== Input helper ======
+    // Keyboard state handler
     private class KeyInputHandler implements EventHandler<KeyEvent> {
         @Override
         public void handle(KeyEvent e) {
@@ -1069,6 +1055,8 @@ public class TetrisGame {
             return false;
         }
 
+        @SuppressWarnings("SameParameterValue")
+            // currently only used with ESCAPE
         boolean consumeRelease(KeyCode code) {
             if (Boolean.FALSE.equals(keys.get(code))) {
                 keys.remove(code);
@@ -1078,18 +1066,15 @@ public class TetrisGame {
         }
     }
 
+    // Drive AI plan
     private void driveAI(PlayerState ps, TetrisAI.BestMove plan) {
         if (ps.gameOver || plan == null) return;
-
-        // 1) Rotate toward desired rotation (one step per frame)
         int desiredRot = plan.rotation() & 3;
         if ((ps.rotation & 3) != desiredRot) {
             int nr = ps.rotation + 1;
             if (canMove(ps, nr, ps.x, ps.y)) {
                 ps.rotation = nr;
-                return;
             } else {
-                // simple nudge to help rotation near walls
                 if (canMove(ps, ps.rotation, ps.x + 1, ps.y)) {
                     ps.x++;
                     return;
@@ -1098,24 +1083,18 @@ public class TetrisGame {
                     ps.x--;
                     return;
                 }
-                // if still stuck, give up this frame
-                return;
             }
+            return;
         }
 
-        // 2) Move horizontally toward target column (one cell per frame)
         int targetX = plan.col();
         if (ps.x < targetX) {
             if (canMove(ps, ps.rotation, ps.x + 1, ps.y)) ps.x++;
-            return;
         } else if (ps.x > targetX) {
             if (canMove(ps, ps.rotation, ps.x - 1, ps.y)) ps.x--;
-            return;
+        } else {
+            while (canMove(ps, ps.rotation, ps.x, ps.y + 1)) ps.y++;
+            lockAndSpawn(ps);
         }
-
-        // 3) Aligned: hard drop
-        while (canMove(ps, ps.rotation, ps.x, ps.y + 1)) ps.y++;
-        lockAndSpawn(ps);
     }
-
 }
