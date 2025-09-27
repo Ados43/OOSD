@@ -4,7 +4,7 @@
   "gameLevel": 1,
   "musicOn": true,
   "sfxOn": true,
-  "extendedMode": false,
+  "extendedMode": true,
   "player1": "AI",
   "player2": "HUMAN"
 }

@@ -128,6 +128,10 @@ public class TetrisGame {
     private Label p1PlayerLabel, p1ScoreLabel, p1LevelLabel, p1LinesLabel, p1MusicLabel, p1SfxLabel;
     private Label p2PlayerLabel, p2ScoreLabel, p2LevelLabel, p2LinesLabel; // music/sfx shown once
 
+    // AI support
+    private TetrisAI aiP1, aiP2;
+    private TetrisAI.BestMove planP1, planP2;
+
     // Per-player high-score UI + flags
     private VBox hsPaneP1, hsPaneP2;
     private TextField hsNameP1, hsNameP2;
@@ -141,7 +145,7 @@ public class TetrisGame {
 
     // Game loop & timing
     private AnimationTimer gameLoop;
-    private int baseFallInterval = 30;   // derived from cfgLevel in createContent()
+    private int baseFallInterval = 30;
     private final int minFallInterval = 5;
     private long startTime = -1;
     private boolean paused = false;
@@ -161,11 +165,6 @@ public class TetrisGame {
 
     private PlayerState p1, p2;          // p2 only used when cfgExtended && both HUMAN for this step
     private List<Integer> sharedSequence; // same item order for both players
-
-    // Controls: Player1 = arrows + SPACE; Player2 = WASD + SHIFT
-    private boolean isP2EnabledForHumanVsHuman() {
-        return cfgExtended && cfgP1 == PlayerType.HUMAN && cfgP2 == PlayerType.HUMAN;
-    }
 
     // ====== Basic helpers ======
     private int cell() {
@@ -196,6 +195,10 @@ public class TetrisGame {
         boardW = cfgWidth;
         boardH = cfgHeight;
 
+        // AI instances if selected in config
+        aiP1 = (cfgP1 == PlayerType.AI) ? new TetrisAI(TETROMINOS, boardW, boardH) : null;
+        aiP2 = (cfgP2 == PlayerType.AI) ? new TetrisAI(TETROMINOS, boardW, boardH) : null;
+
         // derive speed from level (faster at higher level)
         baseFallInterval = Math.max(10, 34 - (cfgLevel - 1) * 3);
 
@@ -204,7 +207,7 @@ public class TetrisGame {
         submittedP1 = false;
         submittedP2 = false;
 
-        if (isP2EnabledForHumanVsHuman()) p2 = createInitialPlayerState();
+        if (cfgExtended) p2 = createInitialPlayerState();
         sharedSequence = generateSharedSequence(50_000, 123456789L); // long enough, fixed seed
         spawnNewPiece(p1);
         if (p2 != null) spawnNewPiece(p2);
@@ -438,6 +441,19 @@ public class TetrisGame {
         ps.rotation = 0;
         ps.x = Math.max(0, boardW / 2 - 2);
         ps.y = 1; // start one row inside the field so the whole tetromino is visible
+
+        // If this player is AI, pre-compute the best (col, rotation)
+        if (ps == p1 && aiP1 != null && !ps.gameOver) {
+            planP1 = aiP1.findBestMove(copyBoard(ps.board), ps.currentPiece);
+        } else if (ps == p2 && aiP2 != null && !ps.gameOver) {
+            planP2 = aiP2.findBestMove(copyBoard(ps.board), ps.currentPiece);
+        }
+    }
+
+    private char[][] copyBoard(char[][] src) {
+        char[][] dst = new char[boardW][boardH];
+        for (int x = 0; x < boardW; x++) System.arraycopy(src[x], 0, dst[x], 0, boardH);
+        return dst;
     }
 
     // ====== Loop ======
@@ -485,8 +501,19 @@ public class TetrisGame {
                 }
 
                 // --- Controls ---
-                handlePlayer1Input(p1);
-                if (p2 != null) handlePlayer2Input(p2);
+                if (cfgP1 == PlayerType.HUMAN) {
+                    handlePlayer1Input(p1);
+                } else if (cfgP1 == PlayerType.AI) {
+                    driveAI(p1, planP1);
+                }
+
+                if (p2 != null) {
+                    if (cfgP2 == PlayerType.HUMAN) {
+                        handlePlayer2Input(p2);
+                    } else if (cfgP2 == PlayerType.AI) {
+                        driveAI(p2, planP2);
+                    }
+                }
 
                 // --- Gravity / locks ---
                 stepPlayer(p1, currentFallInterval);
@@ -498,11 +525,11 @@ public class TetrisGame {
                 // Draw per-player GAME OVER overlay only for the player that actually lost
                 if (p1.gameOver) {
                     drawGameOver(gc1, p1.score, "P1");
-                    if (!submittedP1) hsPaneP1.setVisible(true);  // no auto-focus
+                    if (!submittedP1) hsPaneP1.setVisible(true);  // no autofocus
                 }
                 if (p2 != null && p2.gameOver) {
                     drawGameOver(gc2, p2.score, "P2");
-                    if (!submittedP2) hsPaneP2.setVisible(true);  // no auto-focus
+                    if (!submittedP2) hsPaneP2.setVisible(true);  // no autofocus
                 }
 
             }
@@ -887,4 +914,45 @@ public class TetrisGame {
             return false;
         }
     }
+
+    private void driveAI(PlayerState ps, TetrisAI.BestMove plan) {
+        if (ps.gameOver || plan == null) return;
+
+        // 1) Rotate toward desired rotation (one step per frame)
+        int desiredRot = plan.rotation() & 3;
+        if ((ps.rotation & 3) != desiredRot) {
+            int nr = ps.rotation + 1;
+            if (canMove(ps, nr, ps.x, ps.y)) {
+                ps.rotation = nr;
+                return;
+            } else {
+                // simple nudge to help rotation near walls
+                if (canMove(ps, ps.rotation, ps.x + 1, ps.y)) {
+                    ps.x++;
+                    return;
+                }
+                if (canMove(ps, ps.rotation, ps.x - 1, ps.y)) {
+                    ps.x--;
+                    return;
+                }
+                // if still stuck, give up this frame
+                return;
+            }
+        }
+
+        // 2) Move horizontally toward target column (one cell per frame)
+        int targetX = plan.col();
+        if (ps.x < targetX) {
+            if (canMove(ps, ps.rotation, ps.x + 1, ps.y)) ps.x++;
+            return;
+        } else if (ps.x > targetX) {
+            if (canMove(ps, ps.rotation, ps.x - 1, ps.y)) ps.x--;
+            return;
+        }
+
+        // 3) Aligned: hard drop
+        while (canMove(ps, ps.rotation, ps.x, ps.y + 1)) ps.y++;
+        lockAndSpawn(ps);
+    }
+
 }
