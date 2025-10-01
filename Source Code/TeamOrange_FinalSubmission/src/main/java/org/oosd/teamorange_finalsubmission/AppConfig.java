@@ -1,6 +1,9 @@
+/// AppConfig.java
+// Configuration model for the app which holds the user’s
+// chosen values and are loaded/saved by ConfigStore.java
+
 package org.oosd.teamorange_finalsubmission;
 
-// App config model
 public class AppConfig {
     // Defaults
     public int fieldWidth = 10;

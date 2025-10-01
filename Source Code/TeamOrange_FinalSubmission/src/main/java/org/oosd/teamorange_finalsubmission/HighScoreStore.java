@@ -1,3 +1,9 @@
+/// HighScoreStore.java
+// Simple repository for high scores.
+// - adding a score,
+// - retrieving the top 10 (sorted),
+// - clearing all scores, and persistence to disk (highScores.json) so results survive app restarts.
+
 package org.oosd.teamorange_finalsubmission;
 
 import com.google.gson.Gson;

@@ -1,10 +1,10 @@
 {
-  "fieldWidth": 10,
-  "fieldHeight": 20,
+  "fieldWidth": 12,
+  "fieldHeight": 30,
   "gameLevel": 1,
-  "musicOn": true,
-  "sfxOn": true,
+  "musicOn": false,
+  "sfxOn": false,
   "extendedMode": true,
-  "player1": "HUMAN",
+  "player1": "AI",
   "player2": "AI"
 }

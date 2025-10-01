@@ -1,3 +1,7 @@
+/// HighScoreRow.java
+// JavaFX view-model wrapper for a high score row.
+// Rank, name, score, and config as observable properties for binding to a TableView.
+
 package org.oosd.teamorange_finalsubmission;
 
 import javafx.beans.property.SimpleStringProperty;

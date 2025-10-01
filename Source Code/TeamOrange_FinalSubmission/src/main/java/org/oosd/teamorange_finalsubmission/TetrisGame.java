@@ -1,3 +1,13 @@
+/// TetrisGame.java
+// Core game engine + UI:
+// - Builds single or two-player boards (Canvas) and side HUDs.
+// - Runs the animation/game loop, gravity, locking, scoring, and line clears.
+// - Handles keyboard input for human players.
+// - Integrates TetrisAI and ExternalClient (per configuration).
+// - Renders current state, next piece preview, and game over overlays.
+// - Submits high scores via HighScoreStore and plays sounds via MediaManager.
+// - Purely client-side gameplay; no server required unless EXTERNAL is selected.
+
 package org.oosd.teamorange_finalsubmission;
 
 import javafx.animation.AnimationTimer;

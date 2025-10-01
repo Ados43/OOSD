@@ -1,3 +1,12 @@
+/// TetrisAI.java
+// Lightweight heuristic AI.
+// - explores unique rotations,
+// - simulates a hard drop at each valid column,
+// - clears any full lines,
+// - scores the resulting board using a simple evaluator (height, holes, cleared lines, bumpiness),
+// - returns BestMove(col, rotation, score).
+// - used when a player type is AI and also as a driver when an EXTERNAL is supplied.
+
 package org.oosd.teamorange_finalsubmission;
 
 import java.util.*;

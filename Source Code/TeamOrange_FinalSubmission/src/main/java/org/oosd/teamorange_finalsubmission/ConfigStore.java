@@ -1,3 +1,8 @@
+/// ConfigStore.java
+// Loads and saves AppConfig to a JSON file used by HelloController
+// when opening the Configuration screen and before launching the game.
+
+
 package org.oosd.teamorange_finalsubmission;
 
 import java.io.IOException;
@@ -5,7 +10,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
-// App config persistence
+
 public class ConfigStore {
 
     // Paths

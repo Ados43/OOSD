@@ -1,3 +1,8 @@
+/// HelloApplication.java
+// JavaFX entry point. Shows a splash image briefly, then loads main-menu.fxml
+// Applies the global CSS theme to keep visuals consistent.
+// No game logic is here. This class only bootstraps the UI.
+
 package org.oosd.teamorange_finalsubmission;
 
 import javafx.animation.PauseTransition;

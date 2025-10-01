@@ -1,3 +1,7 @@
+/// module-info.java
+// Java Platform Module System descriptor for this app.
+// Declares module dependencies (JavaFX, media, JSON, etc.)
+
 module org.oosd.teamorange_finalsubmission {
     // JavaFX
     requires javafx.controls;
@@ -15,7 +19,7 @@ module org.oosd.teamorange_finalsubmission {
     requires com.almasb.fxgl.all;
 
     // JSON (Jackson)
-    requires com.fasterxml.jackson.databind;   // sufficient; transitively brings core+annotations
+    requires com.fasterxml.jackson.databind;
 
     // Gson
     requires com.google.gson;

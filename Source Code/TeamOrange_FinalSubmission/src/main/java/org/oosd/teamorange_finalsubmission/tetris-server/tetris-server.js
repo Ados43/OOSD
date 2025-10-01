@@ -1,3 +1,5 @@
+// Right click Tetris-server.js > Open in Terminal > node tetris-server.js
+
 const net = require('net');
 
 function rotateCW(shape) {

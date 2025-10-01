@@ -1,8 +1,15 @@
+/// PureGame.java
+// Minimal snapshot of game state sent to the external server:
+//  - width/height: board size,
+//  - cells: 2D array [y][x] of 0/1 occupancy,
+//  - currentShape / nextShape: trimmed 0/1 matrices of tetrominoes.
+// Includes standard getters so Jackson can serialize it to JSON.
+
 package org.oosd.teamorange_finalsubmission;
 
 import java.util.Arrays;
 
-// Pure game snapshot
+
 public class PureGame {
     // Fields
     private int width;
@@ -11,8 +18,30 @@ public class PureGame {
     private int[][] currentShape;
     private int[][] nextShape;
 
-    // Constructor
+    // Getters
+    public int getWidth() {
+        return width;
+    }
+
+    public int getHeight() {
+        return height;
+    }
+
+    public int[][] getCells() {
+        return cells;
+    }
+
+    public int[][] getCurrentShape() {
+        return currentShape;
+    }
+
+    public int[][] getNextShape() {
+        return nextShape;
+    }
+
+    // Constructors
     public PureGame() {
+
     }
 
     public void setWidth(int width) {
@@ -35,7 +64,6 @@ public class PureGame {
         this.nextShape = nextShape;
     }
 
-    // ToString
     @Override
     public String toString() {
         return "PureGame{" +

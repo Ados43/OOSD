@@ -1,3 +1,10 @@
+/// HelloController.java
+// Controller for the main menu and top-level navigation.
+// - Starts a TetrisGame using the current AppConfig.
+// - Builds the Configuration and High Scores screens.
+// - Applies the theme to every scene so the look is consistent.
+// - Bridges UI actions to stores/managers (ConfigStore, HighScoreStore, MediaManager).
+
 package org.oosd.teamorange_finalsubmission;
 
 import javafx.fxml.FXML;

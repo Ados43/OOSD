@@ -1,3 +1,8 @@
+/// MediaManager.java
+// Small helper around JavaFX Media/AudioClip for background music and sound effects.
+// Supports muting/togglin.
+// Plays short cues (drop, line clear, tetris, game over) triggered by TetrisGame.
+
 package org.oosd.teamorange_finalsubmission;
 
 import javafx.scene.media.Media;

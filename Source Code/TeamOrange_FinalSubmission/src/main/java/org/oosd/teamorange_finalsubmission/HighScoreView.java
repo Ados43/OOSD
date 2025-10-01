@@ -1,3 +1,8 @@
+/// HighScoreView.java
+// Builds and returns a styled JavaFX Parent containing the Top-10 table.
+// Control buttons (Clear / Back). The table is locked from reordering/resizing
+// Table is sized to show up to ten rows max.
+
 package org.oosd.teamorange_finalsubmission;
 
 import javafx.collections.FXCollections;
