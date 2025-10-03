@@ -1,0 +1,4 @@
+-------------------------------------------------------------------------------
+Test set: org.oosd.teamorange_finalsubmission.PureGameJsonTest
+-------------------------------------------------------------------------------
+Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.321 s -- in org.oosd.teamorange_finalsubmission.PureGameJsonTest

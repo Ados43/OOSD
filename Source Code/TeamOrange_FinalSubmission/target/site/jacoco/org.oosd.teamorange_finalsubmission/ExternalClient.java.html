@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ExternalClient.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">TeamOrange_FinalSubmission</a> &gt; <a href="index.source.html" class="el_package">org.oosd.teamorange_finalsubmission</a> &gt; <span class="el_source">ExternalClient.java</span></div><h1>ExternalClient.java</h1><pre class="source lang-java linenums">/// ExternalClient.java
+// Lightweight TCP client used when a player type is EXTERNAL.
+// - Serializes a PureGame snapshot to JSON (Jackson).
+// - Sends it as a single newline-terminated line to localhost:3000.
+// - Reads one JSON line back and deserializes it to OpMove.
+// - Exposes the result via CompletableFuture for the game loop to consume.
+// - The server closes the connection after each reply;
+// - This client opens a new socket per query and includes simple error/timeout handling.
+
+
+package org.oosd.teamorange_finalsubmission;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import java.io.*;
+import java.net.InetSocketAddress;
+import java.net.Socket;
+import java.nio.charset.StandardCharsets;
+import java.util.concurrent.CompletableFuture;
+
+<span class="nc" id="L21">public final class ExternalClient {</span>
+    private static final String HOST = &quot;127.0.0.1&quot;; // force IPv4
+    private static final int PORT = 3000;
+    private static final int CONNECT_TIMEOUT_MS = 1500;
+    private static final int READ_TIMEOUT_MS = 3000;
+
+<span class="nc" id="L27">    private final ObjectMapper mapper = new ObjectMapper();</span>
+
+    public CompletableFuture&lt;OpMove&gt; requestMoveAsync(PureGame game) {
+<span class="nc" id="L30">        return CompletableFuture.supplyAsync(() -&gt; {</span>
+<span class="nc" id="L31">            try (Socket socket = new Socket()) {</span>
+<span class="nc" id="L32">                socket.connect(new InetSocketAddress(HOST, PORT), CONNECT_TIMEOUT_MS);</span>
+<span class="nc" id="L33">                socket.setSoTimeout(READ_TIMEOUT_MS);</span>
+
+<span class="nc" id="L35">                try (BufferedWriter out = new BufferedWriter(</span>
+<span class="nc" id="L36">                        new OutputStreamWriter(socket.getOutputStream(), StandardCharsets.UTF_8));</span>
+<span class="nc" id="L37">                     BufferedReader in = new BufferedReader(</span>
+<span class="nc" id="L38">                             new InputStreamReader(socket.getInputStream(), StandardCharsets.UTF_8))) {</span>
+
+<span class="nc" id="L40">                    String json = mapper.writeValueAsString(game);</span>
+<span class="nc" id="L41">                    out.write(json);</span>
+<span class="nc" id="L42">                    out.write(&quot;\n&quot;);             // IMPORTANT: newline terminator</span>
+<span class="nc" id="L43">                    out.flush();                  // IMPORTANT: flush</span>
+
+<span class="nc" id="L45">                    String line = in.readLine();  // server replies one line then closes</span>
+<span class="nc bnc" id="L46" title="All 4 branches missed.">                    if (line == null || line.isBlank()) {</span>
+<span class="nc" id="L47">                        throw new IOException(&quot;Empty reply from server&quot;);</span>
+                    }
+<span class="nc" id="L49">                    return mapper.readValue(line, OpMove.class);</span>
+                }
+<span class="nc" id="L51">            } catch (Exception ex) {</span>
+<span class="nc" id="L52">                System.err.println(&quot;[ExternalClient] &quot; + ex.getClass().getSimpleName() + &quot;: &quot; + ex.getMessage());</span>
+<span class="nc" id="L53">                return null; // TetrisGame shows the red &quot;External server unavailable&quot; badge</span>
+            }
+        });
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

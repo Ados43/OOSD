@@ -1,0 +1,1111 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>TetrisGame.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">TeamOrange_FinalSubmission</a> &gt; <a href="index.source.html" class="el_package">org.oosd.teamorange_finalsubmission</a> &gt; <span class="el_source">TetrisGame.java</span></div><h1>TetrisGame.java</h1><pre class="source lang-java linenums">/// TetrisGame.java
+// Core game engine + UI:
+// - Builds single or two-player boards (Canvas) and side HUDs.
+// - Runs the animation/game loop, gravity, locking, scoring, and line clears.
+// - Handles keyboard input for human players.
+// - Integrates TetrisAI and ExternalClient (per configuration).
+// - Renders current state, next piece preview, and game over overlays.
+// - Submits high scores via HighScoreStore and plays sounds via MediaManager.
+// - Purely client-side gameplay; no server required unless EXTERNAL is selected.
+
+package org.oosd.teamorange_finalsubmission;
+
+import javafx.animation.AnimationTimer;
+import javafx.application.Platform;
+import javafx.event.EventHandler;
+import javafx.geometry.Pos;
+import javafx.scene.Parent;
+import javafx.scene.canvas.Canvas;
+import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.control.*;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
+import javafx.scene.text.Text;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
+import java.util.concurrent.ConcurrentHashMap;
+
+@SuppressWarnings({&quot;FieldMayBeLocal&quot;, &quot;SameParameterValue&quot;}) // calm “can be local” &amp; “same arg every call”
+<span class="nc" id="L37">public class TetrisGame {</span>
+
+    // Tetromino definitions
+<span class="nc" id="L40">    private static final char[][] TETROMINOS = {</span>
+            {
+                    ' ', ' ', ' ', ' ',
+                    'I', 'I', 'I', 'I',
+                    ' ', ' ', ' ', ' ',
+                    ' ', ' ', ' ', ' '
+            },
+            {
+                    ' ', ' ', ' ', ' ',
+                    ' ', 'O', 'O', ' ',
+                    ' ', 'O', 'O', ' ',
+                    ' ', ' ', ' ', ' '
+            },
+            {
+                    'J', ' ', ' ', ' ',
+                    'J', 'J', 'J', ' ',
+                    ' ', ' ', ' ', ' ',
+                    ' ', ' ', ' ', ' '
+            },
+            {
+                    ' ', ' ', 'L', ' ',
+                    'L', 'L', 'L', ' ',
+                    ' ', ' ', ' ', ' ',
+                    ' ', ' ', ' ', ' '
+            },
+            {
+                    ' ', 'S', 'S', ' ',
+                    'S', 'S', ' ', ' ',
+                    ' ', ' ', ' ', ' ',
+                    ' ', ' ', ' ', ' '
+            },
+            {
+                    ' ', 'T', ' ', ' ',
+                    'T', 'T', 'T', ' ',
+                    ' ', ' ', ' ', ' ',
+                    ' ', ' ', ' ', ' '
+            },
+            {
+                    'Z', 'Z', ' ', ' ',
+                    ' ', 'Z', 'Z', ' ',
+                    ' ', ' ', ' ', ' ',
+                    ' ', ' ', ' ', ' '
+            }
+    };
+
+    // Dependencies
+    private HighScoreStore highScoreStore;
+
+    public void setHighScoreStore(HighScoreStore store) {
+<span class="nc" id="L89">        this.highScoreStore = store;</span>
+<span class="nc" id="L90">    }</span>
+
+    private MediaManager mediaManager;
+
+    public void setMediaManager(MediaManager mm) {
+<span class="nc" id="L95">        this.mediaManager = mm;</span>
+<span class="nc" id="L96">    }</span>
+
+    // Config values
+<span class="nc" id="L99">    private int cfgWidth = 12;</span>
+<span class="nc" id="L100">    private int cfgHeight = 18;</span>
+<span class="nc" id="L101">    private int cfgLevel = 1;</span>
+<span class="nc" id="L102">    private boolean cfgExtended = false;</span>
+<span class="nc" id="L103">    private PlayerType cfgP1 = PlayerType.HUMAN;</span>
+<span class="nc" id="L104">    private PlayerType cfgP2 = PlayerType.HUMAN;</span>
+
+    public void setConfig(int width, int height, int level,
+                          boolean extended, boolean musicOn, boolean sfxOn,
+                          PlayerType p1, PlayerType p2) {
+<span class="nc" id="L109">        this.cfgWidth = Math.max(5, Math.min(40, width));</span>
+<span class="nc" id="L110">        this.cfgHeight = Math.max(10, Math.min(60, height));</span>
+<span class="nc" id="L111">        this.cfgLevel = Math.max(1, Math.min(20, level));</span>
+<span class="nc" id="L112">        this.cfgExtended = extended;</span>
+<span class="nc" id="L113">        this.cfgP1 = p1;</span>
+<span class="nc" id="L114">        this.cfgP2 = p2;</span>
+<span class="nc bnc" id="L115" title="All 2 branches missed.">        if (mediaManager != null) {</span>
+<span class="nc bnc" id="L116" title="All 2 branches missed.">            mediaManager.setMusicMuted(!musicOn);</span>
+<span class="nc bnc" id="L117" title="All 2 branches missed.">            mediaManager.setSfxMuted(!sfxOn);</span>
+        }
+<span class="nc" id="L119">    }</span>
+
+    // Rendering sizes
+    private int boardW;
+    private int boardH;
+    private static final int BLOCK_SIZE = 30;
+<span class="nc" id="L125">    private double blockSize = BLOCK_SIZE;</span>
+
+    private StackPane rootWrapper;
+    private StackPane boardStack1, boardStack2;
+
+    // Canvases and contexts
+    private Canvas gameCanvas1, nextCanvas1;
+    private Canvas gameCanvas2, nextCanvas2;
+    private GraphicsContext gc1, nextGc1;
+    private GraphicsContext gc2, nextGc2;
+
+    private Label p1ScoreLabel;
+    private Label p1LevelLabel;
+    private Label p1LinesLabel;
+    private Label p1MusicLabel;
+    private Label p1SfxLabel;
+    private Label p2ScoreLabel;
+    private Label p2LevelLabel;
+    private Label p2LinesLabel;
+
+    // AI fields
+    private TetrisAI aiP1, aiP2;
+    private TetrisAI.BestMove planP1, planP2;
+
+    // External clients
+    private ExternalClient extP1, extP2;
+    private Label extWarn1, extWarn2;
+
+    // High score UI
+    private VBox hsPaneP1, hsPaneP2;
+    private TextField hsNameP1, hsNameP2;
+    private Button hsSubmitP1, hsSubmitP2;
+<span class="nc" id="L157">    private boolean submittedP1 = false, submittedP2 = false;</span>
+
+    // Keyboard input
+<span class="nc" id="L160">    private final ConcurrentHashMap&lt;KeyCode, Boolean&gt; keys = new ConcurrentHashMap&lt;&gt;();</span>
+<span class="nc" id="L161">    private final KeyInputHandler input = new KeyInputHandler();</span>
+
+<span class="nc" id="L163">    private int baseFallInterval = 30;</span>
+<span class="nc" id="L164">    private final int minFallInterval = 5;</span>
+<span class="nc" id="L165">    private long startTime = -1;</span>
+<span class="nc" id="L166">    private boolean paused = false;</span>
+
+    private Runnable onBack;
+
+    // Player state (per player)
+<span class="nc" id="L171">    private static class PlayerState {</span>
+        char[][] board;
+        int currentPiece, rotation, x, y;
+<span class="nc" id="L174">        int score = 0;</span>
+<span class="nc" id="L175">        int lines = 0;</span>
+<span class="nc" id="L176">        int nextIndex = 0;</span>
+<span class="nc" id="L177">        boolean gameOver = false;</span>
+<span class="nc" id="L178">        int fallCounter = 0;</span>
+    }
+
+    // Two-player state
+    private PlayerState p1, p2;
+    private List&lt;Integer&gt; sharedSequence;
+
+    // Size helpers
+    private int cell() {
+<span class="nc" id="L187">        return (int) Math.max(1, Math.floor(blockSize));</span>
+    }
+
+    private double boardPixelW() {
+<span class="nc" id="L191">        return boardW * cell();</span>
+    }
+
+    private double boardPixelH() {
+<span class="nc" id="L195">        return boardH * cell();</span>
+    }
+
+    // Callbacks &amp; toggles
+    public void setOnBack(Runnable onBack) {
+<span class="nc" id="L200">        this.onBack = onBack;</span>
+<span class="nc" id="L201">    }</span>
+
+    @SuppressWarnings(&quot;unused&quot;)
+    public void setExtendedMode(boolean enabled) {
+<span class="nc" id="L205">        this.cfgExtended = enabled;</span>
+<span class="nc" id="L206">    }</span>
+
+    // Build UI &amp; start
+    public Parent createContent() {
+        // Live sizes
+<span class="nc" id="L211">        boardW = cfgWidth;</span>
+<span class="nc" id="L212">        boardH = cfgHeight;</span>
+
+        // Players/AI/External
+<span class="nc bnc" id="L215" title="All 2 branches missed.">        aiP1 = (cfgP1 == PlayerType.AI) ? new TetrisAI(TETROMINOS, boardW, boardH) : null;</span>
+<span class="nc bnc" id="L216" title="All 2 branches missed.">        aiP2 = (cfgP2 == PlayerType.AI) ? new TetrisAI(TETROMINOS, boardW, boardH) : null;</span>
+<span class="nc bnc" id="L217" title="All 2 branches missed.">        extP1 = (cfgP1 == PlayerType.EXTERNAL) ? new ExternalClient() : null;</span>
+<span class="nc bnc" id="L218" title="All 2 branches missed.">        extP2 = (cfgP2 == PlayerType.EXTERNAL) ? new ExternalClient() : null;</span>
+
+        // Speed from level
+<span class="nc" id="L221">        baseFallInterval = Math.max(10, 34 - (cfgLevel - 1) * 3);</span>
+
+        // Init players &amp; sequence
+<span class="nc" id="L224">        p1 = createInitialPlayerState();</span>
+<span class="nc" id="L225">        submittedP1 = submittedP2 = false;</span>
+<span class="nc bnc" id="L226" title="All 2 branches missed.">        if (cfgExtended) p2 = createInitialPlayerState();</span>
+<span class="nc" id="L227">        sharedSequence = generateSharedSequence(50_000, 123456789L);</span>
+<span class="nc" id="L228">        spawnNewPiece(p1);</span>
+<span class="nc bnc" id="L229" title="All 2 branches missed.">        if (p2 != null) spawnNewPiece(p2);</span>
+
+        // Canvases &amp; HUDs
+<span class="nc" id="L232">        gameCanvas1 = new Canvas(boardPixelW(), boardPixelH());</span>
+<span class="nc" id="L233">        gc1 = gameCanvas1.getGraphicsContext2D();</span>
+<span class="nc" id="L234">        nextCanvas1 = new Canvas(6 * BLOCK_SIZE, 6 * BLOCK_SIZE);</span>
+<span class="nc" id="L235">        nextGc1 = nextCanvas1.getGraphicsContext2D();</span>
+<span class="nc" id="L236">        VBox rightPanel1 = buildHudForPlayer1();</span>
+
+<span class="nc" id="L238">        boardStack1 = new StackPane(gameCanvas1);</span>
+<span class="nc" id="L239">        boardStack1.setPrefSize(boardPixelW(), boardPixelH());</span>
+<span class="nc" id="L240">        StackPane.setAlignment(gameCanvas1, Pos.CENTER);</span>
+
+        // Layout: one or two columns
+        HBox rootLeftOrSingle;
+        // UI containers
+        HBox rootRow;
+<span class="nc bnc" id="L246" title="All 2 branches missed.">        if (p2 == null) {</span>
+<span class="nc" id="L247">            VBox p1Side = new VBox(20, nextCanvas1, rightPanel1);</span>
+<span class="nc" id="L248">            p1Side.setAlignment(Pos.TOP_CENTER);</span>
+<span class="nc" id="L249">            rootLeftOrSingle = new HBox(20, boardStack1, p1Side);</span>
+<span class="nc" id="L250">            rootLeftOrSingle.setAlignment(Pos.TOP_CENTER);</span>
+<span class="nc" id="L251">            rootRow = new HBox(40, rootLeftOrSingle);</span>
+<span class="nc" id="L252">        } else {</span>
+<span class="nc" id="L253">            gameCanvas2 = new Canvas(boardPixelW(), boardPixelH());</span>
+<span class="nc" id="L254">            gc2 = gameCanvas2.getGraphicsContext2D();</span>
+<span class="nc" id="L255">            nextCanvas2 = new Canvas(6 * BLOCK_SIZE, 6 * BLOCK_SIZE);</span>
+<span class="nc" id="L256">            nextGc2 = nextCanvas2.getGraphicsContext2D();</span>
+<span class="nc" id="L257">            VBox rightPanel2 = buildHudForPlayer2();</span>
+
+<span class="nc" id="L259">            boardStack2 = new StackPane(gameCanvas2);</span>
+<span class="nc" id="L260">            boardStack2.setPrefSize(boardPixelW(), boardPixelH());</span>
+<span class="nc" id="L261">            StackPane.setAlignment(gameCanvas2, Pos.CENTER);</span>
+
+<span class="nc" id="L263">            VBox p1Side = new VBox(10, nextCanvas1, rightPanel1);</span>
+<span class="nc" id="L264">            p1Side.setAlignment(Pos.TOP_CENTER);</span>
+<span class="nc" id="L265">            VBox p2Side = new VBox(10, nextCanvas2, rightPanel2);</span>
+<span class="nc" id="L266">            p2Side.setAlignment(Pos.TOP_CENTER);</span>
+
+<span class="nc" id="L268">            HBox col1 = new HBox(20, boardStack1, p1Side);</span>
+<span class="nc" id="L269">            col1.setAlignment(Pos.TOP_CENTER);</span>
+<span class="nc" id="L270">            HBox col2 = new HBox(20, boardStack2, p2Side);</span>
+<span class="nc" id="L271">            col2.setAlignment(Pos.TOP_CENTER);</span>
+<span class="nc" id="L272">            rootRow = new HBox(40, col1, col2);</span>
+        }
+
+        // External warnings
+<span class="nc" id="L276">        extWarn1 = new Label(&quot;External server unavailable&quot;);</span>
+<span class="nc" id="L277">        extWarn1.setStyle(&quot;-fx-background-color: rgba(255,80,80,0.85); -fx-text-fill: white; -fx-padding: 4 8; -fx-background-radius: 6; -fx-font-size: 12;&quot;);</span>
+<span class="nc" id="L278">        extWarn1.setVisible(false);</span>
+<span class="nc" id="L279">        StackPane.setAlignment(extWarn1, Pos.TOP_RIGHT);</span>
+<span class="nc" id="L280">        StackPane.setMargin(extWarn1, new javafx.geometry.Insets(8, 8, 0, 0));</span>
+<span class="nc" id="L281">        boardStack1.getChildren().add(extWarn1);</span>
+
+<span class="nc bnc" id="L283" title="All 2 branches missed.">        if (boardStack2 != null) {</span>
+<span class="nc" id="L284">            extWarn2 = new Label(&quot;External server unavailable&quot;);</span>
+<span class="nc" id="L285">            extWarn2.setStyle(&quot;-fx-background-color: rgba(255,80,80,0.85); -fx-text-fill: white; -fx-padding: 4 8; -fx-background-radius: 6; -fx-font-size: 12;&quot;);</span>
+<span class="nc" id="L286">            extWarn2.setVisible(false);</span>
+<span class="nc" id="L287">            StackPane.setAlignment(extWarn2, Pos.TOP_RIGHT);</span>
+<span class="nc" id="L288">            StackPane.setMargin(extWarn2, new javafx.geometry.Insets(8, 8, 0, 0));</span>
+<span class="nc" id="L289">            boardStack2.getChildren().add(extWarn2);</span>
+        }
+
+        // Header row
+<span class="nc" id="L293">        Label gameTitle = new Label(&quot;Enhanced Tetris Game&quot;);</span>
+<span class="nc" id="L294">        gameTitle.getStyleClass().add(&quot;screen-title&quot;);</span>
+<span class="nc" id="L295">        gameTitle.setMaxWidth(Double.MAX_VALUE);</span>
+
+<span class="nc" id="L297">        Button backButton = new Button(&quot;Back&quot;);</span>
+<span class="nc" id="L298">        backButton.setFocusTraversable(false);</span>
+<span class="nc" id="L299">        backButton.setOnAction(e -&gt; {</span>
+<span class="nc" id="L300">            Alert a = new Alert(Alert.AlertType.CONFIRMATION,</span>
+                    &quot;Your current progress will be lost if you return to the main menu. Are you sure?&quot;,
+                    ButtonType.YES, ButtonType.NO);
+<span class="nc bnc" id="L303" title="All 2 branches missed.">            if (a.showAndWait().filter(ButtonType.YES::equals).isPresent()) {</span>
+<span class="nc" id="L304">                paused = true;</span>
+<span class="nc bnc" id="L305" title="All 2 branches missed.">                if (mediaManager != null) mediaManager.stopBgMusic();</span>
+<span class="nc bnc" id="L306" title="All 2 branches missed.">                if (onBack != null) onBack.run();</span>
+            }
+<span class="nc" id="L308">        });</span>
+
+<span class="nc" id="L310">        BorderPane titleRow = createTitleRow(backButton, gameTitle); // small extract to satisfy suggestion</span>
+
+        // Settings bar
+<span class="nc" id="L313">        HBox infoBar = buildInfoBar();</span>
+<span class="nc" id="L314">        infoBar.setAlignment(Pos.CENTER);</span>
+
+        // Header layout
+<span class="nc" id="L317">        VBox header = new VBox(6, titleRow, infoBar);</span>
+<span class="nc" id="L318">        header.setAlignment(Pos.TOP_CENTER);</span>
+<span class="nc" id="L319">        header.setPadding(new javafx.geometry.Insets(6, 8, 12, 8));</span>
+
+        // Content layout
+<span class="nc" id="L322">        rootRow.setAlignment(Pos.CENTER);</span>
+<span class="nc" id="L323">        rootRow.setSpacing(40);</span>
+<span class="nc" id="L324">        rootRow.setPadding(new javafx.geometry.Insets(10, 20, 20, 20));</span>
+
+        // Root wrapper
+<span class="nc" id="L327">        BorderPane wrapper = new BorderPane();</span>
+<span class="nc" id="L328">        wrapper.setTop(header);</span>
+<span class="nc" id="L329">        wrapper.setCenter(rootRow);</span>
+<span class="nc" id="L330">        wrapper.setPadding(new javafx.geometry.Insets(16, 16, 50, 16));</span>
+<span class="nc" id="L331">        rootWrapper = new StackPane(wrapper);</span>
+<span class="nc" id="L332">        rootWrapper.getStyleClass().add(&quot;app-bg&quot;);</span>
+
+        // High score panes
+<span class="nc" id="L335">        hsNameP1 = new TextField();</span>
+<span class="nc" id="L336">        hsNameP1.setPromptText(&quot;Name (P1)&quot;);</span>
+<span class="nc" id="L337">        hsNameP1.setPrefColumnCount(12);</span>
+<span class="nc" id="L338">        hsNameP1.setMaxWidth(180);</span>
+<span class="nc" id="L339">        hsSubmitP1 = new Button(&quot;Submit P1&quot;);</span>
+<span class="nc" id="L340">        hsSubmitP1.setFocusTraversable(false);</span>
+<span class="nc" id="L341">        hsSubmitP1.setOnAction(e -&gt; {</span>
+<span class="nc bnc" id="L342" title="All 2 branches missed.">            if (!submittedP1) {</span>
+<span class="nc" id="L343">                String name = hsNameP1.getText().trim();</span>
+<span class="nc bnc" id="L344" title="All 4 branches missed.">                if (!name.isEmpty() &amp;&amp; highScoreStore != null)</span>
+<span class="nc" id="L345">                    highScoreStore.add(name, p1.score, buildConfigString() + &quot; (P1)&quot;);</span>
+<span class="nc" id="L346">                submittedP1 = true;</span>
+<span class="nc" id="L347">                hsSubmitP1.setDisable(true);</span>
+<span class="nc" id="L348">                hsPaneP1.setVisible(false);</span>
+<span class="nc" id="L349">                hsPaneP1.setMaxWidth(220);</span>
+<span class="nc" id="L350">                hsNameP1.setMinWidth(220);</span>
+<span class="nc bnc" id="L351" title="All 4 branches missed.">                if (p2 != null &amp;&amp; !p2.gameOver) gameCanvas2.requestFocus();</span>
+<span class="nc" id="L352">                else gameCanvas1.requestFocus();</span>
+            }
+<span class="nc" id="L354">        });</span>
+<span class="nc" id="L355">        hsPaneP1 = new VBox(8, new Label(&quot;High Score (P1)&quot;), hsNameP1, hsSubmitP1);</span>
+<span class="nc" id="L356">        hsPaneP1.setAlignment(Pos.CENTER);</span>
+<span class="nc" id="L357">        hsPaneP1.setStyle(&quot;-fx-background-color: rgba(0,0,0,0.65); -fx-padding: 12; -fx-background-radius: 8;&quot;);</span>
+<span class="nc" id="L358">        hsPaneP1.setVisible(false);</span>
+<span class="nc" id="L359">        StackPane.setAlignment(hsPaneP1, Pos.CENTER);</span>
+<span class="nc" id="L360">        boardStack1.getChildren().add(hsPaneP1);</span>
+
+<span class="nc bnc" id="L362" title="All 2 branches missed.">        if (boardStack2 != null) {</span>
+<span class="nc" id="L363">            hsNameP2 = new TextField();</span>
+<span class="nc" id="L364">            hsNameP2.setPromptText(&quot;Name (P2)&quot;);</span>
+<span class="nc" id="L365">            hsNameP2.setPrefColumnCount(12);</span>
+<span class="nc" id="L366">            hsNameP2.setMaxWidth(180);</span>
+<span class="nc" id="L367">            hsSubmitP2 = new Button(&quot;Submit P2&quot;);</span>
+<span class="nc" id="L368">            hsSubmitP2.setFocusTraversable(false);</span>
+<span class="nc" id="L369">            hsSubmitP2.setOnAction(e -&gt; {</span>
+<span class="nc bnc" id="L370" title="All 2 branches missed.">                if (!submittedP2) {</span>
+<span class="nc" id="L371">                    String name = hsNameP2.getText().trim();</span>
+<span class="nc bnc" id="L372" title="All 4 branches missed.">                    if (!name.isEmpty() &amp;&amp; highScoreStore != null)</span>
+<span class="nc bnc" id="L373" title="All 2 branches missed.">                        highScoreStore.add(name, p2 != null ? p2.score : 0, buildConfigString() + &quot; (P2)&quot;);</span>
+<span class="nc" id="L374">                    submittedP2 = true;</span>
+<span class="nc" id="L375">                    hsSubmitP2.setDisable(true);</span>
+<span class="nc" id="L376">                    hsPaneP2.setVisible(false);</span>
+<span class="nc" id="L377">                    hsPaneP2.setMaxWidth(220);</span>
+<span class="nc" id="L378">                    hsPaneP2.setMinWidth(220);</span>
+<span class="nc bnc" id="L379" title="All 2 branches missed.">                    if (!p1.gameOver) gameCanvas1.requestFocus();</span>
+<span class="nc bnc" id="L380" title="All 2 branches missed.">                    else if (gameCanvas2 != null) gameCanvas2.requestFocus();</span>
+                }
+<span class="nc" id="L382">            });</span>
+<span class="nc" id="L383">            hsPaneP2 = new VBox(8, new Label(&quot;High Score (P2)&quot;), hsNameP2, hsSubmitP2);</span>
+<span class="nc" id="L384">            hsPaneP2.setAlignment(Pos.CENTER);</span>
+<span class="nc" id="L385">            hsPaneP2.setStyle(&quot;-fx-background-color: rgba(0,0,0,0.65); -fx-padding: 12; -fx-background-radius: 8;&quot;);</span>
+<span class="nc" id="L386">            hsPaneP2.setVisible(false);</span>
+<span class="nc" id="L387">            StackPane.setAlignment(hsPaneP2, Pos.CENTER);</span>
+<span class="nc" id="L388">            boardStack2.getChildren().add(hsPaneP2);</span>
+        }
+
+        // Input focus
+<span class="nc bnc" id="L392" title="All 4 branches missed.">        for (Canvas c : (p2 == null ? new Canvas[]{gameCanvas1} : new Canvas[]{gameCanvas1, gameCanvas2})) {</span>
+<span class="nc" id="L393">            c.setFocusTraversable(true);</span>
+<span class="nc" id="L394">            c.setOnKeyPressed(input);</span>
+<span class="nc" id="L395">            c.setOnKeyReleased(input);</span>
+        }
+
+        // Resize hooks
+<span class="nc" id="L399">        rootWrapper.sceneProperty().addListener((obs, o, s) -&gt; {</span>
+<span class="nc bnc" id="L400" title="All 2 branches missed.">            if (s != null) {</span>
+<span class="nc" id="L401">                s.widthProperty().addListener((oo, a, b) -&gt; resizeToAvailable(rootWrapper.getWidth(), rootWrapper.getHeight()));</span>
+<span class="nc" id="L402">                s.heightProperty().addListener((oo, a, b) -&gt; resizeToAvailable(rootWrapper.getWidth(), rootWrapper.getHeight()));</span>
+            }
+<span class="nc" id="L404">        });</span>
+
+        // Initial resize
+<span class="nc" id="L407">        Platform.runLater(() -&gt; {</span>
+<span class="nc" id="L408">            resizeToAvailable(rootWrapper.getWidth(), rootWrapper.getHeight());</span>
+<span class="nc bnc" id="L409" title="All 2 branches missed.">            if (gameCanvas1 != null) gameCanvas1.requestFocus();</span>
+<span class="nc" id="L410">        });</span>
+
+        // Start audio &amp; loop
+<span class="nc bnc" id="L413" title="All 2 branches missed.">        if (mediaManager != null) mediaManager.playBgMusic();</span>
+<span class="nc" id="L414">        startGameLoop();</span>
+
+<span class="nc" id="L416">        return rootWrapper;</span>
+    }
+
+    // small helper to quiet “extract method” suggestion
+    private BorderPane createTitleRow(Button backButton, Label gameTitle) {
+<span class="nc" id="L421">        BorderPane titleRow = new BorderPane();</span>
+<span class="nc" id="L422">        titleRow.setLeft(backButton);</span>
+<span class="nc" id="L423">        titleRow.setCenter(gameTitle);</span>
+<span class="nc" id="L424">        titleRow.setPadding(new javafx.geometry.Insets(50, 10, 10, 10));</span>
+<span class="nc" id="L425">        return titleRow;</span>
+    }
+
+    // Build P1 HUD
+    private VBox buildHudForPlayer1() {
+<span class="nc bnc" id="L430" title="All 2 branches missed.">        String p1Desc = (cfgP1 == null) ? &quot;Human&quot; : cfgP1.name();</span>
+        // HUD labels
+<span class="nc" id="L432">        Label p1PlayerLabel = new Label(&quot;Player 1: &quot; + p1Desc);</span>
+<span class="nc" id="L433">        p1ScoreLabel = new Label(&quot;Score: 0&quot;);</span>
+<span class="nc" id="L434">        p1LevelLabel = new Label(&quot;Level: &quot; + cfgLevel);</span>
+<span class="nc" id="L435">        p1LinesLabel = new Label(&quot;Lines: 0&quot;);</span>
+<span class="nc" id="L436">        Label controls = new Label(&quot;P1: Arrows / Space&quot;);</span>
+<span class="nc" id="L437">        VBox hud = new VBox(8, p1PlayerLabel, p1ScoreLabel, p1LevelLabel, p1LinesLabel, controls);</span>
+<span class="nc" id="L438">        hud.setAlignment(Pos.TOP_CENTER);</span>
+<span class="nc" id="L439">        return hud;</span>
+    }
+
+    // Build P2 HUD
+    private VBox buildHudForPlayer2() {
+<span class="nc bnc" id="L444" title="All 2 branches missed.">        String p2Desc = (cfgP2 == null) ? &quot;Human&quot; : cfgP2.name();</span>
+<span class="nc" id="L445">        Label p2PlayerLabel = new Label(&quot;Player 2: &quot; + p2Desc);</span>
+<span class="nc" id="L446">        p2ScoreLabel = new Label(&quot;Score: 0&quot;);</span>
+<span class="nc" id="L447">        p2LevelLabel = new Label(&quot;Level: &quot; + cfgLevel);</span>
+<span class="nc" id="L448">        p2LinesLabel = new Label(&quot;Lines: 0&quot;);</span>
+<span class="nc" id="L449">        Label controls = new Label(&quot;P2: WASD + Shift&quot;);</span>
+<span class="nc" id="L450">        VBox hud = new VBox(8, p2PlayerLabel, p2ScoreLabel, p2LevelLabel, p2LinesLabel, controls);</span>
+<span class="nc" id="L451">        hud.setAlignment(Pos.TOP_CENTER);</span>
+<span class="nc" id="L452">        return hud;</span>
+    }
+
+    // Build info bar
+    private HBox buildInfoBar() {
+<span class="nc bnc" id="L457" title="All 4 branches missed.">        p1MusicLabel = new Label((mediaManager != null &amp;&amp; !mediaManager.isMusicMuted()) ? &quot;Music: ON&quot; : &quot;Music: OFF&quot;);</span>
+<span class="nc bnc" id="L458" title="All 4 branches missed.">        p1SfxLabel = new Label((mediaManager != null &amp;&amp; !mediaManager.isSfxMuted()) ? &quot;Sound: ON&quot; : &quot;Sound: OFF&quot;);</span>
+<span class="nc" id="L459">        Label hint = new Label(&quot;M: Toggle Music   •   N: Toggle Sound&quot;);</span>
+<span class="nc" id="L460">        HBox bar = new HBox(20, p1MusicLabel, p1SfxLabel, hint);</span>
+<span class="nc" id="L461">        bar.setAlignment(Pos.CENTER);</span>
+<span class="nc" id="L462">        return bar;</span>
+    }
+
+    // New player state
+    private PlayerState createInitialPlayerState() {
+<span class="nc" id="L467">        PlayerState ps = new PlayerState();</span>
+<span class="nc" id="L468">        ps.board = new char[boardW][boardH];</span>
+<span class="nc bnc" id="L469" title="All 2 branches missed.">        for (int x = 0; x &lt; boardW; x++)</span>
+<span class="nc bnc" id="L470" title="All 2 branches missed.">            for (int y = 0; y &lt; boardH; y++)</span>
+<span class="nc" id="L471">                ps.board[x][y] = ' ';</span>
+<span class="nc" id="L472">        return ps;</span>
+    }
+
+    // Shared piece sequence
+    @SuppressWarnings(&quot;SameParameterValue&quot;)
+    private List&lt;Integer&gt; generateSharedSequence(int length, long seed) {
+<span class="nc" id="L478">        Random r = new Random(seed);</span>
+<span class="nc" id="L479">        List&lt;Integer&gt; seq = new ArrayList&lt;&gt;(length);</span>
+<span class="nc bnc" id="L480" title="All 2 branches missed.">        for (int i = 0; i &lt; length; i++) seq.add(r.nextInt(TETROMINOS.length));</span>
+<span class="nc" id="L481">        return seq;</span>
+    }
+
+    // Spawn new piece
+    private void spawnNewPiece(PlayerState ps) {
+<span class="nc" id="L486">        ps.currentPiece = sharedSequence.get(ps.nextIndex++ % sharedSequence.size());</span>
+<span class="nc" id="L487">        ps.rotation = 0;</span>
+<span class="nc" id="L488">        ps.x = Math.max(0, boardW / 2 - 2);</span>
+<span class="nc" id="L489">        ps.y = 1;</span>
+
+        // Local AI plan
+<span class="nc bnc" id="L492" title="All 6 branches missed.">        if (ps == p1 &amp;&amp; aiP1 != null &amp;&amp; !ps.gameOver) {</span>
+<span class="nc" id="L493">            planP1 = aiP1.findBestMove(copyBoard(ps.board), ps.currentPiece);</span>
+<span class="nc bnc" id="L494" title="All 6 branches missed.">        } else if (ps == p2 &amp;&amp; aiP2 != null &amp;&amp; !ps.gameOver) {</span>
+<span class="nc" id="L495">            planP2 = aiP2.findBestMove(copyBoard(ps.board), ps.currentPiece);</span>
+        }
+
+        // External plan P1
+<span class="nc bnc" id="L499" title="All 6 branches missed.">        if (ps == p1 &amp;&amp; extP1 != null &amp;&amp; !ps.gameOver) {</span>
+<span class="nc" id="L500">            PureGame g = buildPureGameSnapshot(ps);</span>
+<span class="nc" id="L501">            extP1.requestMoveAsync(g).whenComplete((move, ex) -&gt; {</span>
+<span class="nc bnc" id="L502" title="All 4 branches missed.">                if (move == null || ex != null) {</span>
+<span class="nc" id="L503">                    javafx.application.Platform.runLater(() -&gt; {</span>
+<span class="nc bnc" id="L504" title="All 2 branches missed.">                        if (extWarn1 != null) extWarn1.setVisible(true);</span>
+<span class="nc" id="L505">                    });</span>
+<span class="nc" id="L506">                    return;</span>
+                }
+<span class="nc" id="L508">                int desiredRot = move.opRotate() &amp; 3;</span>
+<span class="nc" id="L509">                int[] bounds = pieceBounds(ps.currentPiece, desiredRot);</span>
+<span class="nc" id="L510">                int desiredOriginX = move.opX() - bounds[0];</span>
+<span class="nc" id="L511">                int minOrigin = -bounds[0];</span>
+<span class="nc" id="L512">                int maxOrigin = boardW - 1 - bounds[1];</span>
+<span class="nc" id="L513">                desiredOriginX = Math.max(minOrigin, Math.min(maxOrigin, desiredOriginX));</span>
+<span class="nc" id="L514">                planP1 = TetrisAI.BestMove.of(desiredOriginX, desiredRot);</span>
+<span class="nc" id="L515">                javafx.application.Platform.runLater(() -&gt; {</span>
+<span class="nc bnc" id="L516" title="All 2 branches missed.">                    if (extWarn1 != null) extWarn1.setVisible(false);</span>
+<span class="nc" id="L517">                });</span>
+<span class="nc" id="L518">            });</span>
+<span class="nc bnc" id="L519" title="All 6 branches missed.">        } else if (ps == p2 &amp;&amp; extP2 != null &amp;&amp; !ps.gameOver) {</span>
+            // External plan P2
+<span class="nc" id="L521">            PureGame g = buildPureGameSnapshot(ps);</span>
+<span class="nc" id="L522">            extP2.requestMoveAsync(g).whenComplete((move, ex) -&gt; {</span>
+<span class="nc bnc" id="L523" title="All 4 branches missed.">                if (move == null || ex != null) {</span>
+<span class="nc" id="L524">                    javafx.application.Platform.runLater(() -&gt; {</span>
+<span class="nc bnc" id="L525" title="All 2 branches missed.">                        if (extWarn2 != null) extWarn2.setVisible(true);</span>
+<span class="nc" id="L526">                    });</span>
+<span class="nc" id="L527">                    return;</span>
+                }
+<span class="nc" id="L529">                int desiredRot = move.opRotate() &amp; 3;</span>
+<span class="nc" id="L530">                int[] bounds = pieceBounds(ps.currentPiece, desiredRot);</span>
+<span class="nc" id="L531">                int desiredOriginX = move.opX() - bounds[0];</span>
+<span class="nc" id="L532">                int minOrigin = -bounds[0];</span>
+<span class="nc" id="L533">                int maxOrigin = boardW - 1 - bounds[1];</span>
+<span class="nc" id="L534">                desiredOriginX = Math.max(minOrigin, Math.min(maxOrigin, desiredOriginX));</span>
+<span class="nc" id="L535">                planP2 = TetrisAI.BestMove.of(desiredOriginX, desiredRot);</span>
+<span class="nc" id="L536">                javafx.application.Platform.runLater(() -&gt; {</span>
+<span class="nc bnc" id="L537" title="All 2 branches missed.">                    if (extWarn2 != null) extWarn2.setVisible(false);</span>
+<span class="nc" id="L538">                });</span>
+<span class="nc" id="L539">            });</span>
+        }
+<span class="nc" id="L541">    }</span>
+
+    // Copy board
+    private char[][] copyBoard(char[][] src) {
+<span class="nc" id="L545">        char[][] dst = new char[boardW][boardH];</span>
+<span class="nc bnc" id="L546" title="All 2 branches missed.">        for (int x = 0; x &lt; boardW; x++) System.arraycopy(src[x], 0, dst[x], 0, boardH);</span>
+<span class="nc" id="L547">        return dst;</span>
+    }
+
+    // Snapshot for external
+    private PureGame buildPureGameSnapshot(PlayerState ps) {
+<span class="nc" id="L552">        PureGame g = new PureGame();</span>
+<span class="nc" id="L553">        g.setWidth(boardW);</span>
+<span class="nc" id="L554">        g.setHeight(boardH);</span>
+<span class="nc" id="L555">        g.setCells(boardToIntRows(ps.board));</span>
+<span class="nc" id="L556">        int nextIdx = sharedSequence.get(ps.nextIndex % sharedSequence.size());</span>
+<span class="nc" id="L557">        g.setCurrentShape(shapeMatrixTrim(ps.currentPiece, 0));</span>
+<span class="nc" id="L558">        g.setNextShape(shapeMatrixTrim(nextIdx, 0));</span>
+<span class="nc" id="L559">        return g;</span>
+    }
+
+    // Board to int rows
+    private int[][] boardToIntRows(char[][] b) {
+<span class="nc" id="L564">        int[][] rows = new int[boardH][boardW];</span>
+<span class="nc bnc" id="L565" title="All 2 branches missed.">        for (int y = 0; y &lt; boardH; y++) {</span>
+<span class="nc bnc" id="L566" title="All 2 branches missed.">            for (int x = 0; x &lt; boardW; x++) {</span>
+<span class="nc bnc" id="L567" title="All 2 branches missed.">                rows[y][x] = (b[x][y] == ' ') ? 0 : 1;</span>
+            }
+        }
+<span class="nc" id="L570">        return rows;</span>
+    }
+
+    // Trimmed shape matrix
+    @SuppressWarnings(&quot;SameParameterValue&quot;)
+    private int[][] shapeMatrixTrim(int tetIdx, int r) {
+<span class="nc" id="L576">        int minX = 4, maxX = -1, minY = 4, maxY = -1;</span>
+<span class="nc bnc" id="L577" title="All 2 branches missed.">        for (int px = 0; px &lt; 4; px++)</span>
+<span class="nc bnc" id="L578" title="All 2 branches missed.">            for (int py = 0; py &lt; 4; py++) {</span>
+<span class="nc" id="L579">                char c = TETROMINOS[tetIdx][rotate(px, py, r)];</span>
+<span class="nc bnc" id="L580" title="All 2 branches missed.">                if (c != ' ') {</span>
+<span class="nc bnc" id="L581" title="All 2 branches missed.">                    if (px &lt; minX) minX = px;</span>
+<span class="nc bnc" id="L582" title="All 2 branches missed.">                    if (px &gt; maxX) maxX = px;</span>
+<span class="nc bnc" id="L583" title="All 2 branches missed.">                    if (py &lt; minY) minY = py;</span>
+<span class="nc bnc" id="L584" title="All 2 branches missed.">                    if (py &gt; maxY) maxY = py;</span>
+                }
+            }
+<span class="nc bnc" id="L587" title="All 4 branches missed.">        if (maxX &lt; minX || maxY &lt; minY) return new int[][]{{}};</span>
+<span class="nc" id="L588">        int w = maxX - minX + 1, h = maxY - minY + 1;</span>
+<span class="nc" id="L589">        int[][] m = new int[h][w];</span>
+<span class="nc bnc" id="L590" title="All 2 branches missed.">        for (int px = 0; px &lt; 4; px++)</span>
+<span class="nc bnc" id="L591" title="All 2 branches missed.">            for (int py = 0; py &lt; 4; py++) {</span>
+<span class="nc" id="L592">                char c = TETROMINOS[tetIdx][rotate(px, py, r)];</span>
+<span class="nc bnc" id="L593" title="All 2 branches missed.">                if (c != ' ') m[py - minY][px - minX] = 1;</span>
+            }
+<span class="nc" id="L595">        return m;</span>
+    }
+
+    // Piece bounds
+    private int[] pieceBounds(int tetIdx, int r) {
+<span class="nc" id="L600">        int minX = 4, maxX = -1, minY = 4, maxY = -1;</span>
+<span class="nc bnc" id="L601" title="All 2 branches missed.">        for (int px = 0; px &lt; 4; px++)</span>
+<span class="nc bnc" id="L602" title="All 2 branches missed.">            for (int py = 0; py &lt; 4; py++) {</span>
+<span class="nc" id="L603">                char c = TETROMINOS[tetIdx][rotate(px, py, r)];</span>
+<span class="nc bnc" id="L604" title="All 2 branches missed.">                if (c != ' ') {</span>
+<span class="nc bnc" id="L605" title="All 2 branches missed.">                    if (px &lt; minX) minX = px;</span>
+<span class="nc bnc" id="L606" title="All 2 branches missed.">                    if (px &gt; maxX) maxX = px;</span>
+<span class="nc bnc" id="L607" title="All 2 branches missed.">                    if (py &lt; minY) minY = py;</span>
+<span class="nc bnc" id="L608" title="All 2 branches missed.">                    if (py &gt; maxY) maxY = py;</span>
+                }
+            }
+<span class="nc" id="L611">        return new int[]{minX, maxX, minY, maxY};</span>
+    }
+
+    // Start game loop
+    private void startGameLoop() {
+        // Pause toggle
+        // Audio toggles
+        // Time &amp; speed
+        // HUD update
+        // Controls
+        // Gravity &amp; lock
+        // Render
+        // Game over overlays
+        // Game loop timing
+<span class="nc" id="L625">        AnimationTimer gameLoop = new AnimationTimer() {</span>
+<span class="nc" id="L626">            private long lastFrame = 0;</span>
+
+            @Override
+            public void handle(long now) {
+<span class="nc bnc" id="L630" title="All 2 branches missed.">                if (startTime &lt; 0) startTime = now;</span>
+<span class="nc bnc" id="L631" title="All 2 branches missed.">                if (now - lastFrame &lt; 50_000_000) return;</span>
+<span class="nc" id="L632">                lastFrame = now;</span>
+
+                // Pause toggle
+<span class="nc bnc" id="L635" title="All 4 branches missed.">                if (input.consumeRelease(KeyCode.ESCAPE)) paused = !paused;</span>
+
+                // Audio toggles
+<span class="nc bnc" id="L638" title="All 4 branches missed.">                if (input.consumePress(KeyCode.M) &amp;&amp; mediaManager != null) {</span>
+<span class="nc" id="L639">                    mediaManager.toggleMusic();</span>
+<span class="nc bnc" id="L640" title="All 2 branches missed.">                    p1MusicLabel.setText(mediaManager.isMusicMuted() ? &quot;Music: OFF&quot; : &quot;Music: ON&quot;);</span>
+                }
+<span class="nc bnc" id="L642" title="All 4 branches missed.">                if (input.consumePress(KeyCode.N) &amp;&amp; mediaManager != null) {</span>
+<span class="nc" id="L643">                    mediaManager.toggleSfx();</span>
+<span class="nc bnc" id="L644" title="All 2 branches missed.">                    p1SfxLabel.setText(mediaManager.isSfxMuted() ? &quot;SFX: OFF&quot; : &quot;SFX: ON&quot;);</span>
+                }
+
+                // Time &amp; speed
+<span class="nc" id="L648">                double elapsedSec = (now - startTime) / 1_000_000_000.0;</span>
+<span class="nc" id="L649">                int currentLevel = Math.max(1, cfgLevel + (int) (elapsedSec / 30.0));</span>
+<span class="nc" id="L650">                int timeDecrease = (int) (elapsedSec / 5.0);</span>
+<span class="nc" id="L651">                int currentFallInterval = Math.max(minFallInterval, baseFallInterval - timeDecrease);</span>
+
+                // HUD update
+<span class="nc" id="L654">                p1ScoreLabel.setText(&quot;Score: &quot; + p1.score);</span>
+<span class="nc" id="L655">                p1LinesLabel.setText(&quot;Lines: &quot; + p1.lines);</span>
+<span class="nc" id="L656">                p1LevelLabel.setText(&quot;Level: &quot; + currentLevel);</span>
+<span class="nc bnc" id="L657" title="All 2 branches missed.">                if (p2 != null) {</span>
+<span class="nc" id="L658">                    p2ScoreLabel.setText(&quot;Score: &quot; + p2.score);</span>
+<span class="nc" id="L659">                    p2LinesLabel.setText(&quot;Lines: &quot; + p2.lines);</span>
+<span class="nc" id="L660">                    p2LevelLabel.setText(&quot;Level: &quot; + currentLevel);</span>
+                }
+
+<span class="nc bnc" id="L663" title="All 2 branches missed.">                if (paused) {</span>
+<span class="nc" id="L664">                    renderAll(currentFallInterval);</span>
+<span class="nc" id="L665">                    return;</span>
+                }
+
+                // Controls
+<span class="nc bnc" id="L669" title="All 2 branches missed.">                if (cfgP1 == PlayerType.HUMAN) {</span>
+<span class="nc" id="L670">                    handlePlayer1Input(p1);</span>
+<span class="nc bnc" id="L671" title="All 4 branches missed.">                } else if (cfgP1 == PlayerType.AI || cfgP1 == PlayerType.EXTERNAL) {</span>
+<span class="nc" id="L672">                    driveAI(p1, planP1);</span>
+                }
+<span class="nc bnc" id="L674" title="All 2 branches missed.">                if (p2 != null) {</span>
+<span class="nc bnc" id="L675" title="All 2 branches missed.">                    if (cfgP2 == PlayerType.HUMAN) {</span>
+<span class="nc" id="L676">                        handlePlayer2Input(p2);</span>
+<span class="nc bnc" id="L677" title="All 4 branches missed.">                    } else if (cfgP2 == PlayerType.AI || cfgP2 == PlayerType.EXTERNAL) {</span>
+<span class="nc" id="L678">                        driveAI(p2, planP2);</span>
+                    }
+                }
+
+                // Gravity &amp; lock
+<span class="nc" id="L683">                stepPlayer(p1, currentFallInterval);</span>
+<span class="nc bnc" id="L684" title="All 2 branches missed.">                if (p2 != null) stepPlayer(p2, currentFallInterval);</span>
+
+                // Render
+<span class="nc" id="L687">                renderAll(currentFallInterval);</span>
+
+                // Game over overlays
+<span class="nc bnc" id="L690" title="All 2 branches missed.">                if (p1.gameOver) {</span>
+<span class="nc" id="L691">                    drawGameOver(gc1, p1.score, &quot;P1&quot;);</span>
+<span class="nc bnc" id="L692" title="All 2 branches missed.">                    if (!submittedP1) hsPaneP1.setVisible(true);</span>
+                }
+<span class="nc bnc" id="L694" title="All 4 branches missed.">                if (p2 != null &amp;&amp; p2.gameOver) {</span>
+<span class="nc" id="L695">                    drawGameOver(gc2, p2.score, &quot;P2&quot;);</span>
+<span class="nc bnc" id="L696" title="All 2 branches missed.">                    if (!submittedP2) hsPaneP2.setVisible(true);</span>
+                }
+<span class="nc" id="L698">            }</span>
+        };
+<span class="nc" id="L700">        gameLoop.start();</span>
+<span class="nc" id="L701">    }</span>
+
+    // Handle P1 input
+    private void handlePlayer1Input(PlayerState ps) {
+<span class="nc bnc" id="L705" title="All 2 branches missed.">        if (ps.gameOver) return;</span>
+<span class="nc bnc" id="L706" title="All 4 branches missed.">        if (input.consumePress(KeyCode.LEFT) &amp;&amp; canMove(ps, ps.rotation, ps.x - 1, ps.y)) ps.x--;</span>
+<span class="nc bnc" id="L707" title="All 4 branches missed.">        if (input.consumePress(KeyCode.RIGHT) &amp;&amp; canMove(ps, ps.rotation, ps.x + 1, ps.y)) ps.x++;</span>
+<span class="nc bnc" id="L708" title="All 2 branches missed.">        if (input.consumePress(KeyCode.DOWN)) {</span>
+<span class="nc bnc" id="L709" title="All 2 branches missed.">            if (canMove(ps, ps.rotation, ps.x, ps.y + 1)) ps.y++;</span>
+        }
+<span class="nc bnc" id="L711" title="All 2 branches missed.">        if (input.consumePress(KeyCode.UP)) {</span>
+<span class="nc" id="L712">            int nr = ps.rotation + 1;</span>
+<span class="nc bnc" id="L713" title="All 2 branches missed.">            if (canMove(ps, nr, ps.x, ps.y)) ps.rotation = nr;</span>
+        }
+<span class="nc bnc" id="L715" title="All 2 branches missed.">        if (input.consumePress(KeyCode.SPACE)) {</span>
+<span class="nc bnc" id="L716" title="All 2 branches missed.">            while (canMove(ps, ps.rotation, ps.x, ps.y + 1)) ps.y++;</span>
+<span class="nc" id="L717">            lockAndSpawn(ps);</span>
+        }
+<span class="nc" id="L719">    }</span>
+
+    // Handle P2 input
+    private void handlePlayer2Input(PlayerState ps) {
+<span class="nc bnc" id="L723" title="All 2 branches missed.">        if (ps.gameOver) return;</span>
+<span class="nc bnc" id="L724" title="All 4 branches missed.">        if (input.consumePress(KeyCode.A) &amp;&amp; canMove(ps, ps.rotation, ps.x - 1, ps.y)) ps.x--;</span>
+<span class="nc bnc" id="L725" title="All 4 branches missed.">        if (input.consumePress(KeyCode.D) &amp;&amp; canMove(ps, ps.rotation, ps.x + 1, ps.y)) ps.x++;</span>
+<span class="nc bnc" id="L726" title="All 2 branches missed.">        if (input.consumePress(KeyCode.S)) {</span>
+<span class="nc bnc" id="L727" title="All 2 branches missed.">            if (canMove(ps, ps.rotation, ps.x, ps.y + 1)) ps.y++;</span>
+        }
+<span class="nc bnc" id="L729" title="All 2 branches missed.">        if (input.consumePress(KeyCode.W)) {</span>
+<span class="nc" id="L730">            int nr = ps.rotation + 1;</span>
+<span class="nc bnc" id="L731" title="All 2 branches missed.">            if (canMove(ps, nr, ps.x, ps.y)) ps.rotation = nr;</span>
+        }
+<span class="nc bnc" id="L733" title="All 2 branches missed.">        if (input.consumePress(KeyCode.SHIFT)) {</span>
+<span class="nc bnc" id="L734" title="All 2 branches missed.">            while (canMove(ps, ps.rotation, ps.x, ps.y + 1)) ps.y++;</span>
+<span class="nc" id="L735">            lockAndSpawn(ps);</span>
+        }
+<span class="nc" id="L737">    }</span>
+
+    // Gravity step
+    private void stepPlayer(PlayerState ps, int currentFallInterval) {
+<span class="nc bnc" id="L741" title="All 2 branches missed.">        if (ps.gameOver) return;</span>
+<span class="nc" id="L742">        ps.fallCounter++;</span>
+<span class="nc bnc" id="L743" title="All 2 branches missed.">        if (ps.fallCounter &gt;= currentFallInterval) {</span>
+<span class="nc" id="L744">            ps.fallCounter = 0;</span>
+<span class="nc bnc" id="L745" title="All 2 branches missed.">            if (canMove(ps, ps.rotation, ps.x, ps.y + 1)) ps.y++;</span>
+<span class="nc" id="L746">            else lockAndSpawn(ps);</span>
+        }
+<span class="nc" id="L748">    }</span>
+
+    // Collision check
+    private boolean canMove(PlayerState ps, int rot, int posX, int posY) {
+<span class="nc bnc" id="L752" title="All 2 branches missed.">        for (int px = 0; px &lt; 4; px++)</span>
+<span class="nc bnc" id="L753" title="All 2 branches missed.">            for (int py = 0; py &lt; 4; py++) {</span>
+<span class="nc" id="L754">                char cell = TETROMINOS[ps.currentPiece][rotate(px, py, rot)];</span>
+<span class="nc bnc" id="L755" title="All 2 branches missed.">                if (cell == ' ') continue;</span>
+<span class="nc" id="L756">                int nx = posX + px, ny = posY + py;</span>
+<span class="nc bnc" id="L757" title="All 8 branches missed.">                if (nx &lt; 0 || nx &gt;= boardW || ny &lt; 0 || ny &gt;= boardH) return false;</span>
+<span class="nc bnc" id="L758" title="All 2 branches missed.">                if (ps.board[nx][ny] != ' ') return false;</span>
+            }
+<span class="nc" id="L760">        return true;</span>
+    }
+
+    // Lock piece &amp; spawn
+    private void lockAndSpawn(PlayerState ps) {
+<span class="nc" id="L765">        placePiece(ps, ps.currentPiece, ps.rotation, ps.x, ps.y);</span>
+<span class="nc" id="L766">        int cleared = clearLines(ps);</span>
+<span class="nc bnc" id="L767" title="All 4 branches missed.">        if (cleared &gt; 0 &amp;&amp; mediaManager != null) {</span>
+<span class="nc bnc" id="L768" title="All 2 branches missed.">            if (cleared == 4) mediaManager.playSound(&quot;tetris_clear&quot;);</span>
+<span class="nc" id="L769">            else mediaManager.playSound(&quot;line_clear&quot;);</span>
+<span class="nc bnc" id="L770" title="All 2 branches missed.">        } else if (mediaManager != null) {</span>
+<span class="nc" id="L771">            mediaManager.playSound(&quot;drop&quot;);</span>
+        }
+<span class="nc" id="L773">        spawnNewPiece(ps);</span>
+<span class="nc bnc" id="L774" title="All 2 branches missed.">        if (!canMove(ps, ps.rotation, ps.x, ps.y)) {</span>
+<span class="nc" id="L775">            ps.gameOver = true;</span>
+<span class="nc bnc" id="L776" title="All 2 branches missed.">            if (mediaManager != null) {</span>
+<span class="nc" id="L777">                mediaManager.stopBgMusic();</span>
+<span class="nc" id="L778">                mediaManager.playSound(&quot;game_over&quot;);</span>
+            }
+        }
+<span class="nc" id="L781">    }</span>
+
+    // Place piece
+    private void placePiece(PlayerState ps, int tetromino, int rot, int posX, int posY) {
+<span class="nc bnc" id="L785" title="All 2 branches missed.">        for (int px = 0; px &lt; 4; px++)</span>
+<span class="nc bnc" id="L786" title="All 2 branches missed.">            for (int py = 0; py &lt; 4; py++) {</span>
+<span class="nc" id="L787">                char cell = TETROMINOS[tetromino][rotate(px, py, rot)];</span>
+<span class="nc bnc" id="L788" title="All 2 branches missed.">                if (cell == ' ') continue;</span>
+<span class="nc" id="L789">                int nx = posX + px, ny = posY + py;</span>
+<span class="nc bnc" id="L790" title="All 8 branches missed.">                if (nx &gt;= 0 &amp;&amp; nx &lt; boardW &amp;&amp; ny &gt;= 0 &amp;&amp; ny &lt; boardH) ps.board[nx][ny] = cell;</span>
+            }
+<span class="nc" id="L792">    }</span>
+
+    // Clear lines
+    private int clearLines(PlayerState ps) {
+<span class="nc" id="L796">        int linesCleared = 0;</span>
+<span class="nc bnc" id="L797" title="All 2 branches missed.">        for (int by = 0; by &lt; boardH; by++) {</span>
+<span class="nc" id="L798">            boolean full = true;</span>
+<span class="nc bnc" id="L799" title="All 2 branches missed.">            for (int bx = 0; bx &lt; boardW; bx++) {</span>
+<span class="nc bnc" id="L800" title="All 2 branches missed.">                if (ps.board[bx][by] == ' ') {</span>
+<span class="nc" id="L801">                    full = false;</span>
+<span class="nc" id="L802">                    break;</span>
+                }
+            }
+<span class="nc bnc" id="L805" title="All 2 branches missed.">            if (full) {</span>
+<span class="nc" id="L806">                linesCleared++;</span>
+<span class="nc bnc" id="L807" title="All 2 branches missed.">                for (int ty = by; ty &gt; 0; ty--)</span>
+<span class="nc bnc" id="L808" title="All 2 branches missed.">                    for (int bx = 0; bx &lt; boardW; bx++)</span>
+<span class="nc" id="L809">                        ps.board[bx][ty] = ps.board[bx][ty - 1];</span>
+<span class="nc bnc" id="L810" title="All 2 branches missed.">                for (int bx = 0; bx &lt; boardW; bx++) ps.board[bx][0] = ' ';</span>
+            }
+        }
+<span class="nc bnc" id="L813" title="All 2 branches missed.">        if (linesCleared == 1) ps.score += 100;</span>
+<span class="nc bnc" id="L814" title="All 2 branches missed.">        else if (linesCleared == 2) ps.score += 300;</span>
+<span class="nc bnc" id="L815" title="All 2 branches missed.">        else if (linesCleared == 3) ps.score += 600;</span>
+<span class="nc bnc" id="L816" title="All 2 branches missed.">        else if (linesCleared &gt;= 4) ps.score += 1000;</span>
+<span class="nc" id="L817">        ps.lines += linesCleared;</span>
+<span class="nc" id="L818">        return linesCleared;</span>
+    }
+
+    // Rotate index
+    private int rotate(int px, int py, int r) {
+<span class="nc bnc" id="L823" title="All 4 branches missed.">        return switch (r &amp; 3) {</span>
+<span class="nc" id="L824">            case 0 -&gt; py * 4 + px;</span>
+<span class="nc" id="L825">            case 1 -&gt; 12 + py - (px * 4);</span>
+<span class="nc" id="L826">            case 2 -&gt; 15 - (py * 4) - px;</span>
+<span class="nc" id="L827">            default -&gt; 3 - py + (px * 4);</span>
+        };
+    }
+
+    // Render everything
+    private void renderAll(int currentFallInterval) {
+<span class="nc" id="L833">        renderBoard(gc1, p1);</span>
+<span class="nc" id="L834">        drawPiece(gc1, p1.currentPiece, p1.rotation, p1.x, p1.y);</span>
+<span class="nc" id="L835">        renderNextPiece(nextGc1, p1);</span>
+<span class="nc" id="L836">        renderScore(gc1, p1.score);</span>
+<span class="nc" id="L837">        drawSpeed(gc1, currentFallInterval);</span>
+<span class="nc bnc" id="L838" title="All 2 branches missed.">        if (p2 != null) {</span>
+<span class="nc" id="L839">            renderBoard(gc2, p2);</span>
+<span class="nc" id="L840">            drawPiece(gc2, p2.currentPiece, p2.rotation, p2.x, p2.y);</span>
+<span class="nc" id="L841">            renderNextPiece(nextGc2, p2);</span>
+<span class="nc" id="L842">            renderScore(gc2, p2.score);</span>
+<span class="nc" id="L843">            drawSpeed(gc2, currentFallInterval);</span>
+        }
+<span class="nc bnc" id="L845" title="All 2 branches missed.">        if (paused) {</span>
+<span class="nc" id="L846">            drawPause(gc1);</span>
+<span class="nc bnc" id="L847" title="All 2 branches missed.">            if (gc2 != null) drawPause(gc2);</span>
+        }
+<span class="nc" id="L849">    }</span>
+
+    // Responsive resize
+    private void resizeToAvailable(double sceneW, double sceneH) {
+<span class="nc" id="L853">        double spacing = 20;</span>
+<span class="nc bnc" id="L854" title="All 2 branches missed.">        double columns = (p2 == null) ? 1 : 2;</span>
+<span class="nc" id="L855">        double sidePerColumn = Math.max(160, Math.min(sceneW * (0.22 / columns), 260));</span>
+<span class="nc" id="L856">        double columnWidth = (sceneW - (columns - 1) * 40 - 60) / columns;</span>
+<span class="nc" id="L857">        double availW = Math.max(200, columnWidth - sidePerColumn - spacing);</span>
+<span class="nc" id="L858">        double availH = Math.max(200, sceneH - 160);</span>
+
+        // remove redundant temp local: assign directly
+<span class="nc" id="L861">        blockSize = Math.max(12d, Math.floor(Math.min(availW / boardW, availH / boardH)));</span>
+
+<span class="nc" id="L863">        gameCanvas1.setWidth(boardPixelW());</span>
+<span class="nc" id="L864">        gameCanvas1.setHeight(boardPixelH());</span>
+<span class="nc" id="L865">        nextCanvas1.setWidth(sidePerColumn);</span>
+<span class="nc" id="L866">        nextCanvas1.setHeight(sidePerColumn);</span>
+
+<span class="nc bnc" id="L868" title="All 2 branches missed.">        if (boardStack1 != null) boardStack1.setPrefSize(boardPixelW(), boardPixelH());</span>
+<span class="nc bnc" id="L869" title="All 2 branches missed.">        if (boardStack2 != null) boardStack2.setPrefSize(boardPixelW(), boardPixelH());</span>
+
+<span class="nc bnc" id="L871" title="All 2 branches missed.">        if (gameCanvas2 != null) {</span>
+<span class="nc" id="L872">            gameCanvas2.setWidth(boardPixelW());</span>
+<span class="nc" id="L873">            gameCanvas2.setHeight(boardPixelH());</span>
+<span class="nc" id="L874">            nextCanvas2.setWidth(sidePerColumn);</span>
+<span class="nc" id="L875">            nextCanvas2.setHeight(sidePerColumn);</span>
+        }
+
+<span class="nc" id="L878">        renderAll(Math.max(minFallInterval, baseFallInterval));</span>
+<span class="nc" id="L879">    }</span>
+
+    // Draw board
+    private void renderBoard(GraphicsContext gc, PlayerState ps) {
+<span class="nc" id="L883">        gc.setFill(Color.BLACK);</span>
+<span class="nc" id="L884">        gc.fillRect(0, 0, boardPixelW(), boardPixelH());</span>
+<span class="nc" id="L885">        gc.setStroke(Color.DARKGRAY);</span>
+<span class="nc" id="L886">        gc.setLineWidth(0.5);</span>
+<span class="nc bnc" id="L887" title="All 2 branches missed.">        for (int bx = 0; bx &lt;= boardW; bx++)</span>
+<span class="nc" id="L888">            gc.strokeLine(bx * cell(), 0, bx * cell(), boardPixelH());</span>
+<span class="nc bnc" id="L889" title="All 2 branches missed.">        for (int by = 0; by &lt;= boardH; by++)</span>
+<span class="nc" id="L890">            gc.strokeLine(0, by * cell(), boardPixelW(), by * cell());</span>
+<span class="nc bnc" id="L891" title="All 2 branches missed.">        for (int bx = 0; bx &lt; boardW; bx++)</span>
+<span class="nc bnc" id="L892" title="All 2 branches missed.">            for (int by = 0; by &lt; boardH; by++)</span>
+<span class="nc bnc" id="L893" title="All 2 branches missed.">                if (ps.board[bx][by] != ' ')</span>
+<span class="nc" id="L894">                    drawBlock(gc, ps.board[bx][by], bx * cell(), by * cell());</span>
+<span class="nc" id="L895">    }</span>
+
+    // Draw active piece
+    private void drawPiece(GraphicsContext gc, int tetromino, int rot, int posX, int posY) {
+<span class="nc bnc" id="L899" title="All 2 branches missed.">        for (int px = 0; px &lt; 4; px++)</span>
+<span class="nc bnc" id="L900" title="All 2 branches missed.">            for (int py = 0; py &lt; 4; py++) {</span>
+<span class="nc" id="L901">                char cell = TETROMINOS[tetromino][rotate(px, py, rot)];</span>
+<span class="nc bnc" id="L902" title="All 2 branches missed.">                if (cell != ' ') drawBlock(gc, cell, (posX + px) * cell(), (posY + py) * cell());</span>
+            }
+<span class="nc" id="L904">    }</span>
+
+    // Draw next piece
+    private void renderNextPiece(GraphicsContext ngc, PlayerState ps) {
+<span class="nc" id="L908">        ngc.setFill(Color.DARKGRAY);</span>
+<span class="nc" id="L909">        ngc.fillRect(0, 0, nextCanvas1.getWidth(), nextCanvas1.getHeight());</span>
+<span class="nc" id="L910">        ngc.setFill(Color.WHITE);</span>
+<span class="nc" id="L911">        ngc.setFont(Font.font(18));</span>
+<span class="nc" id="L912">        ngc.fillText(&quot;Next:&quot;, 10, 20);</span>
+
+<span class="nc" id="L914">        int nextPiece = sharedSequence.get(ps.nextIndex % sharedSequence.size());</span>
+
+<span class="nc" id="L916">        int minX = 4, maxX = -1, minY = 4, maxY = -1;</span>
+<span class="nc bnc" id="L917" title="All 2 branches missed.">        for (int px = 0; px &lt; 4; px++)</span>
+<span class="nc bnc" id="L918" title="All 2 branches missed.">            for (int py = 0; py &lt; 4; py++) {</span>
+<span class="nc bnc" id="L919" title="All 2 branches missed.">                if (TETROMINOS[nextPiece][rotate(px, py, 0)] != ' ') {</span>
+<span class="nc bnc" id="L920" title="All 2 branches missed.">                    if (px &lt; minX) minX = px;</span>
+<span class="nc bnc" id="L921" title="All 2 branches missed.">                    if (px &gt; maxX) maxX = px;</span>
+<span class="nc bnc" id="L922" title="All 2 branches missed.">                    if (py &lt; minY) minY = py;</span>
+<span class="nc bnc" id="L923" title="All 2 branches missed.">                    if (py &gt; maxY) maxY = py;</span>
+                }
+            }
+<span class="nc" id="L926">        int pieceW = Math.max(1, (maxX - minX + 1));</span>
+<span class="nc" id="L927">        int pieceH = Math.max(1, (maxY - minY + 1));</span>
+
+<span class="nc bnc" id="L929" title="All 2 branches missed.">        double areaW = (ngc == nextGc1 ? nextCanvas1.getWidth() : nextCanvas2.getWidth());</span>
+<span class="nc bnc" id="L930" title="All 2 branches missed.">        double areaH = (ngc == nextGc1 ? nextCanvas1.getHeight() : nextCanvas2.getHeight());</span>
+
+<span class="nc" id="L932">        double scale = 0.85 * Math.min(</span>
+                areaW / (pieceW * BLOCK_SIZE * 1.2),
+                areaH / (pieceH * BLOCK_SIZE * 1.2)
+        );
+<span class="nc" id="L936">        double offsetX = (areaW - pieceW * BLOCK_SIZE * scale) / 2;</span>
+<span class="nc" id="L937">        double offsetY = (areaH - pieceH * BLOCK_SIZE * scale) / 2 + 10;</span>
+
+<span class="nc bnc" id="L939" title="All 2 branches missed.">        for (int px = 0; px &lt; 4; px++)</span>
+<span class="nc bnc" id="L940" title="All 2 branches missed.">            for (int py = 0; py &lt; 4; py++) {</span>
+<span class="nc" id="L941">                char cell = TETROMINOS[nextPiece][rotate(px, py, 0)];</span>
+<span class="nc bnc" id="L942" title="All 2 branches missed.">                if (cell != ' ') {</span>
+<span class="nc" id="L943">                    double drawX = offsetX + (px - minX) * BLOCK_SIZE * scale;</span>
+<span class="nc" id="L944">                    double drawY = offsetY + (py - minY) * BLOCK_SIZE * scale;</span>
+<span class="nc" id="L945">                    drawBlock(ngc, cell, (int) drawX, (int) drawY, (int) (BLOCK_SIZE * scale));</span>
+                }
+            }
+<span class="nc" id="L948">    }</span>
+
+    // Draw score
+    private void renderScore(GraphicsContext gc, int score) {
+<span class="nc" id="L952">        gc.setFill(Color.WHITE);</span>
+<span class="nc" id="L953">        gc.setFont(Font.font(20));</span>
+<span class="nc" id="L954">        gc.fillText(&quot;Score: &quot; + score, 10, 25);</span>
+<span class="nc" id="L955">    }</span>
+
+    // Draw speed
+    private void drawSpeed(GraphicsContext gc, int fallInterval) {
+<span class="nc" id="L959">        gc.setFill(Color.WHITE);</span>
+<span class="nc" id="L960">        gc.setFont(Font.font(16));</span>
+<span class="nc" id="L961">        double speedValue = Math.round((double) baseFallInterval / fallInterval * 10) / 10.0;</span>
+<span class="nc" id="L962">        gc.fillText(&quot;Speed: &quot; + speedValue, 10, 50);</span>
+<span class="nc" id="L963">    }</span>
+
+    // Draw pause
+    private void drawPause(GraphicsContext gc) {
+<span class="nc" id="L967">        gc.setFill(Color.color(0, 0, 0, 0.5));</span>
+<span class="nc" id="L968">        gc.fillRect(0, 0, boardPixelW(), boardPixelH());</span>
+<span class="nc" id="L969">        gc.setFill(Color.YELLOW);</span>
+<span class="nc" id="L970">        gc.setFont(Font.font(40));</span>
+<span class="nc" id="L971">        String pauseText = &quot;PAUSED&quot;;</span>
+<span class="nc" id="L972">        Text textNode = new Text(pauseText);</span>
+<span class="nc" id="L973">        textNode.setFont(gc.getFont());</span>
+<span class="nc" id="L974">        double textWidth = textNode.getLayoutBounds().getWidth();</span>
+<span class="nc" id="L975">        double textHeight = textNode.getLayoutBounds().getHeight();</span>
+<span class="nc" id="L976">        double textX = (boardPixelW() - textWidth) / 2;</span>
+<span class="nc" id="L977">        double textY = (boardPixelH() + textHeight) / 2;</span>
+<span class="nc" id="L978">        gc.fillText(pauseText, textX, textY);</span>
+<span class="nc" id="L979">    }</span>
+
+    // Draw game over
+    private void drawGameOver(GraphicsContext gc, int score, String tag) {
+<span class="nc" id="L983">        gc.setFill(Color.color(0, 0, 0, 0.6));</span>
+<span class="nc" id="L984">        gc.fillRect(0, 0, boardPixelW(), boardPixelH());</span>
+
+<span class="nc" id="L986">        double cx = boardPixelW() / 2.0;</span>
+<span class="nc" id="L987">        double cy = boardPixelH() / 2.0;</span>
+
+<span class="nc" id="L989">        gc.setFill(Color.RED);</span>
+<span class="nc" id="L990">        gc.setFont(Font.font(36));</span>
+<span class="nc" id="L991">        String l1 = &quot;GAME OVER&quot;;</span>
+<span class="nc" id="L992">        double l1w = new Text(l1) {{</span>
+<span class="nc" id="L993">            setFont(gc.getFont());</span>
+<span class="nc" id="L994">        }}.getLayoutBounds().getWidth();</span>
+<span class="nc" id="L995">        gc.fillText(l1, Math.max(8, cx - l1w / 2), cy - 18);</span>
+
+<span class="nc" id="L997">        gc.setFont(Font.font(22));</span>
+<span class="nc" id="L998">        String l2 = &quot;(&quot; + tag + &quot;)&quot;;</span>
+<span class="nc" id="L999">        double l2w = new Text(l2) {{</span>
+<span class="nc" id="L1000">            setFont(gc.getFont());</span>
+<span class="nc" id="L1001">        }}.getLayoutBounds().getWidth();</span>
+<span class="nc" id="L1002">        gc.fillText(l2, Math.max(8, cx - l2w / 2), cy + 6);</span>
+
+<span class="nc" id="L1004">        gc.setFill(Color.WHITE);</span>
+<span class="nc" id="L1005">        gc.setFont(Font.font(20));</span>
+<span class="nc" id="L1006">        String l3 = &quot;Final Score: &quot; + score;</span>
+<span class="nc" id="L1007">        double l3w = new Text(l3) {{</span>
+<span class="nc" id="L1008">            setFont(gc.getFont());</span>
+<span class="nc" id="L1009">        }}.getLayoutBounds().getWidth();</span>
+<span class="nc" id="L1010">        gc.fillText(l3, Math.max(8, cx - l3w / 2), cy + 32);</span>
+
+<span class="nc" id="L1012">        gc.setFont(Font.font(15));</span>
+<span class="nc" id="L1013">        String l4 = &quot;Enter name to submit high score&quot;;</span>
+<span class="nc" id="L1014">        double l4w = new Text(l4) {{</span>
+<span class="nc" id="L1015">            setFont(gc.getFont());</span>
+<span class="nc" id="L1016">        }}.getLayoutBounds().getWidth();</span>
+<span class="nc" id="L1017">        gc.fillText(l4, Math.max(8, cx - l4w / 2), cy + 54);</span>
+<span class="nc" id="L1018">    }</span>
+
+    // Draw single block
+    private void drawBlock(GraphicsContext gc, char kind, int x, int y) {
+<span class="nc" id="L1022">        drawBlock(gc, kind, x, y, cell());</span>
+<span class="nc" id="L1023">    }</span>
+
+    // Draw sized block
+    private void drawBlock(GraphicsContext gc, char kind, int x, int y, int size) {
+<span class="nc bnc" id="L1027" title="All 8 branches missed.">        Color color = switch (kind) {</span>
+<span class="nc" id="L1028">            case 'I' -&gt; Color.CYAN;</span>
+<span class="nc" id="L1029">            case 'O' -&gt; Color.YELLOW;</span>
+<span class="nc" id="L1030">            case 'T' -&gt; Color.MEDIUMPURPLE;</span>
+<span class="nc" id="L1031">            case 'S' -&gt; Color.LIMEGREEN;</span>
+<span class="nc" id="L1032">            case 'Z' -&gt; Color.RED;</span>
+<span class="nc" id="L1033">            case 'J' -&gt; Color.DODGERBLUE;</span>
+<span class="nc" id="L1034">            case 'L' -&gt; Color.ORANGE;</span>
+<span class="nc" id="L1035">            default -&gt; Color.GRAY;</span>
+        };
+<span class="nc" id="L1037">        gc.setFill(color);</span>
+<span class="nc" id="L1038">        gc.fillRect(x, y, size, size);</span>
+<span class="nc" id="L1039">        gc.setStroke(Color.BLACK);</span>
+<span class="nc" id="L1040">        gc.strokeRect(x, y, size, size);</span>
+<span class="nc" id="L1041">    }</span>
+
+    // Config summary
+    private String buildConfigString() {
+<span class="nc" id="L1045">        String size = cfgWidth + &quot;x&quot; + cfgHeight + &quot;(&quot; + cfgLevel + &quot;)&quot;;</span>
+<span class="nc bnc" id="L1046" title="All 2 branches missed.">        String p1s = (cfgP1 == null ? &quot;HUMAN&quot; : cfgP1.name());</span>
+<span class="nc bnc" id="L1047" title="All 2 branches missed.">        if (!cfgExtended) return size + &quot; &quot; + p1s + &quot; Single&quot;;</span>
+<span class="nc bnc" id="L1048" title="All 2 branches missed.">        String p2s = (cfgP2 == null ? &quot;HUMAN&quot; : cfgP2.name());</span>
+<span class="nc" id="L1049">        return size + &quot; &quot; + p1s + &quot; + &quot; + p2s;</span>
+    }
+
+    // Keyboard state handler
+<span class="nc" id="L1053">    private class KeyInputHandler implements EventHandler&lt;KeyEvent&gt; {</span>
+        @Override
+        public void handle(KeyEvent e) {
+<span class="nc bnc" id="L1056" title="All 2 branches missed.">            if (e.getEventType() == KeyEvent.KEY_PRESSED) keys.put(e.getCode(), true);</span>
+<span class="nc bnc" id="L1057" title="All 2 branches missed.">            else if (e.getEventType() == KeyEvent.KEY_RELEASED) keys.put(e.getCode(), false);</span>
+<span class="nc" id="L1058">        }</span>
+
+        boolean consumePress(KeyCode code) {
+<span class="nc bnc" id="L1061" title="All 2 branches missed.">            if (Boolean.TRUE.equals(keys.get(code))) {</span>
+<span class="nc" id="L1062">                keys.put(code, false);</span>
+<span class="nc" id="L1063">                return true;</span>
+            }
+<span class="nc" id="L1065">            return false;</span>
+        }
+
+        @SuppressWarnings(&quot;SameParameterValue&quot;)
+            // currently only used with ESCAPE
+        boolean consumeRelease(KeyCode code) {
+<span class="nc bnc" id="L1071" title="All 2 branches missed.">            if (Boolean.FALSE.equals(keys.get(code))) {</span>
+<span class="nc" id="L1072">                keys.remove(code);</span>
+<span class="nc" id="L1073">                return true;</span>
+            }
+<span class="nc" id="L1075">            return false;</span>
+        }
+    }
+
+    // Drive AI plan
+    private void driveAI(PlayerState ps, TetrisAI.BestMove plan) {
+<span class="nc bnc" id="L1081" title="All 4 branches missed.">        if (ps.gameOver || plan == null) return;</span>
+<span class="nc" id="L1082">        int desiredRot = plan.rotation() &amp; 3;</span>
+<span class="nc bnc" id="L1083" title="All 2 branches missed.">        if ((ps.rotation &amp; 3) != desiredRot) {</span>
+<span class="nc" id="L1084">            int nr = ps.rotation + 1;</span>
+<span class="nc bnc" id="L1085" title="All 2 branches missed.">            if (canMove(ps, nr, ps.x, ps.y)) {</span>
+<span class="nc" id="L1086">                ps.rotation = nr;</span>
+            } else {
+<span class="nc bnc" id="L1088" title="All 2 branches missed.">                if (canMove(ps, ps.rotation, ps.x + 1, ps.y)) {</span>
+<span class="nc" id="L1089">                    ps.x++;</span>
+<span class="nc" id="L1090">                    return;</span>
+                }
+<span class="nc bnc" id="L1092" title="All 2 branches missed.">                if (canMove(ps, ps.rotation, ps.x - 1, ps.y)) {</span>
+<span class="nc" id="L1093">                    ps.x--;</span>
+<span class="nc" id="L1094">                    return;</span>
+                }
+            }
+<span class="nc" id="L1097">            return;</span>
+        }
+
+<span class="nc" id="L1100">        int targetX = plan.col();</span>
+<span class="nc bnc" id="L1101" title="All 2 branches missed.">        if (ps.x &lt; targetX) {</span>
+<span class="nc bnc" id="L1102" title="All 2 branches missed.">            if (canMove(ps, ps.rotation, ps.x + 1, ps.y)) ps.x++;</span>
+<span class="nc bnc" id="L1103" title="All 2 branches missed.">        } else if (ps.x &gt; targetX) {</span>
+<span class="nc bnc" id="L1104" title="All 2 branches missed.">            if (canMove(ps, ps.rotation, ps.x - 1, ps.y)) ps.x--;</span>
+        } else {
+<span class="nc bnc" id="L1106" title="All 2 branches missed.">            while (canMove(ps, ps.rotation, ps.x, ps.y + 1)) ps.y++;</span>
+<span class="nc" id="L1107">            lockAndSpawn(ps);</span>
+        }
+<span class="nc" id="L1109">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>PureGame.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">TeamOrange_FinalSubmission</a> &gt; <a href="index.source.html" class="el_package">org.oosd.teamorange_finalsubmission</a> &gt; <span class="el_source">PureGame.java</span></div><h1>PureGame.java</h1><pre class="source lang-java linenums">/// PureGame.java
+// Minimal snapshot of game state sent to the external server:
+//  - width/height: board size,
+//  - cells: 2D array [y][x] of 0/1 occupancy,
+//  - currentShape / nextShape: trimmed 0/1 matrices of tetrominoes.
+// Includes standard getters so Jackson can serialize it to JSON.
+
+package org.oosd.teamorange_finalsubmission;
+
+import java.util.Arrays;
+
+
+public class PureGame {
+    // Fields
+    private int width;
+    private int height;
+    private int[][] cells;
+    private int[][] currentShape;
+    private int[][] nextShape;
+
+    // Getters
+    public int getWidth() {
+<span class="fc" id="L23">        return width;</span>
+    }
+
+    public int getHeight() {
+<span class="fc" id="L27">        return height;</span>
+    }
+
+    public int[][] getCells() {
+<span class="fc" id="L31">        return cells;</span>
+    }
+
+    public int[][] getCurrentShape() {
+<span class="fc" id="L35">        return currentShape;</span>
+    }
+
+    public int[][] getNextShape() {
+<span class="fc" id="L39">        return nextShape;</span>
+    }
+
+    // Constructors
+<span class="fc" id="L43">    public PureGame() {</span>
+
+<span class="fc" id="L45">    }</span>
+
+    public void setWidth(int width) {
+<span class="fc" id="L48">        this.width = width;</span>
+<span class="fc" id="L49">    }</span>
+
+    public void setHeight(int height) {
+<span class="fc" id="L52">        this.height = height;</span>
+<span class="fc" id="L53">    }</span>
+
+    public void setCells(int[][] cells) {
+<span class="fc" id="L56">        this.cells = cells;</span>
+<span class="fc" id="L57">    }</span>
+
+    public void setCurrentShape(int[][] currentShape) {
+<span class="fc" id="L60">        this.currentShape = currentShape;</span>
+<span class="fc" id="L61">    }</span>
+
+    public void setNextShape(int[][] nextShape) {
+<span class="fc" id="L64">        this.nextShape = nextShape;</span>
+<span class="fc" id="L65">    }</span>
+
+    @Override
+    public String toString() {
+<span class="nc" id="L69">        return &quot;PureGame{&quot; +</span>
+                &quot;width=&quot; + width +
+                &quot;, height=&quot; + height +
+<span class="nc" id="L72">                &quot;, cells=&quot; + Arrays.deepToString(cells) +</span>
+<span class="nc" id="L73">                &quot;, currentShape=&quot; + Arrays.deepToString(currentShape) +</span>
+<span class="nc" id="L74">                &quot;, nextShape=&quot; + Arrays.deepToString(nextShape) +</span>
+                '}';
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

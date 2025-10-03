@@ -1,0 +1,253 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>TetrisAI.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">TeamOrange_FinalSubmission</a> &gt; <a href="index.source.html" class="el_package">org.oosd.teamorange_finalsubmission</a> &gt; <span class="el_source">TetrisAI.java</span></div><h1>TetrisAI.java</h1><pre class="source lang-java linenums">/// TetrisAI.java
+// Lightweight heuristic AI.
+// - explores unique rotations,
+// - simulates a hard drop at each valid column,
+// - clears any full lines,
+// - scores the resulting board using a simple evaluator (height, holes, cleared lines, bumpiness),
+// - returns BestMove(col, rotation, score).
+// - used when a player type is AI and also as a driver when an EXTERNAL is supplied.
+
+package org.oosd.teamorange_finalsubmission;
+
+import java.util.*;
+
+// Tetris AI heuristic
+public class TetrisAI {
+
+    // Best move record
+<span class="nc" id="L18">    public record BestMove(int col, int rotation, int score) {</span>
+        public static BestMove of(int col, int rotation) {
+<span class="nc" id="L20">            return new BestMove(col, rotation, 0);</span>
+        }
+    }
+
+    // Fields
+    private final char[][] shapes;
+    private final int W, H;
+<span class="nc" id="L27">    private final BoardEvaluator evaluator = new BoardEvaluator();</span>
+
+    // Constructor
+<span class="nc" id="L30">    public TetrisAI(char[][] shapes, int boardW, int boardH) {</span>
+<span class="nc" id="L31">        this.shapes = shapes;</span>
+<span class="nc" id="L32">        this.W = boardW;</span>
+<span class="nc" id="L33">        this.H = boardH;</span>
+<span class="nc" id="L34">    }</span>
+
+    // Find best move
+    public BestMove findBestMove(char[][] board, int pieceIndex) {
+<span class="nc" id="L38">        int bestScore = Integer.MIN_VALUE;</span>
+<span class="nc" id="L39">        BestMove best = null;</span>
+<span class="nc" id="L40">        int[] rotations = uniqueRotationsFor(pieceIndex);</span>
+<span class="nc bnc" id="L41" title="All 2 branches missed.">        for (int rot : rotations) {</span>
+<span class="nc" id="L42">            Bounds b = pieceBounds(pieceIndex, rot);</span>
+<span class="nc" id="L43">            int minCol = -b.minX;</span>
+<span class="nc" id="L44">            int maxCol = (W - 1) - b.maxX;</span>
+<span class="nc bnc" id="L45" title="All 2 branches missed.">            for (int col = minCol; col &lt;= maxCol; col++) {</span>
+<span class="nc" id="L46">                char[][] sim = copyBoard(board);</span>
+<span class="nc" id="L47">                int dropY = getDropRow(sim, pieceIndex, rot, col);</span>
+<span class="nc bnc" id="L48" title="All 2 branches missed.">                if (dropY &lt; -b.minY) continue;</span>
+<span class="nc" id="L49">                place(sim, pieceIndex, rot, col, dropY);</span>
+<span class="nc" id="L50">                sim = clearFullLines(sim);</span>
+<span class="nc" id="L51">                int score = evaluator.evaluateBoard(sim);</span>
+<span class="nc bnc" id="L52" title="All 2 branches missed.">                if (score &gt; bestScore) {</span>
+<span class="nc" id="L53">                    bestScore = score;</span>
+<span class="nc" id="L54">                    best = new BestMove(col, rot &amp; 3, score);</span>
+                }
+            }
+        }
+<span class="nc" id="L58">        return best;</span>
+    }
+
+    // Bounds holder
+    private static final class Bounds {
+        int minX, maxX, minY, maxY;
+    }
+
+    // Piece bounds
+    private Bounds pieceBounds(int piece, int rot) {
+<span class="nc" id="L68">        Bounds bb = new Bounds();</span>
+<span class="nc" id="L69">        bb.minX = 4;</span>
+<span class="nc" id="L70">        bb.minY = 4;</span>
+<span class="nc" id="L71">        bb.maxX = -1;</span>
+<span class="nc" id="L72">        bb.maxY = -1;</span>
+<span class="nc bnc" id="L73" title="All 2 branches missed.">        for (int px = 0; px &lt; 4; px++)</span>
+<span class="nc bnc" id="L74" title="All 2 branches missed.">            for (int py = 0; py &lt; 4; py++) {</span>
+<span class="nc" id="L75">                char cell = shapes[piece][rotateIndex(px, py, rot)];</span>
+<span class="nc bnc" id="L76" title="All 2 branches missed.">                if (cell != ' ') {</span>
+<span class="nc bnc" id="L77" title="All 2 branches missed.">                    if (px &lt; bb.minX) bb.minX = px;</span>
+<span class="nc bnc" id="L78" title="All 2 branches missed.">                    if (px &gt; bb.maxX) bb.maxX = px;</span>
+<span class="nc bnc" id="L79" title="All 2 branches missed.">                    if (py &lt; bb.minY) bb.minY = py;</span>
+<span class="nc bnc" id="L80" title="All 2 branches missed.">                    if (py &gt; bb.maxY) bb.maxY = py;</span>
+                }
+            }
+<span class="nc bnc" id="L83" title="All 2 branches missed.">        if (bb.maxX == -1) {</span>
+<span class="nc" id="L84">            bb.minX = bb.minY = 0;</span>
+<span class="nc" id="L85">            bb.maxX = bb.maxY = 0;</span>
+        }
+<span class="nc" id="L87">        return bb;</span>
+    }
+
+    // Drop row
+    private int getDropRow(char[][] b, int piece, int rot, int col) {
+<span class="nc" id="L92">        int y = 0;</span>
+<span class="nc bnc" id="L93" title="All 2 branches missed.">        while (canPlace(b, piece, rot, col, y)) y++;</span>
+<span class="nc" id="L94">        return y - 1;</span>
+    }
+
+    // Placement check
+    private boolean canPlace(char[][] b, int piece, int rot, int col, int row) {
+<span class="nc bnc" id="L99" title="All 2 branches missed.">        for (int px = 0; px &lt; 4; px++)</span>
+<span class="nc bnc" id="L100" title="All 2 branches missed.">            for (int py = 0; py &lt; 4; py++) {</span>
+<span class="nc" id="L101">                char c = shapes[piece][rotateIndex(px, py, rot)];</span>
+<span class="nc bnc" id="L102" title="All 2 branches missed.">                if (c == ' ') continue;</span>
+<span class="nc" id="L103">                int x = col + px, y = row + py;</span>
+<span class="nc bnc" id="L104" title="All 8 branches missed.">                if (x &lt; 0 || x &gt;= W || y &lt; 0 || y &gt;= H) return false;</span>
+<span class="nc bnc" id="L105" title="All 2 branches missed.">                if (b[x][y] != ' ') return false;</span>
+            }
+<span class="nc" id="L107">        return true;</span>
+    }
+
+    // Place piece
+    private void place(char[][] b, int piece, int rot, int col, int row) {
+<span class="nc bnc" id="L112" title="All 2 branches missed.">        for (int px = 0; px &lt; 4; px++)</span>
+<span class="nc bnc" id="L113" title="All 2 branches missed.">            for (int py = 0; py &lt; 4; py++) {</span>
+<span class="nc" id="L114">                char c = shapes[piece][rotateIndex(px, py, rot)];</span>
+<span class="nc bnc" id="L115" title="All 2 branches missed.">                if (c == ' ') continue;</span>
+<span class="nc" id="L116">                int x = col + px, y = row + py;</span>
+<span class="nc bnc" id="L117" title="All 8 branches missed.">                if (x &gt;= 0 &amp;&amp; x &lt; W &amp;&amp; y &gt;= 0 &amp;&amp; y &lt; H) b[x][y] = 'X';</span>
+            }
+<span class="nc" id="L119">    }</span>
+
+    // Clear full lines
+    private char[][] clearFullLines(char[][] b) {
+<span class="nc" id="L123">        char[][] out = copyBoard(b);</span>
+<span class="nc" id="L124">        int dstY = H - 1;</span>
+<span class="nc bnc" id="L125" title="All 2 branches missed.">        for (int y = H - 1; y &gt;= 0; y--) {</span>
+<span class="nc" id="L126">            boolean full = true;</span>
+<span class="nc bnc" id="L127" title="All 2 branches missed.">            for (int x = 0; x &lt; W; x++) {</span>
+<span class="nc bnc" id="L128" title="All 2 branches missed.">                if (out[x][y] == ' ') {</span>
+<span class="nc" id="L129">                    full = false;</span>
+<span class="nc" id="L130">                    break;</span>
+                }
+            }
+<span class="nc bnc" id="L133" title="All 2 branches missed.">            if (!full) {</span>
+<span class="nc bnc" id="L134" title="All 2 branches missed.">                if (dstY != y) {</span>
+<span class="nc bnc" id="L135" title="All 2 branches missed.">                    for (int x = 0; x &lt; W; x++) out[x][dstY] = out[x][y];</span>
+                }
+<span class="nc" id="L137">                dstY--;</span>
+            }
+        }
+<span class="nc bnc" id="L140" title="All 2 branches missed.">        for (int y = dstY; y &gt;= 0; y--)</span>
+<span class="nc bnc" id="L141" title="All 2 branches missed.">            for (int x = 0; x &lt; W; x++)</span>
+<span class="nc" id="L142">                out[x][y] = ' ';</span>
+<span class="nc" id="L143">        return out;</span>
+    }
+
+    // Copy board
+    private char[][] copyBoard(char[][] src) {
+<span class="nc" id="L148">        char[][] dst = new char[W][H];</span>
+<span class="nc bnc" id="L149" title="All 2 branches missed.">        for (int x = 0; x &lt; W; x++) System.arraycopy(src[x], 0, dst[x], 0, H);</span>
+<span class="nc" id="L150">        return dst;</span>
+    }
+
+    // Unique rotations
+    private int[] uniqueRotationsFor(int piece) {
+<span class="nc" id="L155">        List&lt;Integer&gt; uniq = new ArrayList&lt;&gt;();</span>
+<span class="nc" id="L156">        Set&lt;String&gt; shapesSeen = new HashSet&lt;&gt;();</span>
+<span class="nc bnc" id="L157" title="All 2 branches missed.">        for (int r = 0; r &lt; 4; r++) {</span>
+<span class="nc" id="L158">            StringBuilder sb = new StringBuilder(16);</span>
+<span class="nc bnc" id="L159" title="All 2 branches missed.">            for (int py = 0; py &lt; 4; py++)</span>
+<span class="nc bnc" id="L160" title="All 2 branches missed.">                for (int px = 0; px &lt; 4; px++)</span>
+<span class="nc" id="L161">                    sb.append(shapes[piece][rotateIndex(px, py, r)]);</span>
+<span class="nc bnc" id="L162" title="All 2 branches missed.">            if (shapesSeen.add(sb.toString())) uniq.add(r);</span>
+        }
+<span class="nc" id="L164">        return uniq.stream().mapToInt(Integer::intValue).toArray();</span>
+    }
+
+    // Rotate index
+    private static int rotateIndex(int px, int py, int r) {
+<span class="nc bnc" id="L169" title="All 4 branches missed.">        return switch (r &amp; 3) {</span>
+<span class="nc" id="L170">            case 0 -&gt; py * 4 + px;</span>
+<span class="nc" id="L171">            case 1 -&gt; 12 + py - (px * 4);</span>
+<span class="nc" id="L172">            case 2 -&gt; 15 - (py * 4) - px;</span>
+<span class="nc" id="L173">            default -&gt; 3 - py + (px * 4);</span>
+        };
+    }
+
+    // Board evaluator
+<span class="fc" id="L178">    static class BoardEvaluator {</span>
+        // Evaluate board
+        int evaluateBoard(char[][] board) {
+<span class="fc" id="L181">            int heightScore = maxHeight(board);</span>
+<span class="fc" id="L182">            int holesScore = holes(board);</span>
+<span class="fc" id="L183">            int linesCleared = clearedLines(board);</span>
+<span class="fc" id="L184">            int bumpinessScore = bumpiness(board);</span>
+<span class="fc" id="L185">            return (-4 * heightScore) + (3 * linesCleared) - (5 * holesScore) - (2 * bumpinessScore);</span>
+        }
+
+        // Max column height
+        private int maxHeight(char[][] b) {
+<span class="fc" id="L190">            int H = b[0].length, max = 0;</span>
+<span class="fc bfc" id="L191" title="All 2 branches covered.">            for (char[] chars : b) {</span>
+<span class="fc" id="L192">                int h = 0;</span>
+<span class="pc bpc" id="L193" title="1 of 2 branches missed.">                for (int y = 0; y &lt; H; y++) {</span>
+<span class="pc bpc" id="L194" title="1 of 2 branches missed.">                    if (chars[y] != ' ') {</span>
+<span class="fc" id="L195">                        h = H - y;</span>
+<span class="fc" id="L196">                        break;</span>
+                    }
+                }
+<span class="fc bfc" id="L199" title="All 2 branches covered.">                if (h &gt; max) max = h;</span>
+            }
+<span class="fc" id="L201">            return max;</span>
+        }
+
+        // Count holes
+        private int holes(char[][] b) {
+<span class="fc" id="L206">            int H = b[0].length, holes = 0;</span>
+<span class="fc bfc" id="L207" title="All 2 branches covered.">            for (char[] chars : b) {</span>
+<span class="fc" id="L208">                boolean blockSeen = false;</span>
+<span class="fc bfc" id="L209" title="All 2 branches covered.">                for (int y = 0; y &lt; H; y++) {</span>
+<span class="fc bfc" id="L210" title="All 2 branches covered.">                    if (chars[y] != ' ') blockSeen = true;</span>
+<span class="pc bpc" id="L211" title="1 of 2 branches missed.">                    else if (blockSeen) holes++;</span>
+                }
+            }
+<span class="fc" id="L214">            return holes;</span>
+        }
+
+        // Count full lines
+        private int clearedLines(char[][] b) {
+<span class="fc" id="L219">            int H = b[0].length, count = 0;</span>
+<span class="fc bfc" id="L220" title="All 2 branches covered.">            for (int y = 0; y &lt; H; y++) {</span>
+<span class="fc" id="L221">                boolean full = true;</span>
+<span class="fc bfc" id="L222" title="All 2 branches covered.">                for (char[] chars : b) {</span>
+<span class="fc bfc" id="L223" title="All 2 branches covered.">                    if (chars[y] == ' ') {</span>
+<span class="fc" id="L224">                        full = false;</span>
+<span class="fc" id="L225">                        break;</span>
+                    }
+                }
+<span class="fc bfc" id="L228" title="All 2 branches covered.">                if (full) count++;</span>
+            }
+<span class="fc" id="L230">            return count;</span>
+        }
+
+        // Surface bumpiness
+        private int bumpiness(char[][] b) {
+<span class="fc" id="L235">            int W = b.length, H = b[0].length;</span>
+<span class="fc" id="L236">            int[] heights = new int[W];</span>
+<span class="fc bfc" id="L237" title="All 2 branches covered.">            for (int x = 0; x &lt; W; x++) {</span>
+<span class="fc" id="L238">                int h = 0;</span>
+<span class="pc bpc" id="L239" title="1 of 2 branches missed.">                for (int y = 0; y &lt; H; y++) {</span>
+<span class="pc bpc" id="L240" title="1 of 2 branches missed.">                    if (b[x][y] != ' ') {</span>
+<span class="fc" id="L241">                        h = H - y;</span>
+<span class="fc" id="L242">                        break;</span>
+                    }
+                }
+<span class="fc" id="L245">                heights[x] = h;</span>
+            }
+<span class="fc" id="L247">            int sum = 0;</span>
+<span class="fc bfc" id="L248" title="All 2 branches covered.">            for (int x = 0; x &lt; W - 1; x++) sum += Math.abs(heights[x] - heights[x + 1]);</span>
+<span class="fc" id="L249">            return sum;</span>
+        }
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

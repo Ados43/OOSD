@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ConfigStore.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">TeamOrange_FinalSubmission</a> &gt; <a href="index.source.html" class="el_package">org.oosd.teamorange_finalsubmission</a> &gt; <span class="el_source">ConfigStore.java</span></div><h1>ConfigStore.java</h1><pre class="source lang-java linenums">/// ConfigStore.java
+// Loads and saves AppConfig to a JSON file used by HelloController
+// when opening the Configuration screen and before launching the game.
+
+
+package org.oosd.teamorange_finalsubmission;
+
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+
+
+<span class="nc" id="L14">public class ConfigStore {</span>
+
+    // Paths
+    private static final String DATA_DIR = &quot;data&quot;;
+    private static final String CONFIG_FN = &quot;appConfig.json&quot;;
+
+    // Resolve path
+    private Path configPath() {
+<span class="nc" id="L22">        return Path.of(DATA_DIR, CONFIG_FN);</span>
+    }
+
+    // Ensure directory
+    private void ensureDataDir() {
+        try {
+<span class="nc" id="L28">            Files.createDirectories(Path.of(DATA_DIR));</span>
+<span class="nc" id="L29">        } catch (IOException ignored) {</span>
+<span class="nc" id="L30">        }</span>
+<span class="nc" id="L31">    }</span>
+
+    // Load config
+    public AppConfig load() {
+<span class="nc" id="L35">        ensureDataDir();</span>
+<span class="nc" id="L36">        Path p = configPath();</span>
+<span class="nc" id="L37">        AppConfig cfg = new AppConfig();</span>
+<span class="nc bnc" id="L38" title="All 2 branches missed.">        if (!Files.exists(p)) {</span>
+<span class="nc" id="L39">            return cfg;</span>
+        }
+        try {
+<span class="nc" id="L42">            String json = Files.readString(p, StandardCharsets.UTF_8);</span>
+<span class="nc" id="L43">            cfg.fieldWidth = getInt(json, &quot;fieldWidth&quot;, cfg.fieldWidth);</span>
+<span class="nc" id="L44">            cfg.fieldHeight = getInt(json, &quot;fieldHeight&quot;, cfg.fieldHeight);</span>
+<span class="nc" id="L45">            cfg.gameLevel = getInt(json, &quot;gameLevel&quot;, cfg.gameLevel);</span>
+<span class="nc" id="L46">            cfg.musicOn = getBool(json, &quot;musicOn&quot;, cfg.musicOn);</span>
+<span class="nc" id="L47">            cfg.sfxOn = getBool(json, &quot;sfxOn&quot;, cfg.sfxOn);</span>
+<span class="nc" id="L48">            cfg.extendedMode = getBool(json, &quot;extendedMode&quot;, cfg.extendedMode);</span>
+<span class="nc" id="L49">            cfg.player1 = getEnum(json, &quot;player1&quot;, cfg.player1);</span>
+<span class="nc" id="L50">            cfg.player2 = getEnum(json, &quot;player2&quot;, cfg.player2);</span>
+<span class="nc" id="L51">        } catch (Exception ignored) {</span>
+<span class="nc" id="L52">        }</span>
+<span class="nc" id="L53">        return cfg;</span>
+    }
+
+    // Save config
+    public void save(AppConfig cfg) {
+<span class="nc" id="L58">        ensureDataDir();</span>
+<span class="nc" id="L59">        String json =</span>
+                &quot;{\n&quot; +
+                        &quot;  \&quot;fieldWidth\&quot;: &quot; + cfg.fieldWidth + &quot;,\n&quot; +
+                        &quot;  \&quot;fieldHeight\&quot;: &quot; + cfg.fieldHeight + &quot;,\n&quot; +
+                        &quot;  \&quot;gameLevel\&quot;: &quot; + cfg.gameLevel + &quot;,\n&quot; +
+                        &quot;  \&quot;musicOn\&quot;: &quot; + cfg.musicOn + &quot;,\n&quot; +
+                        &quot;  \&quot;sfxOn\&quot;: &quot; + cfg.sfxOn + &quot;,\n&quot; +
+                        &quot;  \&quot;extendedMode\&quot;: &quot; + cfg.extendedMode + &quot;,\n&quot; +
+<span class="nc" id="L67">                        &quot;  \&quot;player1\&quot;: \&quot;&quot; + cfg.player1.name() + &quot;\&quot;,\n&quot; +</span>
+<span class="nc" id="L68">                        &quot;  \&quot;player2\&quot;: \&quot;&quot; + cfg.player2.name() + &quot;\&quot;\n&quot; +</span>
+                        &quot;}\n&quot;;
+        try {
+<span class="nc" id="L71">            Files.writeString(configPath(), json, StandardCharsets.UTF_8);</span>
+<span class="nc" id="L72">        } catch (IOException e) {</span>
+<span class="nc" id="L73">            e.printStackTrace();</span>
+<span class="nc" id="L74">        }</span>
+<span class="nc" id="L75">    }</span>
+
+    // Get int
+    private static int getInt(String json, String key, int def) {
+<span class="nc" id="L79">        String v = extractRaw(json, key);</span>
+<span class="nc bnc" id="L80" title="All 2 branches missed.">        if (v == null) return def;</span>
+        try {
+<span class="nc" id="L82">            return Integer.parseInt(stripQuotes(v));</span>
+<span class="nc" id="L83">        } catch (NumberFormatException e) {</span>
+<span class="nc" id="L84">            return def;</span>
+        }
+    }
+
+    // Get boolean
+    private static boolean getBool(String json, String key, boolean def) {
+<span class="nc" id="L90">        String v = extractRaw(json, key);</span>
+<span class="nc bnc" id="L91" title="All 2 branches missed.">        if (v == null) return def;</span>
+<span class="nc" id="L92">        v = stripQuotes(v).toLowerCase();</span>
+<span class="nc bnc" id="L93" title="All 2 branches missed.">        if (&quot;true&quot;.equals(v)) return true;</span>
+<span class="nc bnc" id="L94" title="All 2 branches missed.">        if (&quot;false&quot;.equals(v)) return false;</span>
+<span class="nc" id="L95">        return def;</span>
+    }
+
+    // Get enum
+    private static &lt;E extends Enum&lt;E&gt;&gt; E getEnum(String json, String key, E def) {
+<span class="nc" id="L100">        String v = extractRaw(json, key);</span>
+<span class="nc bnc" id="L101" title="All 2 branches missed.">        if (v == null) return def;</span>
+<span class="nc" id="L102">        String cleaned = stripQuotes(v).trim();</span>
+        try {
+<span class="nc" id="L104">            return Enum.valueOf((Class&lt;E&gt;) PlayerType.class, cleaned);</span>
+<span class="nc" id="L105">        } catch (IllegalArgumentException e) {</span>
+<span class="nc" id="L106">            return def;</span>
+        }
+    }
+
+    // Extract raw value
+    private static String extractRaw(String json, String key) {
+<span class="nc" id="L112">        String needle = &quot;\&quot;&quot; + key + &quot;\&quot;&quot;;</span>
+<span class="nc" id="L113">        int i = json.indexOf(needle);</span>
+<span class="nc bnc" id="L114" title="All 2 branches missed.">        if (i &lt; 0) return null;</span>
+<span class="nc" id="L115">        int colon = json.indexOf(':', i + needle.length());</span>
+<span class="nc bnc" id="L116" title="All 2 branches missed.">        if (colon &lt; 0) return null;</span>
+<span class="nc" id="L117">        int j = colon + 1;</span>
+<span class="nc bnc" id="L118" title="All 4 branches missed.">        while (j &lt; json.length() &amp;&amp; Character.isWhitespace(json.charAt(j))) j++;</span>
+<span class="nc" id="L119">        int k = j;</span>
+<span class="nc" id="L120">        boolean inString = false;</span>
+<span class="nc bnc" id="L121" title="All 2 branches missed.">        while (k &lt; json.length()) {</span>
+<span class="nc" id="L122">            char c = json.charAt(k);</span>
+<span class="nc bnc" id="L123" title="All 6 branches missed.">            if (c == '&quot;' &amp;&amp; json.charAt(k - 1) != '\\') inString = !inString;</span>
+<span class="nc bnc" id="L124" title="All 6 branches missed.">            if (!inString &amp;&amp; (c == ',' || c == '}')) break;</span>
+<span class="nc" id="L125">            k++;</span>
+<span class="nc" id="L126">        }</span>
+<span class="nc bnc" id="L127" title="All 2 branches missed.">        if (k &lt;= j) return null;</span>
+<span class="nc" id="L128">        return json.substring(j, k).trim();</span>
+    }
+
+    // Strip quotes
+    private static String stripQuotes(String s) {
+<span class="nc bnc" id="L133" title="All 2 branches missed.">        if (s == null) return null;</span>
+<span class="nc" id="L134">        s = s.trim();</span>
+<span class="nc bnc" id="L135" title="All 6 branches missed.">        if (s.startsWith(&quot;\&quot;&quot;) &amp;&amp; s.endsWith(&quot;\&quot;&quot;) &amp;&amp; s.length() &gt;= 2) {</span>
+<span class="nc" id="L136">            return s.substring(1, s.length() - 1);</span>
+        }
+<span class="nc" id="L138">        return s;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

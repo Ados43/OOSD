@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Rules.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">TeamOrange_FinalSubmission</a> &gt; <a href="index.source.html" class="el_package">org.oosd.teamorange_finalsubmission</a> &gt; <span class="el_source">Rules.java</span></div><h1>Rules.java</h1><pre class="source lang-java linenums">package org.oosd.teamorange_finalsubmission;
+
+/**
+ * Rules
+ * -----
+ * Pure logic helpers expressed with simple int[][] arrays so they are easy to test.
+ * - rotateIndex: same math used by the 4x4 tetromino rotation in TetrisGame.
+ * - clearFullLines: removes full rows from a [H][W] 0/1 board and returns how many were cleared.
+ * - canPlace: collision/bounds check for a trimmed 0/1 shape at (col,row) on a [H][W] board.
+ */
+public final class Rules {
+    private Rules() {
+    }
+
+    /**
+     * 4x4 index mapping used by the game’s rotation math.
+     */
+    public static int rotateIndex(int px, int py, int r) {
+<span class="fc bfc" id="L19" title="All 4 branches covered.">        return switch (r &amp; 3) {</span>
+<span class="fc" id="L20">            case 0 -&gt; py * 4 + px;</span>
+<span class="fc" id="L21">            case 1 -&gt; 12 + py - (px * 4);</span>
+<span class="fc" id="L22">            case 2 -&gt; 15 - (py * 4) - px;</span>
+<span class="fc" id="L23">            default -&gt; 3 - py + (px * 4);</span>
+        };
+    }
+
+    /**
+     * Clears full rows in-place on a [H][W] board of 0/1 and returns the number of rows cleared.
+     */
+    public static int clearFullLines(int[][] board) {
+<span class="fc" id="L31">        final int H = board.length, W = board[0].length;</span>
+<span class="fc" id="L32">        int dst = H - 1;</span>
+<span class="fc" id="L33">        int cleared = 0;</span>
+
+<span class="fc bfc" id="L35" title="All 2 branches covered.">        for (int y = H - 1; y &gt;= 0; y--) {</span>
+<span class="fc" id="L36">            boolean full = true;</span>
+<span class="fc bfc" id="L37" title="All 2 branches covered.">            for (int x = 0; x &lt; W; x++) {</span>
+<span class="fc bfc" id="L38" title="All 2 branches covered.">                if (board[y][x] == 0) {</span>
+<span class="fc" id="L39">                    full = false;</span>
+<span class="fc" id="L40">                    break;</span>
+                }
+            }
+<span class="fc bfc" id="L43" title="All 2 branches covered.">            if (!full) {</span>
+<span class="pc bpc" id="L44" title="1 of 2 branches missed.">                if (dst != y) {</span>
+<span class="fc bfc" id="L45" title="All 2 branches covered.">                    for (int x = 0; x &lt; W; x++) board[dst][x] = board[y][x];</span>
+                }
+<span class="fc" id="L47">                dst--;</span>
+            } else {
+<span class="fc" id="L49">                cleared++;</span>
+            }
+        }
+        // fill remaining with empty
+<span class="fc bfc" id="L53" title="All 2 branches covered.">        for (int y = dst; y &gt;= 0; y--)</span>
+<span class="fc bfc" id="L54" title="All 2 branches covered.">            for (int x = 0; x &lt; W; x++)</span>
+<span class="fc" id="L55">                board[y][x] = 0;</span>
+
+<span class="fc" id="L57">        return cleared;</span>
+    }
+
+    /**
+     * True if trimmed 0/1 shape can be placed at (col,row) on board [H][W].
+     */
+    public static boolean canPlace(int[][] board, int[][] shape, int col, int row) {
+<span class="fc" id="L64">        final int H = board.length, W = board[0].length;</span>
+<span class="fc" id="L65">        final int sh = shape.length, sw = shape[0].length;</span>
+
+<span class="fc bfc" id="L67" title="All 2 branches covered.">        for (int y = 0; y &lt; sh; y++)</span>
+<span class="fc bfc" id="L68" title="All 2 branches covered.">            for (int x = 0; x &lt; sw; x++) {</span>
+<span class="fc bfc" id="L69" title="All 2 branches covered.">                if (shape[y][x] == 0) continue;</span>
+<span class="fc" id="L70">                int bx = col + x, by = row + y;</span>
+<span class="pc bpc" id="L71" title="2 of 8 branches missed.">                if (bx &lt; 0 || bx &gt;= W || by &lt; 0 || by &gt;= H) return false;</span>
+<span class="fc bfc" id="L72" title="All 2 branches covered.">                if (board[by][bx] != 0) return false;</span>
+            }
+<span class="fc" id="L74">        return true;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

@@ -1,0 +1,346 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>HelloController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">TeamOrange_FinalSubmission</a> &gt; <a href="index.source.html" class="el_package">org.oosd.teamorange_finalsubmission</a> &gt; <span class="el_source">HelloController.java</span></div><h1>HelloController.java</h1><pre class="source lang-java linenums">/// HelloController.java
+// Controller for the main menu and top-level navigation.
+// - Starts a TetrisGame using the current AppConfig.
+// - Builds the Configuration and High Scores screens.
+// - Applies the theme to every scene so the look is consistent.
+// - Bridges UI actions to stores/managers (ConfigStore, HighScoreStore, MediaManager).
+
+package org.oosd.teamorange_finalsubmission;
+
+import javafx.fxml.FXML;
+import javafx.geometry.Pos;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.control.*;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
+
+import java.util.Objects;
+
+// Main menu controller
+<span class="nc" id="L24">public class HelloController {</span>
+
+    // Simple pair record
+<span class="nc" id="L27">    public record HighScore(String player, int score) {</span>
+    }
+
+    // FXML buttons
+    @FXML
+    private Button playButton, configurationButton, highScoreButton;
+
+    // Theme path
+    private static final String THEME = &quot;/theme/tetris-theme.css&quot;;
+
+    // Managers &amp; stores
+<span class="nc" id="L38">    private final MediaManager mediaManager = new MediaManager();</span>
+<span class="nc" id="L39">    private final HighScoreStore highScoreStore = new HighScoreStore();</span>
+<span class="nc" id="L40">    private final ConfigStore configStore = new ConfigStore();</span>
+
+    // Config cache
+<span class="nc" id="L43">    private AppConfig cfg = configStore.load();</span>
+
+    // Apply theme
+    private void applyTheme(Scene scene) {
+<span class="nc" id="L47">        scene.getStylesheets().add(</span>
+<span class="nc" id="L48">                Objects.requireNonNull(getClass().getResource(THEME)).toExternalForm()</span>
+        );
+<span class="nc" id="L50">    }</span>
+
+    // Start game
+    @FXML
+    protected void onPlayTetris() {
+<span class="nc" id="L55">        cfg = configStore.load();</span>
+<span class="nc bnc" id="L56" title="All 2 branches missed.">        mediaManager.setMusicMuted(!cfg.musicOn);</span>
+<span class="nc bnc" id="L57" title="All 2 branches missed.">        mediaManager.setSfxMuted(!cfg.sfxOn);</span>
+
+<span class="nc" id="L59">        TetrisGame game = new TetrisGame();</span>
+<span class="nc" id="L60">        game.setHighScoreStore(highScoreStore);</span>
+<span class="nc" id="L61">        game.setMediaManager(mediaManager);</span>
+<span class="nc" id="L62">        game.setConfig(</span>
+                cfg.fieldWidth,
+                cfg.fieldHeight,
+                cfg.gameLevel,
+                cfg.extendedMode,
+                cfg.musicOn,
+                cfg.sfxOn,
+                cfg.player1,
+                cfg.player2
+        );
+
+<span class="nc" id="L73">        Parent tetrisRoot = game.createContent();</span>
+<span class="nc" id="L74">        Stage stage = (Stage) playButton.getScene().getWindow();</span>
+
+<span class="nc" id="L76">        game.setOnBack(() -&gt; {</span>
+<span class="nc" id="L77">            mediaManager.stopBgMusic();</span>
+<span class="nc" id="L78">            goBackToMenu(stage);</span>
+<span class="nc" id="L79">        });</span>
+
+<span class="nc" id="L81">        Scene gameScene = new Scene(tetrisRoot, 1000, 900);</span>
+<span class="nc" id="L82">        applyTheme(gameScene);</span>
+<span class="nc" id="L83">        stage.setScene(gameScene);</span>
+<span class="nc" id="L84">        stage.setMinWidth(900);</span>
+<span class="nc" id="L85">        stage.setMinHeight(700);</span>
+<span class="nc" id="L86">        stage.show();</span>
+<span class="nc" id="L87">    }</span>
+
+    // Show scores
+    @FXML
+    protected void onShowHighScores() {
+<span class="nc" id="L92">        Stage stage = (Stage) highScoreButton.getScene().getWindow();</span>
+<span class="nc" id="L93">        Parent view = HighScoreView.create(highScoreStore, () -&gt; goBackToMenu(stage));</span>
+
+<span class="nc" id="L95">        Label title = new Label(&quot;High Scores&quot;);</span>
+<span class="nc" id="L96">        title.getStyleClass().add(&quot;screen-title&quot;);</span>
+
+<span class="nc" id="L98">        VBox card = new VBox(16, title, view);</span>
+<span class="nc" id="L99">        card.setAlignment(Pos.TOP_CENTER);</span>
+<span class="nc" id="L100">        card.setMaxWidth(900);</span>
+
+<span class="nc" id="L102">        StackPane root = new StackPane(card);</span>
+
+<span class="nc" id="L104">        Scene scene = new Scene(root, 900, 640);</span>
+<span class="nc" id="L105">        applyTheme(scene);</span>
+<span class="nc" id="L106">        stage.setScene(scene);</span>
+<span class="nc" id="L107">        stage.show();</span>
+<span class="nc" id="L108">    }</span>
+
+    // Configure game
+    @FXML
+    protected void onConfiguration() {
+<span class="nc" id="L113">        cfg = configStore.load();</span>
+<span class="nc" id="L114">        Stage stage = (Stage) configurationButton.getScene().getWindow();</span>
+
+<span class="nc" id="L116">        Label title = new Label(&quot;Configuration&quot;);</span>
+<span class="nc" id="L117">        title.getStyleClass().add(&quot;screen-title&quot;);</span>
+
+        // Sliders
+<span class="nc" id="L120">        Slider widthSlider = new Slider(5, 15, clamp(cfg.fieldWidth, 5, 15));</span>
+<span class="nc" id="L121">        Slider heightSlider = new Slider(15, 30, clamp(cfg.fieldHeight, 15, 30));</span>
+<span class="nc" id="L122">        Slider levelSlider = new Slider(1, 10, clamp(cfg.gameLevel, 1, 10));</span>
+<span class="nc bnc" id="L123" title="All 2 branches missed.">        for (Slider s : new Slider[]{widthSlider, heightSlider, levelSlider}) {</span>
+<span class="nc" id="L124">            s.setMajorTickUnit(1);</span>
+<span class="nc" id="L125">            s.setMinorTickCount(0);</span>
+<span class="nc" id="L126">            s.setSnapToTicks(true);</span>
+<span class="nc" id="L127">            s.setShowTickMarks(true);</span>
+<span class="nc" id="L128">            s.setShowTickLabels(true);</span>
+        }
+
+<span class="nc" id="L131">        Label widthLabel = new Label(&quot;Field Width (cells):&quot;);</span>
+<span class="nc" id="L132">        Label heightLabel = new Label(&quot;Field Height (cells):&quot;);</span>
+<span class="nc" id="L133">        Label levelLabel = new Label(&quot;Game Level:&quot;);</span>
+<span class="nc" id="L134">        widthLabel.getStyleClass().add(&quot;config-label&quot;);</span>
+<span class="nc" id="L135">        heightLabel.getStyleClass().add(&quot;config-label&quot;);</span>
+<span class="nc" id="L136">        levelLabel.getStyleClass().add(&quot;config-label&quot;);</span>
+
+<span class="nc" id="L138">        Label widthValue = new Label(String.valueOf((int) widthSlider.getValue()));</span>
+<span class="nc" id="L139">        Label heightValue = new Label(String.valueOf((int) heightSlider.getValue()));</span>
+<span class="nc" id="L140">        Label levelValue = new Label(String.valueOf((int) levelSlider.getValue()));</span>
+<span class="nc" id="L141">        widthSlider.valueProperty().addListener((obs, ov, nv) -&gt; widthValue.setText(String.valueOf(nv.intValue())));</span>
+<span class="nc" id="L142">        heightSlider.valueProperty().addListener((obs, ov, nv) -&gt; heightValue.setText(String.valueOf(nv.intValue())));</span>
+<span class="nc" id="L143">        levelSlider.valueProperty().addListener((obs, ov, nv) -&gt; levelValue.setText(String.valueOf(nv.intValue())));</span>
+
+        // Toggles
+<span class="nc" id="L146">        CheckBox musicChk = new CheckBox();</span>
+<span class="nc" id="L147">        musicChk.setSelected(cfg.musicOn);</span>
+<span class="nc" id="L148">        Label musicText = new Label(&quot;Music:&quot;);</span>
+<span class="nc bnc" id="L149" title="All 2 branches missed.">        Label musicState = new Label(cfg.musicOn ? &quot;On&quot; : &quot;Off&quot;);</span>
+<span class="nc bnc" id="L150" title="All 2 branches missed.">        musicChk.selectedProperty().addListener((obs, ov, nv) -&gt; musicState.setText(nv ? &quot;On&quot; : &quot;Off&quot;));</span>
+
+<span class="nc" id="L152">        CheckBox sfxChk = new CheckBox();</span>
+<span class="nc" id="L153">        sfxChk.setSelected(cfg.sfxOn);</span>
+<span class="nc" id="L154">        Label sfxText = new Label(&quot;Sound Effects:&quot;);</span>
+<span class="nc bnc" id="L155" title="All 2 branches missed.">        Label sfxState = new Label(cfg.sfxOn ? &quot;On&quot; : &quot;Off&quot;);</span>
+<span class="nc bnc" id="L156" title="All 2 branches missed.">        sfxChk.selectedProperty().addListener((obs, ov, nv) -&gt; sfxState.setText(nv ? &quot;On&quot; : &quot;Off&quot;));</span>
+
+<span class="nc" id="L158">        CheckBox extendChk = new CheckBox();</span>
+<span class="nc" id="L159">        extendChk.setSelected(cfg.extendedMode);</span>
+<span class="nc" id="L160">        Label extendText = new Label(&quot;Extended Mode:&quot;);</span>
+<span class="nc bnc" id="L161" title="All 2 branches missed.">        Label extendState = new Label(cfg.extendedMode ? &quot;On&quot; : &quot;Off&quot;);</span>
+<span class="nc" id="L162">        musicText.getStyleClass().add(&quot;config-label&quot;);</span>
+<span class="nc" id="L163">        sfxText.getStyleClass().add(&quot;config-label&quot;);</span>
+<span class="nc" id="L164">        extendText.getStyleClass().add(&quot;config-label&quot;);</span>
+
+        // Player one
+<span class="nc" id="L167">        Label p1Text = new Label(&quot;Player One:&quot;);</span>
+<span class="nc" id="L168">        p1Text.getStyleClass().add(&quot;config-label&quot;);</span>
+<span class="nc" id="L169">        ToggleGroup p1Group = new ToggleGroup();</span>
+<span class="nc" id="L170">        RadioButton p1Human = new RadioButton(&quot;Human&quot;);</span>
+<span class="nc" id="L171">        RadioButton p1Ai = new RadioButton(&quot;AI&quot;);</span>
+<span class="nc" id="L172">        RadioButton p1External = new RadioButton(&quot;External&quot;);</span>
+<span class="nc" id="L173">        p1Human.getStyleClass().add(&quot;radio-clean&quot;);</span>
+<span class="nc" id="L174">        p1Ai.getStyleClass().add(&quot;radio-clean&quot;);</span>
+<span class="nc" id="L175">        p1External.getStyleClass().add(&quot;radio-clean&quot;);</span>
+<span class="nc" id="L176">        p1Human.setToggleGroup(p1Group);</span>
+<span class="nc" id="L177">        p1Ai.setToggleGroup(p1Group);</span>
+<span class="nc" id="L178">        p1External.setToggleGroup(p1Group);</span>
+<span class="nc bnc" id="L179" title="All 4 branches missed.">        switch (cfg.player1) {</span>
+<span class="nc" id="L180">            case HUMAN -&gt; p1Human.setSelected(true);</span>
+<span class="nc" id="L181">            case AI -&gt; p1Ai.setSelected(true);</span>
+<span class="nc" id="L182">            case EXTERNAL -&gt; p1External.setSelected(true);</span>
+        }
+<span class="nc" id="L184">        HBox p1Row = new HBox(18, p1Human, p1Ai, p1External);</span>
+<span class="nc" id="L185">        p1Row.setAlignment(Pos.CENTER_LEFT);</span>
+
+        // Player two
+<span class="nc" id="L188">        Label p2Text = new Label(&quot;Player Two:&quot;);</span>
+<span class="nc" id="L189">        p2Text.getStyleClass().add(&quot;config-label&quot;);</span>
+<span class="nc" id="L190">        ToggleGroup p2Group = new ToggleGroup();</span>
+<span class="nc" id="L191">        RadioButton p2Human = new RadioButton(&quot;Human&quot;);</span>
+<span class="nc" id="L192">        RadioButton p2Ai = new RadioButton(&quot;AI&quot;);</span>
+<span class="nc" id="L193">        RadioButton p2External = new RadioButton(&quot;External&quot;);</span>
+<span class="nc" id="L194">        p2Human.setToggleGroup(p2Group);</span>
+<span class="nc" id="L195">        p2Ai.setToggleGroup(p2Group);</span>
+<span class="nc" id="L196">        p2External.setToggleGroup(p2Group);</span>
+<span class="nc bnc" id="L197" title="All 4 branches missed.">        switch (cfg.player2) {</span>
+<span class="nc" id="L198">            case HUMAN -&gt; p2Human.setSelected(true);</span>
+<span class="nc" id="L199">            case AI -&gt; p2Ai.setSelected(true);</span>
+<span class="nc" id="L200">            case EXTERNAL -&gt; p2External.setSelected(true);</span>
+        }
+<span class="nc" id="L202">        boolean enableP2Init = extendChk.isSelected();</span>
+<span class="nc bnc" id="L203" title="All 2 branches missed.">        p2Human.setDisable(!enableP2Init);</span>
+<span class="nc bnc" id="L204" title="All 2 branches missed.">        p2Ai.setDisable(!enableP2Init);</span>
+<span class="nc bnc" id="L205" title="All 2 branches missed.">        p2External.setDisable(!enableP2Init);</span>
+<span class="nc" id="L206">        HBox p2Row = new HBox(18, p2Human, p2Ai, p2External);</span>
+<span class="nc" id="L207">        p2Row.setAlignment(Pos.CENTER_LEFT);</span>
+<span class="nc" id="L208">        extendChk.selectedProperty().addListener((obs, ov, nv) -&gt; {</span>
+<span class="nc bnc" id="L209" title="All 2 branches missed.">            extendState.setText(nv ? &quot;On&quot; : &quot;Off&quot;);</span>
+<span class="nc bnc" id="L210" title="All 2 branches missed.">            p2Human.setDisable(!nv);</span>
+<span class="nc bnc" id="L211" title="All 2 branches missed.">            p2Ai.setDisable(!nv);</span>
+<span class="nc bnc" id="L212" title="All 2 branches missed.">            p2External.setDisable(!nv);</span>
+<span class="nc" id="L213">        });</span>
+
+        // Layout grid
+<span class="nc" id="L216">        GridPane grid = new GridPane();</span>
+<span class="nc" id="L217">        grid.getStyleClass().add(&quot;form-grid&quot;);</span>
+<span class="nc" id="L218">        grid.setHgap(22);</span>
+<span class="nc" id="L219">        grid.setVgap(18);</span>
+<span class="nc" id="L220">        grid.setAlignment(Pos.CENTER);</span>
+<span class="nc" id="L221">        int r = 0;</span>
+<span class="nc" id="L222">        grid.add(widthLabel, 0, r);</span>
+<span class="nc" id="L223">        grid.add(widthSlider, 1, r);</span>
+<span class="nc" id="L224">        grid.add(widthValue, 2, r++);</span>
+<span class="nc" id="L225">        grid.add(heightLabel, 0, r);</span>
+<span class="nc" id="L226">        grid.add(heightSlider, 1, r);</span>
+<span class="nc" id="L227">        grid.add(heightValue, 2, r++);</span>
+<span class="nc" id="L228">        grid.add(levelLabel, 0, r);</span>
+<span class="nc" id="L229">        grid.add(levelSlider, 1, r);</span>
+<span class="nc" id="L230">        grid.add(levelValue, 2, r++);</span>
+<span class="nc" id="L231">        grid.add(musicText, 0, r);</span>
+<span class="nc" id="L232">        grid.add(musicChk, 1, r);</span>
+<span class="nc" id="L233">        grid.add(musicState, 2, r++);</span>
+<span class="nc" id="L234">        grid.add(sfxText, 0, r);</span>
+<span class="nc" id="L235">        grid.add(sfxChk, 1, r);</span>
+<span class="nc" id="L236">        grid.add(sfxState, 2, r++);</span>
+<span class="nc" id="L237">        grid.add(extendText, 0, r);</span>
+<span class="nc" id="L238">        grid.add(extendChk, 1, r);</span>
+<span class="nc" id="L239">        grid.add(extendState, 2, r++);</span>
+<span class="nc" id="L240">        grid.add(p1Text, 0, r);</span>
+<span class="nc" id="L241">        grid.add(p1Row, 1, r, 2, 1);</span>
+<span class="nc" id="L242">        r++;</span>
+<span class="nc" id="L243">        grid.add(p2Text, 0, r);</span>
+<span class="nc" id="L244">        grid.add(p2Row, 1, r, 2, 1);</span>
+<span class="nc" id="L245">        r++;</span>
+
+        // Buttons row
+<span class="nc" id="L248">        Button saveAndReturnButton = new Button(&quot;Save &amp; Return&quot;);</span>
+<span class="nc" id="L249">        saveAndReturnButton.getStyleClass().addAll(&quot;menu-btn&quot;);</span>
+<span class="nc" id="L250">        saveAndReturnButton.setPrefWidth(220);</span>
+<span class="nc" id="L251">        saveAndReturnButton.setOnAction(e -&gt; {</span>
+<span class="nc" id="L252">            cfg.fieldWidth = (int) widthSlider.getValue();</span>
+<span class="nc" id="L253">            cfg.fieldHeight = (int) heightSlider.getValue();</span>
+<span class="nc" id="L254">            cfg.gameLevel = (int) levelSlider.getValue();</span>
+<span class="nc" id="L255">            cfg.musicOn = musicChk.isSelected();</span>
+<span class="nc" id="L256">            cfg.sfxOn = sfxChk.isSelected();</span>
+<span class="nc" id="L257">            cfg.extendedMode = extendChk.isSelected();</span>
+<span class="nc bnc" id="L258" title="All 2 branches missed.">            if (p1Human.isSelected()) cfg.player1 = PlayerType.HUMAN;</span>
+<span class="nc bnc" id="L259" title="All 2 branches missed.">            if (p1Ai.isSelected()) cfg.player1 = PlayerType.AI;</span>
+<span class="nc bnc" id="L260" title="All 2 branches missed.">            if (p1External.isSelected()) cfg.player1 = PlayerType.EXTERNAL;</span>
+<span class="nc bnc" id="L261" title="All 2 branches missed.">            if (p2Human.isSelected()) cfg.player2 = PlayerType.HUMAN;</span>
+<span class="nc bnc" id="L262" title="All 2 branches missed.">            if (p2Ai.isSelected()) cfg.player2 = PlayerType.AI;</span>
+<span class="nc bnc" id="L263" title="All 2 branches missed.">            if (p2External.isSelected()) cfg.player2 = PlayerType.EXTERNAL;</span>
+<span class="nc" id="L264">            configStore.save(cfg);</span>
+<span class="nc" id="L265">            goBackToMenu(stage);</span>
+<span class="nc" id="L266">        });</span>
+
+<span class="nc" id="L268">        Button resetButton = new Button(&quot;Reset Defaults&quot;);</span>
+<span class="nc" id="L269">        resetButton.getStyleClass().addAll(&quot;menu-btn&quot;);</span>
+<span class="nc" id="L270">        resetButton.setPrefWidth(180);</span>
+<span class="nc" id="L271">        resetButton.setOnAction(e -&gt; {</span>
+<span class="nc" id="L272">            AppConfig d = new AppConfig();</span>
+<span class="nc" id="L273">            widthSlider.setValue(clamp(d.fieldWidth, 5, 15));</span>
+<span class="nc" id="L274">            heightSlider.setValue(clamp(d.fieldHeight, 15, 30));</span>
+<span class="nc" id="L275">            levelSlider.setValue(clamp(d.gameLevel, 1, 10));</span>
+<span class="nc" id="L276">            musicChk.setSelected(d.musicOn);</span>
+<span class="nc" id="L277">            sfxChk.setSelected(d.sfxOn);</span>
+<span class="nc" id="L278">            extendChk.setSelected(d.extendedMode);</span>
+<span class="nc" id="L279">            widthValue.setText(String.valueOf((int) widthSlider.getValue()));</span>
+<span class="nc" id="L280">            heightValue.setText(String.valueOf((int) heightSlider.getValue()));</span>
+<span class="nc" id="L281">            levelValue.setText(String.valueOf((int) levelSlider.getValue()));</span>
+<span class="nc bnc" id="L282" title="All 2 branches missed.">            musicState.setText(musicChk.isSelected() ? &quot;On&quot; : &quot;Off&quot;);</span>
+<span class="nc bnc" id="L283" title="All 2 branches missed.">            sfxState.setText(sfxChk.isSelected() ? &quot;On&quot; : &quot;Off&quot;);</span>
+<span class="nc bnc" id="L284" title="All 2 branches missed.">            extendState.setText(extendChk.isSelected() ? &quot;On&quot; : &quot;Off&quot;);</span>
+<span class="nc bnc" id="L285" title="All 2 branches missed.">            p1Human.setSelected(d.player1 == PlayerType.HUMAN);</span>
+<span class="nc bnc" id="L286" title="All 2 branches missed.">            p1Ai.setSelected(d.player1 == PlayerType.AI);</span>
+<span class="nc bnc" id="L287" title="All 2 branches missed.">            p1External.setSelected(d.player1 == PlayerType.EXTERNAL);</span>
+<span class="nc bnc" id="L288" title="All 2 branches missed.">            p2Human.setSelected(d.player2 == PlayerType.HUMAN);</span>
+<span class="nc bnc" id="L289" title="All 2 branches missed.">            p2Ai.setSelected(d.player2 == PlayerType.AI);</span>
+<span class="nc bnc" id="L290" title="All 2 branches missed.">            p2External.setSelected(d.player2 == PlayerType.EXTERNAL);</span>
+<span class="nc" id="L291">            boolean nv = extendChk.isSelected();</span>
+<span class="nc bnc" id="L292" title="All 2 branches missed.">            p2Human.setDisable(!nv);</span>
+<span class="nc bnc" id="L293" title="All 2 branches missed.">            p2Ai.setDisable(!nv);</span>
+<span class="nc bnc" id="L294" title="All 2 branches missed.">            p2External.setDisable(!nv);</span>
+<span class="nc" id="L295">        });</span>
+
+<span class="nc" id="L297">        HBox buttonRow = new HBox(18, saveAndReturnButton, resetButton);</span>
+<span class="nc" id="L298">        buttonRow.setAlignment(Pos.CENTER);</span>
+
+<span class="nc" id="L300">        VBox card = new VBox(20, title, grid, buttonRow);</span>
+<span class="nc" id="L301">        card.getStyleClass().add(&quot;menu-card&quot;);</span>
+<span class="nc" id="L302">        card.setAlignment(Pos.TOP_CENTER);</span>
+<span class="nc" id="L303">        card.setMaxWidth(900);</span>
+
+<span class="nc" id="L305">        StackPane root = new StackPane(card);</span>
+<span class="nc" id="L306">        root.getStyleClass().add(&quot;app-bg&quot;);</span>
+<span class="nc" id="L307">        root.getStyleClass().add(&quot;screen--config&quot;);</span>
+
+<span class="nc" id="L309">        Scene scene = new Scene(root, 900, 640);</span>
+<span class="nc" id="L310">        applyTheme(scene);</span>
+<span class="nc" id="L311">        stage.setScene(scene);</span>
+<span class="nc" id="L312">        stage.show();</span>
+<span class="nc" id="L313">    }</span>
+
+    // Quit app
+    @FXML
+    protected void onQuit() {
+<span class="nc" id="L318">        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);</span>
+<span class="nc" id="L319">        alert.setTitle(&quot;Confirm Exit&quot;);</span>
+<span class="nc" id="L320">        alert.setHeaderText(&quot;Are you sure you want to quit?&quot;);</span>
+<span class="nc" id="L321">        alert.setContentText(&quot;Choose 'OK' to exit or 'Cancel' to return to the menu.&quot;);</span>
+<span class="nc" id="L322">        alert.showAndWait().ifPresent(response -&gt; {</span>
+<span class="nc bnc" id="L323" title="All 2 branches missed.">            if (response == ButtonType.OK) System.exit(0);</span>
+<span class="nc" id="L324">        });</span>
+<span class="nc" id="L325">    }</span>
+
+    // Navigation
+    void goBackToMenu(Stage stage) {
+        try {
+<span class="nc" id="L330">            var loader = new javafx.fxml.FXMLLoader(</span>
+<span class="nc" id="L331">                    HelloApplication.class.getResource(&quot;main-menu.fxml&quot;)</span>
+            );
+<span class="nc" id="L333">            Scene scene = new Scene(loader.load(), 900, 640);</span>
+<span class="nc" id="L334">            applyTheme(scene);</span>
+<span class="nc" id="L335">            stage.setScene(scene);</span>
+<span class="nc" id="L336">        } catch (Exception e) {</span>
+<span class="nc" id="L337">            e.printStackTrace();</span>
+<span class="nc" id="L338">        }</span>
+<span class="nc" id="L339">    }</span>
+
+    // Clamp helper
+    private static int clamp(int v, int lo, int hi) {
+<span class="nc" id="L343">        return Math.max(lo, Math.min(hi, v));</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

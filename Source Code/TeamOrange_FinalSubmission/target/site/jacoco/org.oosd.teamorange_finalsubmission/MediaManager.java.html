@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>MediaManager.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">TeamOrange_FinalSubmission</a> &gt; <a href="index.source.html" class="el_package">org.oosd.teamorange_finalsubmission</a> &gt; <span class="el_source">MediaManager.java</span></div><h1>MediaManager.java</h1><pre class="source lang-java linenums">/// MediaManager.java
+// Small helper around JavaFX Media/AudioClip for background music and sound effects.
+// Supports muting/togglin.
+// Plays short cues (drop, line clear, tetris, game over) triggered by TetrisGame.
+
+package org.oosd.teamorange_finalsubmission;
+
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
+import javafx.util.Duration;
+
+import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
+
+// Audio manager
+public class MediaManager {
+    // Fields
+<span class="nc" id="L19">    private final Map&lt;String, Media&gt; sfxMedia = new HashMap&lt;&gt;();</span>
+    private MediaPlayer bgPlayer;
+<span class="nc" id="L21">    private boolean musicMuted = false;</span>
+<span class="nc" id="L22">    private boolean sfxMuted = false;</span>
+
+    // Load audio
+<span class="nc" id="L25">    public MediaManager() {</span>
+<span class="nc" id="L26">        loadSound(&quot;drop&quot;, &quot;/sounds/drop.mp3&quot;);</span>
+<span class="nc" id="L27">        loadSound(&quot;line_clear&quot;, &quot;/sounds/line_clear.mp3&quot;);</span>
+<span class="nc" id="L28">        loadSound(&quot;tetris_clear&quot;, &quot;/sounds/tetris_clear.mp3&quot;);</span>
+<span class="nc" id="L29">        loadSound(&quot;game_over&quot;, &quot;/sounds/game_over.mp3&quot;);</span>
+<span class="nc" id="L30">        URL bgUrl = getClass().getResource(&quot;/sounds/bg_music.mp3&quot;);</span>
+<span class="nc bnc" id="L31" title="All 2 branches missed.">        if (bgUrl != null) {</span>
+<span class="nc" id="L32">            Media media = new Media(bgUrl.toExternalForm());</span>
+<span class="nc" id="L33">            bgPlayer = new MediaPlayer(media);</span>
+<span class="nc" id="L34">            bgPlayer.setOnEndOfMedia(() -&gt; bgPlayer.seek(Duration.ZERO));</span>
+<span class="nc" id="L35">            bgPlayer.setMute(musicMuted);</span>
+<span class="nc" id="L36">            bgPlayer.setVolume(0.5);</span>
+        }
+<span class="nc" id="L38">    }</span>
+
+    // Load sfx helper
+    private void loadSound(String key, String path) {
+<span class="nc" id="L42">        URL url = getClass().getResource(path);</span>
+<span class="nc bnc" id="L43" title="All 2 branches missed.">        if (url != null) {</span>
+<span class="nc" id="L44">            sfxMedia.put(key, new Media(url.toExternalForm()));</span>
+        }
+<span class="nc" id="L46">    }</span>
+
+    // Play bgm
+    public void playBgMusic() {
+<span class="nc bnc" id="L50" title="All 4 branches missed.">        if (bgPlayer != null &amp;&amp; !musicMuted) bgPlayer.play();</span>
+<span class="nc" id="L51">    }</span>
+
+    // Stop bgm
+    public void stopBgMusic() {
+<span class="nc bnc" id="L55" title="All 2 branches missed.">        if (bgPlayer != null) bgPlayer.stop();</span>
+<span class="nc" id="L56">    }</span>
+
+    // Play sfx
+    public void playSound(String key) {
+<span class="nc bnc" id="L60" title="All 2 branches missed.">        if (sfxMuted) return;</span>
+<span class="nc" id="L61">        Media media = sfxMedia.get(key);</span>
+<span class="nc bnc" id="L62" title="All 2 branches missed.">        if (media == null) return;</span>
+<span class="nc" id="L63">        MediaPlayer mp = new MediaPlayer(media);</span>
+<span class="nc" id="L64">        mp.setOnEndOfMedia(mp::dispose);</span>
+<span class="nc" id="L65">        mp.play();</span>
+<span class="nc" id="L66">    }</span>
+
+    // Set mute flags
+    public void setMusicMuted(boolean muted) {
+<span class="nc" id="L70">        musicMuted = muted;</span>
+<span class="nc bnc" id="L71" title="All 2 branches missed.">        if (bgPlayer != null) {</span>
+<span class="nc" id="L72">            bgPlayer.setMute(muted);</span>
+<span class="nc bnc" id="L73" title="All 2 branches missed.">            if (muted) bgPlayer.pause();</span>
+        }
+<span class="nc" id="L75">    }</span>
+
+    public void setSfxMuted(boolean muted) {
+<span class="nc" id="L78">        sfxMuted = muted;</span>
+<span class="nc" id="L79">    }</span>
+
+    public boolean isMusicMuted() {
+<span class="nc" id="L82">        return musicMuted;</span>
+    }
+
+    public boolean isSfxMuted() {
+<span class="nc" id="L86">        return sfxMuted;</span>
+    }
+
+    // Toggle helpers
+    public void toggleMusic() {
+<span class="nc bnc" id="L91" title="All 2 branches missed.">        setMusicMuted(!musicMuted);</span>
+<span class="nc bnc" id="L92" title="All 2 branches missed.">        if (!musicMuted) playBgMusic();</span>
+<span class="nc" id="L93">        else stopBgMusic();</span>
+<span class="nc" id="L94">    }</span>
+
+    public void toggleSfx() {
+<span class="nc bnc" id="L97" title="All 2 branches missed.">        setSfxMuted(!sfxMuted);</span>
+<span class="nc" id="L98">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

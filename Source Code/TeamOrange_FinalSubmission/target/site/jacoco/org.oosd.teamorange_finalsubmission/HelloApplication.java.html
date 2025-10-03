@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>HelloApplication.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">TeamOrange_FinalSubmission</a> &gt; <a href="index.source.html" class="el_package">org.oosd.teamorange_finalsubmission</a> &gt; <span class="el_source">HelloApplication.java</span></div><h1>HelloApplication.java</h1><pre class="source lang-java linenums">/// HelloApplication.java
+// JavaFX entry point. Shows a splash image briefly, then loads main-menu.fxml
+// Applies the global CSS theme to keep visuals consistent.
+// No game logic is here. This class only bootstraps the UI.
+
+package org.oosd.teamorange_finalsubmission;
+
+import javafx.animation.PauseTransition;
+import javafx.application.Application;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Scene;
+import javafx.stage.Stage;
+import org.jetbrains.annotations.NotNull;
+
+import java.util.Objects;
+
+// App bootstrap
+<span class="nc" id="L18">public class HelloApplication extends Application {</span>
+
+    // Start UI
+    @Override
+    public void start(Stage stage) {
+<span class="nc" id="L23">        Stage splashStage = new Stage();</span>
+<span class="nc" id="L24">        javafx.scene.image.ImageView splashImage = new javafx.scene.image.ImageView(</span>
+<span class="nc" id="L25">                Objects.requireNonNull(HelloApplication.class.getResource(&quot;splash.png&quot;)).toExternalForm()</span>
+        );
+<span class="nc" id="L27">        splashImage.setPreserveRatio(true);</span>
+<span class="nc" id="L28">        splashImage.setSmooth(true);</span>
+<span class="nc" id="L29">        splashImage.setCache(true);</span>
+<span class="nc" id="L30">        javafx.scene.layout.StackPane splashRoot = new javafx.scene.layout.StackPane(splashImage);</span>
+<span class="nc" id="L31">        Scene splashScene = new Scene(splashRoot, 600, 400);</span>
+<span class="nc" id="L32">        splashImage.fitWidthProperty().bind(splashScene.widthProperty());</span>
+<span class="nc" id="L33">        splashImage.fitHeightProperty().bind(splashScene.heightProperty());</span>
+<span class="nc" id="L34">        splashStage.setScene(splashScene);</span>
+<span class="nc" id="L35">        splashStage.show();</span>
+
+        // Delay then load menu
+<span class="nc" id="L38">        PauseTransition pause = getPauseTransition(stage, splashStage);</span>
+<span class="nc" id="L39">        pause.play();</span>
+<span class="nc" id="L40">    }</span>
+
+    // Splash delay
+    @NotNull
+    private static PauseTransition getPauseTransition(Stage stage, Stage splashStage) {
+<span class="nc" id="L45">        PauseTransition pause = new PauseTransition(javafx.util.Duration.seconds(3));</span>
+<span class="nc" id="L46">        pause.setOnFinished(e -&gt; {</span>
+            try {
+<span class="nc" id="L48">                FXMLLoader fxmlLoader = new FXMLLoader(</span>
+<span class="nc" id="L49">                        HelloApplication.class.getResource(&quot;main-menu.fxml&quot;)</span>
+                );
+<span class="nc" id="L51">                Scene scene = new Scene(fxmlLoader.load(), 800, 600);</span>
+<span class="nc" id="L52">                scene.getStylesheets().add(</span>
+<span class="nc" id="L53">                        Objects.requireNonNull(</span>
+<span class="nc" id="L54">                                HelloApplication.class.getResource(&quot;/theme/tetris-theme.css&quot;)</span>
+<span class="nc" id="L55">                        ).toExternalForm()</span>
+                );
+<span class="nc" id="L57">                stage.setTitle(&quot;Game Hub&quot;);</span>
+<span class="nc" id="L58">                stage.setScene(scene);</span>
+<span class="nc" id="L59">                stage.show();</span>
+<span class="nc" id="L60">                splashStage.close();</span>
+<span class="nc" id="L61">            } catch (Exception ex) {</span>
+<span class="nc" id="L62">                ex.printStackTrace();</span>
+<span class="nc" id="L63">            }</span>
+<span class="nc" id="L64">        });</span>
+<span class="nc" id="L65">        return pause;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>
